@@ -6,7 +6,7 @@
 | Document | Confirmed decisions, environment status, client-supplied inputs |
 | Version | 0.1 |
 | Date | 2026-11-05 |
-| Status | In review (Task 0.7) |
+| Status | Approved at G0-final (2026-11-05) |
 | Gate | Feeds **G0-final** |
 
 This is the record the build is measured against. Anything not confirmed here is either a default from the SRS or explicitly pending. A pending item never blocks code that does not depend on it; it blocks the related phase gate.
@@ -51,7 +51,7 @@ Status values: **Confirmed** (approved by client), **Default** (SRS/plan default
 
 | ID | Decision | Status | Owner | Needed by |
 |---|---|---|---|---|
-| D-01 | Stack: Laravel 11, PHP 8.2+, MySQL 8, Blade + Tailwind + Alpine.js; no SPA, queues, Redis, Docker, or admin packages | **Confirmed** 2026-11-05 | Client | Done |
+| D-01 | Stack: Laravel 13, PHP 8.3+, MySQL 8, Blade + Tailwind + Alpine.js; no SPA, queues, Redis, Docker, or admin packages | **Confirmed** 2026-11-05 (11 → 13, Laravel 11 out of security support) | Client | Done |
 | D-02 | Product variants in v1 (size/colour, per-variant stock, SKU, optional price delta) | **Confirmed** 2026-11-05 | Client | Done |
 | D-03 | Paystack payments in v1, card + mobile money, hosted checkout, server-side verification, signed webhook | **Confirmed** 2026-11-05 | Client | Done |
 | D-04 | Customer reviews deferred to v1.1 | **Default** (SRS §9) | Client | G0-final |
@@ -61,7 +61,7 @@ Status values: **Confirmed** (approved by client), **Default** (SRS/plan default
 | D-08 | Single studio calendar, admin approval; consultation 30m, measurement 45m, fitting 45m; Mon–Sat 09:00–18:00 | **Default** | Client | G4 |
 | D-09 | Market v1: Ghana, GHS, tax-inclusive pricing; currency/locale are configuration values for a later XOF switch | **Confirmed** 2026-11-05 | Client | Done |
 | D-10 | Order statuses: pending → confirmed → in production → ready → delivered; cancelled. Payment status separate | **Default** | Client | G3 |
-| D-11 | Hosting: TBD; PHP 8.2+ NTS, MySQL 8, SSL, cron, document root `public/` | **Open** | Client | Day 3 |
+| D-11 | Hosting: TBD; PHP 8.3+ NTS, MySQL 8, SSL, cron, document root `public/` | **Open** | Client | Day 3 |
 | D-12 | Brand assets: TBD; placeholders until logo, photography, and copy are supplied | **Open** | Client | Day 2 |
 | D-13 | Timeline: 19 working days (~4 weeks) | **Confirmed** 2026-11-05 | Client | Done |
 | D-14 | Paystack Ghana merchant account, GHS, card + mobile money; test keys and webhook secret by Day 4 | **Confirmed** 2026-11-05 (account details pending) | Client | Day 4 |
@@ -115,7 +115,7 @@ Rules:
 | Paystack | Card and mobile money | Account confirmed in Ghana; keys pending | Test mode until launch; webhook endpoint `/webhooks/paystack`, HMAC SHA512, idempotent by event ID |
 | SMTP provider | Order, payment, appointment, contact email | Pending | Local uses `log` driver; production requires SPF/DKIM |
 | Domain + SSL | Public site | Pending | Force HTTPS; HSTS after launch |
-| Hosting | PHP 8.2+ NTS, MySQL 8 | Pending | Needs cron and writable `storage/` |
+| Hosting | PHP 8.3+ NTS, MySQL 8 | Pending | Needs cron and writable `storage/` |
 | Google Maps | Showroom embed | Pending | No API key required for basic embed |
 | WhatsApp | Click-to-chat | Pending | `wa.me` link only; no Business API |
 | Backups | Daily DB + uploads | Planned | Local `backups/`; production off-site copy recommended |
@@ -140,7 +140,7 @@ Promotion path: local → staging (UAT sign-off, G6) → production (G7). No dir
 
 These are recorded so they are not lost. Each is answered before the phase that needs it; none prevents repository setup, Laravel install, schema, models, or layouts.
 
-1. **Hosting provider** — shared cPanel vs VPS. Affects only Task 7.x. Requirement: PHP 8.2+ NTS, MySQL 8, SSL, cron, `public/` document root.
+1. **Hosting provider** — shared cPanel vs VPS. Affects only Task 7.x. Requirement: PHP 8.3+ NTS, MySQL 8, SSL, cron, `public/` document root.
 2. **Brand assets** — placeholder logo/typography used until supplied.
 3. **GHS price list and shipping fees** — seeded with representative values for UAT, replaced before launch.
 4. **Tax display** — assumed **inclusive** (common in Ghana retail); configurable in settings.

@@ -491,7 +491,7 @@ Expected keys: `store_name`, `currency`, `default_locale`, `whatsapp_number`, `m
 
 ## 8. Framework tables
 
-Laravel 11 creates these additional tables. They are not part of the business domain but are listed for completeness.
+Laravel 13 creates these additional tables. They are not part of the business domain but are listed for completeness.
 
 | Table | Purpose |
 |---|---|

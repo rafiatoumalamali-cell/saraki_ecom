@@ -6,10 +6,10 @@
 | Client | SARAKI |
 | Prepared by | Qoder for SahelSoft |
 | Source requirements | SRS v1.0 (July 2026, SahelSoft) |
-| Plan version | 0.4 — Market updated to Ghana (GHS) |
+| Plan version | 0.5 — Laravel 13; Phase 1 in progress |
 | Date | 2026-11-05 |
 | Target | Production-ready v1 in 19 working days (~4 weeks), variants + Paystack (Ghana/GHS) included |
-| Status | G0 approved; Phase 0 in progress |
+| Status | G0 and G0-final approved; Phase 1 in progress |
 
 ---
 
@@ -38,7 +38,7 @@
 
 | ID | Decision | Status | Impact if changed |
 |---|---|---|---|
-| D-01 | **Stack:** Laravel 11 (PHP 8.2+), MySQL 8, Blade + Tailwind + Alpine.js. No SPA, queues, Redis, Docker, or admin packages. | **Approved 2026-11-05** | Changing stack reworks Task 1.2 and folder layout; later tasks remain valid. |
+| D-01 | **Stack:** Laravel 13 (PHP 8.3+), MySQL 8, Blade + Tailwind + Alpine.js. No SPA, queues, Redis, Docker, or admin packages. | **Approved 2026-11-05; changed 11 → 13 on 2026-11-05** | Changing stack reworks Task 1.2 and folder layout; later tasks remain valid. |
 | D-02 | **Product variants:** included in v1 — size/colour options with per-variant stock, SKU, and optional price difference. | **Approved 2026-11-05** | Removing variants saves ~1.5–2 days but weakens the fashion catalogue. |
 | D-03 | **Payments:** included in v1 via **Paystack** — card and mobile money required. Hosted checkout, server-side verification, signed webhooks. COD/transfer remain optional offline methods. | **Approved 2026-11-05** | Removing Paystack saves ~4 days but contradicts the client requirement. |
 | D-04 | **Reviews:** deferred to v1.1 (SRS §6 lists the entity, §9 defers the feature). | Approved by default; remains per SRS §9 | Adds ~1–2 days including moderation. |
@@ -48,7 +48,7 @@
 | D-08 | **Appointments:** single studio calendar; admin approval required; consultation 30m, measurement 45m, fitting 45m; Mon–Sat 09:00–18:00. | Approved by default | Multiple staff calendars require a resource model. |
 | D-09 | **Market (v1):** Ghana, GHS, tax-inclusive prices; Ghana delivery zones configurable in settings. Currency and locale are configuration values so the store can switch to Niger/XOF later. | **Updated 2026-11-05** | Switching to XOF later requires price re-entry, shipping-zone updates, and a Paystack account/entity enabled for XOF. |
 | D-10 | **Order statuses:** pending → confirmed → in production → ready → delivered; cancelled. Payment status tracked separately. | Approved by default | Status changes affect tracking, emails, and stock rules. |
-| D-11 | **Hosting:** TBD; requires PHP 8.2+, MySQL 8, SSL, cron, document root `public/`. | Open — needed by Day 3 | Shared hosting may block scheduler/backups or performance targets. |
+| D-11 | **Hosting:** TBD; requires PHP 8.3+, MySQL 8, SSL, cron, document root `public/`. | Open — needed by Day 3 | Shared hosting may block scheduler/backups or performance targets. |
 | D-12 | **Brand assets:** TBD; placeholders until logo, photos, and copy are supplied. | Open — needed by Day 2 | Late assets delay launch content, not code. |
 | D-13 | **Timeline:** **19 working days (~4 weeks)**. Includes variants, Paystack, and deeper polish. Reviews remain deferred per SRS §9. | **Approved 2026-11-05** | This is the selected schedule; scope changes trigger change control. |
 | D-14 | **Paystack account (v1):** Ghana merchant account, GHS, card + mobile money channels. Test keys and webhook access required by Day 4. The integration reads currency from config so a later XOF switch does not require code changes. | **Updated 2026-11-05** | If the Ghana account is not enabled for mobile money, only card works until the channel is enabled. A later XOF switch requires an eligible Paystack entity or another gateway. |
@@ -120,7 +120,7 @@ A task is Done only when:
 |---|---|
 | Local development | Windows + Laragon; PHP 8.3.28, Composer 2.10.2, MySQL 8.4.3, Node 26.2.0 — verified available |
 | Staging | Same stack as production; Paystack test mode (GHS); deployed from the main branch |
-| Production | PHP 8.2+, MySQL 8, HTTPS, cron, document root `src/public`; Paystack live mode (Ghana/GHS) |
+| Production | PHP 8.3+, MySQL 8, HTTPS, cron, document root `src/public`; Paystack live mode (Ghana/GHS) |
 | Repository | Separate git repo in `saraki/` (Task 1.1); tags at each accepted gate |
 | Secrets | `.env` only; never committed; Paystack test keys until go-live |
 | Backups | Daily database + uploads, 14-day retention, restore tested in Phase 6 |
@@ -223,7 +223,7 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
 | 1.1 | Initialize the project repository | Separate git repo in `saraki/`; initial commit; `.gitignore` verified; no secrets tracked | 0.25h | Proposed |
-| 1.2 | Install Laravel 11 + Breeze (Blade) + Tailwind + Alpine | App boots locally; Breeze auth pages render | 0.75h | Proposed |
+| 1.2 | Install Laravel 13 + Breeze (Blade) + Tailwind + Alpine | App boots locally; Breeze auth pages render | 0.75h | Proposed |
 | 1.3 | Configure the environment | `.env.example`, app key, MySQL connection, timezone `Africa/Accra`, locale `fr`, currency GHS (configurable), Paystack placeholders | 0.5h | Proposed |
 | 1.4 | Create all v1 migrations | Includes `product_variants`, `payments`, `payment_events`, `refunds`; `php artisan migrate:fresh --seed` succeeds; constraints/indexes verified | 4h | Proposed |
 | 1.5 | Models, relationships, factories | Product ↔ variants, payments ↔ refunds/events, order items; factories generate valid data | 3h | Proposed |
@@ -334,7 +334,7 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 7.1 | Provision staging and production | PHP 8.2+, MySQL 8, SSL, cron, document root `src/public`; credentials recorded securely | 2h | Proposed |
+| 7.1 | Provision staging and production | PHP 8.3+, MySQL 8, SSL, cron, document root `src/public`; credentials recorded securely | 2h | Proposed |
 | 7.2 | Staging deployment | App runs on staging; storage link and permissions correct; Paystack test mode verified | 2h | Proposed |
 | 7.3 | SMTP configuration | Test emails delivered to customer and admin inboxes | 1h | Proposed |
 | 7.4 | Cron and backups | Scheduler (payment expiry, backups) running on the server | 1h | Proposed |
@@ -398,7 +398,7 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 |---|---|---|---|
 | Brand assets or product photos arrive late | High | Launch looks empty | Build with placeholders; content entry runs in parallel; deadline for assets is Day 2 |
 | Client review takes more than one day | Medium | Schedule slips day-for-day | Same-day gate reviews agreed; escalation after 24 hours |
-| Hosting is shared and cannot run scheduler/backups | Medium | Deployment or backups blocked | Confirm PHP 8.2+/MySQL 8/cron by Day 3; recommend a small VPS if needed |
+| Hosting is shared and cannot run scheduler/backups | Medium | Deployment or backups blocked | Confirm PHP 8.3+/MySQL 8/cron by Day 3; recommend a small VPS if needed |
 | Scope creep during the build | Medium | Deadline missed | Change Log + v1.1 backlog; nothing enters v1 without explicit approval |
 | 19-day Plan B+ is at capacity | Medium | Incomplete polish | Scope guard in §6.4; defer blog/gallery depth before extending |
 | Paystack Ghana account lacks the mobile money channel | Medium | Card-only launch | Confirm channel enablement by Day 4 (D-14); if unavailable, launch card-only or switch account after approval |
@@ -423,6 +423,7 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 | 2026-11-05 | 0.2 | G0 approved; Laravel 11 confirmed; variants included; Plan B (15 working days) selected | Client | Rafiatou Malam Ali (PM) |
 | 2026-11-05 | 0.3 | Paystack payments added (card + mobile money); timeline extended to 19 working days | Client | Rafiatou Malam Ali (PM) |
 | 2026-11-05 | 0.4 | Market set to Ghana/GHS for v1; currency and locale made configurable for a later XOF switch | Client | Rafiatou Malam Ali (PM) |
+| 2026-11-05 | 0.5 | G0-final approved. D-01 changed from Laravel 11 to **Laravel 13** (PHP 8.3+): Composer blocks all 11.x releases due to unpatched security advisories and 11.x is out of security support. No scope or schedule impact. Task 1.3 timezone/currency corrected to Africa/Accra / GHS. | Qoder (security finding) | Rafiatou Malam Ali (PM) |
 
 Rules:
 
