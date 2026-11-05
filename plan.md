@@ -52,6 +52,7 @@
 | D-12 | **Brand assets:** TBD; placeholders until logo, photos, and copy are supplied. | Open — needed by Day 2 | Late assets delay launch content, not code. |
 | D-13 | **Timeline:** **19 working days (~4 weeks)**. Includes variants, Paystack, and deeper polish. Reviews remain deferred per SRS §9. | **Approved 2026-11-05** | This is the selected schedule; scope changes trigger change control. |
 | D-14 | **Paystack account (v1):** Ghana merchant account, GHS, card + mobile money channels. Test keys and webhook access required by Day 4. The integration reads currency from config so a later XOF switch does not require code changes. | **Updated 2026-11-05** | If the Ghana account is not enabled for mobile money, only card works until the channel is enabled. A later XOF switch requires an eligible Paystack entity or another gateway. |
+| D-15 | **CR-01 (raised at G1):** customer accounts carry an optional profile photo and a 16-point body measurement sheet in centimetres, editable by the customer at any time and readable by the tailor at `/admin/customers`. Photo is stored as uploaded on the public disk (jpg/png/webp, 2 MB cap, no resize). | **Delivered 2026-11-05, awaiting confirmation** | Photo resizing adds an image library and work in Task 2.3; inches would need a per-customer unit and conversion; a measurement history requires a second table and changes the fitting workflow in Phase 3. |
 
 ---
 
@@ -234,8 +235,11 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 | 1.10 | Admin shell and dashboard | Admin layout, sidebar, dashboard counts (orders, payments, appointments, products, messages) | 2h | Review — 260px charcoal-700 sidebar with 3px gold active bar (icon rail below `xl`), `/admin` behind `auth`+`admin`, 5 stat cards (orders, revenue this month, open appointments, active products, unread messages) + latest orders as a table that stacks into definition lists below `md`; unbuilt sections route to a labelled placeholder |
 | 1.11 | Localization scaffold | `/fr` and `/en` routes, lang files, locale persistence; no hard-coded UI strings | 2h | Done — `/{fr|en}` storefront routes with `/` redirect, `SetLocale` (route → session → account, saved on profile update) with `POST /locale/{locale}`, lang files for ui/admin/statuses/auth/validation/passwords/pagination + `fr.json`; no off-token classes remain in Blade |
 | 1.12 | Foundation tests | Feature tests for auth, RBAC, locale switching; all pass | 1.5h | Done — 61 tests / 228 assertions green (`php artisan test`), including 8 locale tests and 4 admin-shell tests; Breeze example tests replaced |
+| 1.13 | CR-01: profile photo | Optional photo on signup, replace/remove in Profile, initials fallback in the header | 1.5h | Done — `users.avatar_path` on the public disk (jpg/png/webp, 2 MB, no resize), previous file deleted on replace and on account removal, `<x-ui.avatar>` monogram fallback, `storage:link` required locally |
+| 1.14 | CR-01: measurement sheet | 16 body fields in centimetres, one row per customer, every field optional, customer-editable | 2.5h | Done — `customer_measurements` (unique `user_id`, `decimal(5,2)`), `CustomerMeasurement::BODY_FIELDS` as the single source for validation, form and display, `PATCH /profile/measurements` upsert, grouped FR/EN form with how-to-measure hints, `centimetres()` helper (fr `159,0 cm` / en `159.0 cm`) |
+| 1.15 | CR-01: tailor view + tests | Admin customers list with search and a read-only sheet per customer; feature tests | 2h | Done — `/admin/customers` behind `auth`+`admin` (admins excluded from the list, admin ids 404), nav entry and icon, 21 new tests; suite at 82 tests / 300 assertions. **Visual pass at 360/768/1024/1440 still owed** |
 
-**Gate G1:** auth, roles, layout, admin shell, and FR/EN scaffolding demonstrated.
+**Gate G1:** auth, roles, layout, admin shell, and FR/EN scaffolding demonstrated. CR-01 (D-15) delivered on top of 1.12 and included in this gate.
 
 ---
 

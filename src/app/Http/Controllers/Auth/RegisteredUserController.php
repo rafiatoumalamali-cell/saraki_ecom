@@ -35,6 +35,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:191', 'unique:'.User::class],
             'phone' => ['nullable', 'string', 'max:30', 'regex:/^[+0-9][0-9\s().+-]{5,29}$/'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'avatar' => ['nullable', ...User::AVATAR_RULES],
         ]);
 
         $user = User::create([
@@ -44,6 +45,10 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'locale' => app()->getLocale(),
         ]);
+
+        if ($request->hasFile('avatar')) {
+            $user->storeAvatar($request->file('avatar'));
+        }
 
         event(new Registered($user));
 

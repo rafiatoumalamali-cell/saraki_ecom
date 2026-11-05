@@ -49,6 +49,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button type="button" class="label-upper flex h-11 items-center gap-2 rounded-xs px-3 text-beige transition-colors duration-150 ease-brand hover:bg-charcoal-700">
+                            <x-ui.avatar :user="auth()->user()" size="sm" />
                             <span class="max-w-[10ch] truncate">{{ auth()->user()->name }}</span>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />

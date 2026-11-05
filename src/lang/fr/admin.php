@@ -9,6 +9,7 @@ return [
         'orders' => 'Commandes',
         'catalogue' => 'Catalogue',
         'appointments' => 'Rendez-vous',
+        'customers' => 'Clients',
         'content' => 'Contenus',
         'messages' => 'Messages',
         'settings' => 'Paramètres',
@@ -37,6 +38,23 @@ return [
         'status' => 'Statut',
         'placed' => 'Passée le',
         'no_orders' => 'Aucune commande n’a encore été passée.',
+    ],
+
+    'customers' => [
+        'title' => 'Clients',
+        'subtitle' => 'Coordonnées et fiche mensurations sur laquelle la couturière découpe.',
+        'search_label' => 'Rechercher un client',
+        'search_placeholder' => 'Nom, e-mail ou téléphone',
+        'no_results' => 'Aucun client ne correspond à cette recherche.',
+        'customer' => 'Client',
+        'contact' => 'Coordonnées',
+        'sheet' => 'Fiche mensurations',
+        'created' => 'Compte créé le',
+        'open' => 'Ouvrir la fiche',
+        'back_to_list' => 'Retour à la liste des clients',
+        'member_since' => 'Client depuis le :date',
+        'no_sheet' => 'Aucune fiche mensurations enregistrée pour ce compte.',
+        'notes' => 'Notes pour la couturière',
     ],
 
     'placeholder' => [

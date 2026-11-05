@@ -7,6 +7,14 @@
         </div>
 
         <div class="rounded-sm border border-line bg-canvas p-6">
+            @include('profile.partials.update-photo-form')
+        </div>
+
+        <div class="rounded-sm border border-line bg-canvas p-6">
+            @include('profile.partials.update-measurements-form')
+        </div>
+
+        <div class="rounded-sm border border-line bg-canvas p-6">
             @include('profile.partials.update-password-form')
         </div>
 

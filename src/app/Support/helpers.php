@@ -18,6 +18,28 @@ if (! function_exists('money')) {
     }
 }
 
+if (! function_exists('centimetres')) {
+    /**
+     * A body measurement, e.g. "96,5 cm" (fr) / "96.5 cm" (en); null stays null so
+     * the tailor's sheet can distinguish "not recorded" from zero.
+     */
+    function centimetres(float|string|null $cm, ?string $locale = null): ?string
+    {
+        if ($cm === null) {
+            return null;
+        }
+
+        $locale = $locale ?? app()->getLocale();
+        $intlLocale = config("saraki.currency_locale.{$locale}") ?? config('saraki.currency_locale.en');
+
+        $formatter = new NumberFormatter($intlLocale, NumberFormatter::DECIMAL);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 1);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 1);
+
+        return $formatter->format((float) $cm).' '.__('measurements.unit');
+    }
+}
+
 if (! function_exists('localized_date')) {
     /**
      * Long date in the active locale and store timezone, e.g. "5 novembre 2026".

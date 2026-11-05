@@ -9,6 +9,7 @@ return [
         'orders' => 'Orders',
         'catalogue' => 'Catalogue',
         'appointments' => 'Appointments',
+        'customers' => 'Customers',
         'content' => 'Content',
         'messages' => 'Messages',
         'settings' => 'Settings',
@@ -37,6 +38,23 @@ return [
         'status' => 'Status',
         'placed' => 'Placed',
         'no_orders' => 'No orders have been placed yet.',
+    ],
+
+    'customers' => [
+        'title' => 'Customers',
+        'subtitle' => 'Contact details and the measurement sheet the tailor cuts from.',
+        'search_label' => 'Search customers',
+        'search_placeholder' => 'Name, e-mail or phone',
+        'no_results' => 'No customer matches this search.',
+        'customer' => 'Customer',
+        'contact' => 'Contact',
+        'sheet' => 'Measurement sheet',
+        'created' => 'Account created',
+        'open' => 'Open file',
+        'back_to_list' => 'Back to customers',
+        'member_since' => 'Customer since :date',
+        'no_sheet' => 'No measurement sheet recorded yet.',
+        'notes' => 'Notes for the tailor',
     ],
 
     'placeholder' => [

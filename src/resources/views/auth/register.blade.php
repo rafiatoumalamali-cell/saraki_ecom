@@ -1,7 +1,7 @@
 <x-guest-layout>
     <h1 class="font-display text-heading-md">{{ __('ui.register') }}</h1>
 
-    <form method="POST" action="{{ route('register') }}" class="mt-6 space-y-6">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
 
         <div>
@@ -20,6 +20,17 @@
             <x-input-label for="phone" :value="__('Phone')" />
             <x-text-input id="phone" class="mt-1" type="tel" name="phone" :value="old('phone')" autocomplete="tel" />
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+        </div>
+
+        <div>
+            <x-input-label for="avatar" :value="__('Profile Photo')" />
+            <input id="avatar" name="avatar" type="file" accept="image/jpeg,image/png,image/webp"
+                   class="field mt-1 file:me-3 file:border-0 file:bg-transparent file:text-body-sm file:font-semibold">
+            <p class="mt-2 text-body-sm text-ink-soft">
+                {{ __('Optional: you can add or change it later in your profile.') }}
+                {{ __('JPG, PNG or WebP, up to 2 MB.') }}
+            </p>
+            <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
         </div>
 
         <div>

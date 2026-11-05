@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MeasurementUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\CustomerMeasurement;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +21,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'measurements' => $request->user()->measurements ?? new CustomerMeasurement,
         ]);
     }
 
@@ -40,6 +44,38 @@ class ProfileController extends Controller
     }
 
     /**
+     * Replace the profile photo. Deliberately a separate endpoint so a text-only
+     * profile save can never re-upload or drop the current file.
+     */
+    public function updatePhoto(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', ...User::AVATAR_RULES],
+        ]);
+
+        $request->user()->storeAvatar($request->file('avatar'));
+
+        return back()->with('status', 'photo-updated');
+    }
+
+    public function removePhoto(Request $request): RedirectResponse
+    {
+        $request->user()->removeAvatar();
+
+        return back()->with('status', 'photo-removed');
+    }
+
+    /**
+     * Upsert the tailor's measurement sheet: one row per customer, updated in place.
+     */
+    public function updateMeasurements(MeasurementUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->measurements()->updateOrCreate([], $request->validated());
+
+        return back()->with('status', 'measurements-updated');
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
@@ -51,6 +87,8 @@ class ProfileController extends Controller
         $user = $request->user();
 
         Auth::logout();
+
+        $user->removeAvatar();
 
         $user->delete();
 

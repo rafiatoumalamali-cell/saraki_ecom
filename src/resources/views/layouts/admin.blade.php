@@ -1,14 +1,20 @@
 @php
-    $sections = [
-        ['key' => 'orders', 'label' => __('admin.nav.orders')],
-        ['key' => 'catalogue', 'label' => __('admin.nav.catalogue')],
-        ['key' => 'appointments', 'label' => __('admin.nav.appointments')],
-        ['key' => 'content', 'label' => __('admin.nav.content')],
-        ['key' => 'messages', 'label' => __('admin.nav.messages')],
-        ['key' => 'settings', 'label' => __('admin.nav.settings')],
-    ];
-
     $activeSection = request()->routeIs('admin.section') ? request()->route('section') : null;
+
+    $sections = collect([
+        'orders' => ['admin.section', 'orders'],
+        'catalogue' => ['admin.section', 'catalogue'],
+        'appointments' => ['admin.section', 'appointments'],
+        'customers' => ['admin.customers.index', []],
+        'content' => ['admin.section', 'content'],
+        'messages' => ['admin.section', 'messages'],
+        'settings' => ['admin.section', 'settings'],
+    ])->map(fn (array $route, string $key) => [
+        'key' => $key,
+        'label' => __('admin.nav.'.$key),
+        'href' => route($route[0], $route[1]),
+        'active' => $activeSection === $key || request()->routeIs('admin.'.$key.'.*'),
+    ])->all();
 @endphp
 
 <!DOCTYPE html>
@@ -52,13 +58,13 @@
 
                     @foreach ($sections as $section)
                         <a
-                            href="{{ route('admin.section', $section['key']) }}"
+                            href="{{ $section['href'] }}"
                             @class([
                                 'flex min-h-14 items-center gap-3 border-l-[3px] px-4 py-3 whitespace-nowrap transition-colors duration-150 ease-brand lg:rounded-xs lg:px-3',
-                                'border-gold bg-charcoal-800 text-beige' => $activeSection === $section['key'],
-                                'border-transparent text-beige/70 hover:bg-charcoal-800 hover:text-beige' => $activeSection !== $section['key'],
+                                'border-gold bg-charcoal-800 text-beige' => $section['active'],
+                                'border-transparent text-beige/70 hover:bg-charcoal-800 hover:text-beige' => ! $section['active'],
                             ])
-                            @if ($activeSection === $section['key']) aria-current="page" @endif
+                            @if ($section['active']) aria-current="page" @endif
                         >
                             <x-ui.admin-icon :name="$section['key']" />
                             <span class="label-upper lg:hidden xl:inline">{{ $section['label'] }}</span>
@@ -84,6 +90,7 @@
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button type="button" class="label-upper flex h-11 items-center gap-2 rounded-xs px-3 text-charcoal transition-colors duration-150 ease-brand hover:bg-beige">
+                                    <x-ui.avatar :user="auth()->user()" size="sm" />
                                     <span class="max-w-[12ch] truncate">{{ auth()->user()->name }}</span>
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
