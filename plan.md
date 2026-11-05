@@ -228,8 +228,8 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 | 1.4 | Create all v1 migrations | Includes `product_variants`, `payments`, `payment_events`, `refunds`; `php artisan migrate:fresh --seed` succeeds; constraints/indexes verified | 4h | Done — 28 tables, 11 CHECKs, 24 FKs verified against MySQL 8.4 (`--seed` completes in 1.6) |
 | 1.5 | Models, relationships, factories | Product ↔ variants, payments ↔ refunds/events, order items; factories generate valid data | 3h | Done — 22 models, 9 enums, 18 factories; 15 factory/model tests pass |
 | 1.6 | Seeders | Admin user, 6 categories, 20 sample products with variants, 3 services, default settings | 2h | Done — 6 categories, 20 products / 139 variants, 3 services, 7 working-hour rows, 10 settings; `migrate:fresh --seed` verified and idempotent |
-| 1.7 | Authentication flows | Register, login, logout, password reset, profile update; validation and rate limiting | 2h | Proposed |
-| 1.8 | Roles and authorization | Customer blocked from `/admin`; admin policies enforced on every admin route | 1.5h | Proposed |
+| 1.7 | Authentication flows | Register, login, logout, password reset, profile update; validation and rate limiting | 2h | Done — phone + locale on register/profile, validation matches column limits, login rejects deactivated accounts, register and password links throttled |
+| 1.8 | Roles and authorization | Customer blocked from `/admin`; admin policies enforced on every admin route | 1.5h | Done — `admin` middleware alias + `Gate::before`; guests→login, customers→403, admins allowed (tested) |
 | 1.9 | Public layout | Header, footer, navigation, flash messages, mobile menu, FR/EN switcher | 3h | Proposed |
 | 1.10 | Admin shell and dashboard | Admin layout, sidebar, dashboard counts (orders, payments, appointments, products, messages) | 2h | Proposed |
 | 1.11 | Localization scaffold | `/fr` and `/en` routes, lang files, locale persistence; no hard-coded UI strings | 2h | Proposed |
