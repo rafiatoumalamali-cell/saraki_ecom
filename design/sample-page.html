@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SARAKI — Référence visuelle (UI kit)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#0A0A0A; --charcoal-800:#141414; --charcoal-700:#1F1F1F;
+    --beige:#F5F1E8; --beige-50:#FDFBF6; --beige-200:#E8E1D2;
+    --gold:#D4AF37; --gold-600:#B8962B; --gold-700:#8A6D1F;
+    --ink-soft:#4A4A4A; --ink-muted:#6B6B6B;
+    --success:#1E6F45; --success-bg:#E8F3EC;
+    --warning:#8A5A00; --warning-bg:#FDF3E1;
+    --danger:#A3202B; --danger-bg:#FBE9EA;
+    --info:#1F4E79; --info-bg:#EAF1F8;
+    --border:#E8E1D2; --border-strong:#C9C2B2;
+    --font-display:"Playfair Display",Georgia,serif;
+    --font-sans:Montserrat,"Helvetica Neue",Arial,sans-serif;
+    --radius-xs:2px; --radius-sm:4px;
+    --shadow-sm:0 1px 2px rgba(10,10,10,.06);
+    --shadow-md:0 8px 24px rgba(10,10,10,.08);
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#fff;color:var(--charcoal);font-family:var(--font-sans);font-size:16px;line-height:1.625;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0}
+  p{margin:0}
+  a{color:inherit}
+  img{display:block;max-width:100%}
+  .container{width:100%;max-width:1200px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--gold-700)}
+  .muted{color:var(--ink-muted)}
+  .section{padding:96px 0}
+  .section--beige{background:var(--beige)}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px}
+  .section-head h2{font-size:30px}
+  .rule{height:1px;background:var(--border);border:0;margin:0}
+
+  /* ---------- Header ---------- */
+  .site-header{background:var(--charcoal);color:var(--beige);position:sticky;top:0;z-index:20}
+  .site-header .container{height:80px;display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .wordmark{font-family:var(--font-display);font-size:24px;letter-spacing:.22em;font-weight:700;text-decoration:none}
+  .wordmark span{color:var(--gold)}
+  .nav{display:flex;gap:32px}
+  .nav a{font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;font-weight:600;opacity:.85;transition:opacity .15s var(--ease),color .15s var(--ease)}
+  .nav a:hover,.nav a[aria-current="page"]{opacity:1;color:var(--gold)}
+  .header-actions{display:flex;align-items:center;gap:20px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .lang{display:flex;border:1px solid rgba(245,241,232,.3);border-radius:var(--radius-xs);overflow:hidden}
+  .lang button{background:none;border:0;color:inherit;font:inherit;padding:6px 10px;cursor:pointer}
+  .lang button[aria-pressed="true"]{background:var(--gold);color:var(--charcoal)}
+  .cart-link{color:var(--beige);text-decoration:none;display:flex;align-items:center;gap:8px}
+  .cart-count{background:var(--gold);color:var(--charcoal);border-radius:999px;min-width:20px;height:20px;display:grid;place-items:center;font-size:11px;padding:0 6px}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--charcoal);color:var(--beige);position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,rgba(10,10,10,.96) 30%,rgba(10,10,10,.55) 65%,rgba(10,10,10,.2));z-index:1}
+  .hero-media{position:absolute;inset:0;background:
+      radial-gradient(circle at 72% 30%,rgba(212,175,55,.28),transparent 42%),
+      linear-gradient(135deg,#2a2118,#0A0A0A 60%);}
+  .hero .container{position:relative;z-index:2;padding-top:120px;padding-bottom:120px;display:grid;grid-template-columns:minmax(0,620px);gap:32px}
+  .hero h1{font-size:clamp(40px,6vw,60px);line-height:1.05;letter-spacing:-.01em}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p{font-size:18px;line-height:1.7;color:rgba(245,241,232,.8);max-width:52ch}
+  .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+  .hero-note{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,241,232,.55)}
+
+  /* ---------- Buttons ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:var(--radius-xs);border:1px solid transparent;font-family:var(--font-sans);font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease),transform .15s var(--ease)}
+  .btn:active{transform:translateY(1px)}
+  .btn--primary{background:var(--charcoal);color:var(--beige)}
+  .btn--primary:hover{background:var(--charcoal-800)}
+  .btn--secondary{background:transparent;color:var(--charcoal);border-color:var(--charcoal)}
+  .btn--secondary:hover{background:var(--charcoal);color:var(--beige)}
+  .btn--gold{background:var(--gold);color:var(--charcoal)}
+  .btn--gold:hover{background:var(--gold-600)}
+  .btn--ghost{background:transparent;color:var(--charcoal)}
+  .btn--ghost:hover{background:var(--beige)}
+  .btn--danger{background:var(--danger);color:#fff}
+  .btn--sm{height:40px;padding:0 16px}
+  .btn--lg{height:56px;padding:0 32px}
+  .btn--on-dark.btn--secondary{color:var(--beige);border-color:rgba(245,241,232,.45)}
+  .btn--on-dark.btn--secondary:hover{background:var(--beige);color:var(--charcoal);border-color:var(--beige)}
+  .btn[aria-busy="true"]{opacity:.8;pointer-events:none}
+  .btn:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+  /* ---------- Product cards ---------- */
+  .grid-products{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+  @media(min-width:768px){.grid-products{grid-template-columns:repeat(3,1fr)}}
+  @media(min-width:1024px){.grid-products{grid-template-columns:repeat(4,1fr)}}
+  .product{position:relative}
+  .product-media{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--beige-200);border-radius:var(--radius-sm)}
+  .product-media .swatch{position:absolute;inset:0;transition:transform .4s var(--ease)}
+  .product:hover .swatch{transform:scale(1.03)}
+  .p1{background:linear-gradient(150deg,#3b2f24,#151210 70%)}
+  .p2{background:linear-gradient(150deg,#6b5a3e,#241d15 70%)}
+  .p3{background:linear-gradient(150deg,#8f8168,#332b21 70%)}
+  .p4{background:linear-gradient(150deg,#2b2b2b,#0d0d0d 70%)}
+  .badge{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:var(--radius-xs);font-size:12px;line-height:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .badge--gold{background:var(--beige);color:var(--gold-700);border:1px solid var(--gold)}
+  .badge--warn{background:var(--warning-bg);color:var(--warning)}
+  .badge--success{background:var(--success-bg);color:var(--success)}
+  .badge--danger{background:var(--danger-bg);color:var(--danger)}
+  .badge--info{background:var(--info-bg);color:var(--info)}
+  .badge--solid{background:var(--success);color:#fff}
+  .product .badge{position:absolute;top:12px;left:12px;z-index:2}
+  .quick-add{position:absolute;left:12px;right:12px;bottom:12px;opacity:0;transform:translateY(6px);transition:opacity .3s var(--ease),transform .3s var(--ease);z-index:2}
+  .product:hover .quick-add,.product:focus-within .quick-add{opacity:1;transform:none}
+  .product h3{font-family:var(--font-sans);font-size:16px;line-height:1.4;font-weight:400;margin:16px 0 4px}
+  .price{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+  .price s{font-size:13px;color:var(--ink-muted);font-weight:400;margin-left:8px}
+
+  /* ---------- Panel / checkout ---------- */
+  .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px;box-shadow:var(--shadow-sm)}
+  .panel h3{font-family:var(--font-sans);font-size:20px;line-height:28px;font-weight:600;margin-bottom:20px}
+  .split{display:grid;gap:32px}
+  @media(min-width:1024px){.split{grid-template-columns:1.35fr .8fr;align-items:start}}
+  .field{margin-bottom:16px}
+  .field label,.field .legend{display:block;font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+  .req{color:var(--danger)}
+  .input,select,textarea{width:100%;height:48px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:#fff;font-family:var(--font-sans);font-size:16px;color:var(--charcoal)}
+  textarea{height:auto;min-height:112px;padding:12px;resize:vertical}
+  .input:focus,select:focus,textarea:focus{outline:none;border-color:var(--charcoal);box-shadow:0 0 0 3px rgba(212,175,55,.35)}
+  .input.is-error{border-color:var(--danger)}
+  .help{font-size:14px;line-height:22px;color:var(--ink-muted);margin-top:8px}
+  .error{font-size:14px;line-height:22px;color:var(--danger);margin-top:8px;font-weight:600}
+  .grid-2{display:grid;gap:16px}
+  @media(min-width:640px){.grid-2{grid-template-columns:1fr 1fr}}
+  fieldset{border:0;margin:0;padding:0}
+  .radio-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:border-color .15s var(--ease),background .15s var(--ease)}
+  .radio-card+.radio-card{margin-top:8px}
+  .radio-card:hover{border-color:var(--border-strong);background:var(--beige-50)}
+  .radio-card input{appearance:none;width:20px;height:20px;border:1px solid var(--border-strong);border-radius:999px;margin:2px 0 0;flex:none;display:grid;place-items:center;cursor:pointer}
+  .radio-card input:checked{border-color:var(--gold);border-width:6px;background:#fff}
+  .radio-card strong{display:block;font-size:14px;line-height:22px}
+  .radio-card span{font-size:13px;color:var(--ink-muted)}
+  .check{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:22px}
+  .check input{appearance:none;width:20px;height:20px;border:1px solid var(--border-strong);border-radius:var(--radius-xs);flex:none;margin:1px 0 0;cursor:pointer}
+  .check input:checked{background:var(--gold);border-color:var(--gold)}
+  .check input:checked::after{content:"";display:block;width:10px;height:6px;border-left:2px solid var(--charcoal);border-bottom:2px solid var(--charcoal);transform:rotate(-45deg) translate(1px,-1px)}
+
+  .variant-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin:0 0 8px}
+  .swatches{display:flex;gap:8px;flex-wrap:wrap}
+  .swatch-btn{width:44px;height:44px;border:1px solid var(--border-strong);background:#fff;border-radius:var(--radius-xs);font-family:var(--font-sans);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease)}
+  .swatch-btn:hover{border-color:var(--charcoal)}
+  .swatch-btn[aria-pressed="true"]{background:var(--charcoal);color:var(--beige);border-color:var(--charcoal)}
+  .swatch-btn[aria-disabled="true"]{color:var(--ink-muted);background:var(--beige);text-decoration:line-through;cursor:not-allowed}
+
+  .stepper{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;height:44px;overflow:hidden}
+  .stepper button{width:44px;height:44px;background:#fff;border:0;font-size:18px;cursor:pointer;color:var(--charcoal)}
+  .stepper button:hover{background:var(--beige)}
+  .stepper output{min-width:40px;text-align:center;font-variant-numeric:tabular-nums;font-weight:600;font-size:15px}
+
+  .summary-row{display:flex;justify-content:space-between;gap:16px;font-size:14px;line-height:22px;padding:6px 0}
+  .summary-row span:last-child{font-variant-numeric:tabular-nums}
+  .summary-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--border);margin-top:12px;padding-top:16px;font-size:20px;font-weight:600}
+  .summary-total span:last-child{font-variant-numeric:tabular-nums}
+  .cart-line{display:flex;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+  .cart-thumb{width:64px;height:80px;border-radius:var(--radius-xs);flex:none;background:linear-gradient(150deg,#3b2f24,#151210 70%)}
+  .cart-line h4{font-family:var(--font-sans);font-size:14px;line-height:22px;font-weight:400}
+  .cart-line .muted{font-size:13px}
+
+  /* ---------- Admin table ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:var(--beige);color:var(--ink-muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:12px 16px;font-weight:600;white-space:nowrap}
+  tbody td{padding:16px;border-top:1px solid var(--border);vertical-align:middle}
+  tbody tr:hover{background:var(--beige-50)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(min-width:900px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
+  .stat{padding:20px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff}
+  .stat .k{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+  .stat .v{font-family:var(--font-display);font-size:30px;line-height:1.2;margin:8px 0 4px}
+  .stat .d{font-size:13px}
+  .d--up{color:var(--success)} .d--down{color:var(--danger)}
+
+  /* ---------- Alerts / empty ---------- */
+  .alert{display:flex;gap:12px;padding:16px;border-radius:var(--radius-sm);font-size:14px;line-height:22px;border:1px solid transparent}
+  .alert--success{background:var(--success-bg);color:var(--success);border-color:rgba(30,111,69,.18)}
+  .alert--danger{background:var(--danger-bg);color:var(--danger);border-color:rgba(163,32,43,.18)}
+  .alert--info{background:var(--info-bg);color:var(--info);border-color:rgba(31,78,121,.18)}
+  .empty{text-align:center;padding:56px 24px;border:1px dashed var(--border-strong);border-radius:var(--radius-sm);background:var(--beige-50)}
+  .empty h3{font-size:22px;margin-bottom:8px}
+  .empty p{color:var(--ink-muted);margin-bottom:20px}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--charcoal);color:var(--beige);padding:64px 0 32px;margin-top:96px}
+  .foot-grid{display:grid;gap:40px;grid-template-columns:1fr}
+  @media(min-width:768px){.foot-grid{grid-template-columns:1.4fr 1fr 1fr 1fr}}
+  footer h4{font-family:var(--font-sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--gold);margin-bottom:16px}
+  footer ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:14px}
+  footer a{text-decoration:none;color:rgba(245,241,232,.78)}
+  footer a:hover{color:var(--beige);text-decoration:underline;text-underline-offset:3px}
+  .foot-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(245,241,232,.14);margin-top:48px;padding-top:24px;font-size:12px;color:rgba(245,241,232,.55)}
+  .paymarks{display:flex;gap:8px}
+  .paymarks span{border:1px solid rgba(245,241,232,.24);border-radius:var(--radius-xs);padding:4px 10px;font-size:11px;letter-spacing:.06em}
+
+  .kit-title{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:48px 0 0}
+  .kit-title h2{font-size:30px}
+  .kit-sub{color:var(--ink-muted);font-size:14px;max-width:60ch;margin-top:8px}
+  .spec-note{font-size:13px;color:var(--ink-muted);margin-top:12px}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:1023px){
+    .nav{display:none}
+    .section-head{flex-direction:column;align-items:flex-start}
+  }
+  @media(max-width:639px){
+    .container{padding:0 16px}
+    .site-header .container{height:64px;gap:16px}
+    .header-actions a:not(.cart-link){display:none}
+    .wordmark{font-size:20px}
+    .section{padding:64px 0}
+    .hero .container{padding-top:72px;padding-bottom:72px}
+    .hero-actions .btn{width:100%}
+    .wordmark,.hero-note{overflow-wrap:anywhere}
+    .foot-grid{gap:32px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="#">SARA<span>KI</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#">Boutique</a>
+      <a href="#">Collections</a>
+      <a href="#">Sur mesure</a>
+      <a href="#">Rendez-vous</a>
+      <a href="#">Journal</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" role="group" aria-label="Langue">
+        <button type="button" aria-pressed="true">FR</button>
+        <button type="button" aria-pressed="false">EN</button>
+      </div>
+      <a href="#">Compte</a>
+      <a class="cart-link" href="#">Panier <span class="cart-count">2</span></a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-media" aria-hidden="true"></div>
+  <div class="container">
+    <p class="hero-note">Collection SS26 — Édition Sahel</p>
+    <h1>L'élégance <em>taillée</em><br>pour aujourd'hui</h1>
+    <p>Des pièces intemporelles, coupées à la main dans nos ateliers. Commandez en ligne ou prenez rendez-vous pour une création sur mesure.</p>
+    <div class="hero-actions">
+      <a class="btn btn--gold btn--lg" href="#">Découvrir la collection</a>
+      <a class="btn btn--secondary btn--lg btn--on-dark" href="#">Prendre rendez-vous</a>
+    </div>
+    <p class="hero-note">Livraison à Accra sous 2 à 4 jours · Paiement carte et mobile money</p>
+  </div>
+</section>
+
+<main id="main">
+
+  <!-- Products -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Nouveautés</p>
+          <h2>Pièces de la saison</h2>
+        </div>
+        <a class="btn btn--ghost btn--sm" href="#">Tout voir</a>
+      </div>
+
+      <div class="grid-products">
+        <article class="product">
+          <div class="product-media">
+            <span class="badge badge--gold">Nouveau</span>
+            <div class="swatch p1"></div>
+            <button class="btn btn--primary btn--sm quick-add" type="button">Ajouter au panier</button>
+          </div>
+          <h3>Robe Aïcha en bazin riche</h3>
+          <p class="price">1 250,00 GH₵ <s>1 480,00 GH₵</s></p>
+        </article>
+
+        <article class="product">
+          <div class="product-media">
+            <div class="swatch p2"></div>
+            <button class="btn btn--primary btn--sm quick-add" type="button">Ajouter au panier</button>
+          </div>
+          <h3>Ensemble Kadi — broderie or</h3>
+          <p class="price">980,00 GH₵</p>
+        </article>
+
+        <article class="product">
+          <div class="product-media">
+            <span class="badge badge--warn">Stock faible</span>
+            <div class="swatch p3"></div>
+            <button class="btn btn--primary btn--sm quick-add" type="button">Ajouter au panier</button>
+          </div>
+          <h3>Boubou Saraki signature</h3>
+          <p class="price">1 640,00 GH₵</p>
+        </article>
+
+        <article class="product">
+          <div class="product-media">
+            <span class="badge badge--danger">Épuisé</span>
+            <div class="swatch p4"></div>
+            <button class="btn btn--secondary btn--sm quick-add" type="button" disabled>Me prévenir</button>
+          </div>
+          <h3>Veste Moussa en lin noir</h3>
+          <p class="price">870,00 GH₵</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Checkout -->
+  <section class="section section--beige">
+    <div class="container">
+      <div class="kit-title" style="padding-top:0">
+        <div>
+          <p class="eyebrow">Composants</p>
+          <h2>Produit, variantes et paiement</h2>
+          <p class="kit-sub">Sélecteur de variante, quantité, formulaire de livraison et récapitulatif de commande en cedis ghanéens (GHS).</p>
+        </div>
+      </div>
+
+      <div class="split" style="margin-top:40px">
+        <div>
+          <div class="panel">
+            <h3>Robe Aïcha en bazin riche</h3>
+            <p class="price" style="margin-bottom:24px">1 250,00 GH₵ <s>1 480,00 GH₵</s></p>
+
+            <p class="variant-label">Taille</p>
+            <div class="swatches" style="margin-bottom:20px" role="group" aria-label="Taille">
+              <button class="swatch-btn" type="button" aria-pressed="false">XS</button>
+              <button class="swatch-btn" type="button" aria-pressed="true">S</button>
+              <button class="swatch-btn" type="button" aria-pressed="false">M</button>
+              <button class="swatch-btn" type="button" aria-pressed="false" aria-disabled="true">L</button>
+              <button class="swatch-btn" type="button" aria-pressed="false">XL</button>
+            </div>
+
+            <p class="variant-label">Couleur</p>
+            <div class="swatches" style="margin-bottom:24px" role="group" aria-label="Couleur">
+              <button class="swatch-btn" type="button" aria-pressed="true" title="Noir">Noir</button>
+              <button class="swatch-btn" type="button" aria-pressed="false" title="Sable">Sable</button>
+              <button class="swatch-btn" type="button" aria-pressed="false" title="Bordeaux">Bord.</button>
+            </div>
+
+            <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+              <div class="stepper" aria-label="Quantité">
+                <button type="button" aria-label="Diminuer">−</button>
+                <output>1</output>
+                <button type="button" aria-label="Augmenter">+</button>
+              </div>
+              <button class="btn btn--primary btn--lg" type="button" style="flex:1;min-width:200px">Ajouter au panier</button>
+            </div>
+            <p class="help">Livraison estimée à Accra : 2 à 4 jours ouvrés.</p>
+          </div>
+
+          <div class="panel" style="margin-top:24px">
+            <h3>Livraison</h3>
+            <div class="grid-2">
+              <div class="field">
+                <label for="fn">Prénom <span class="req">*</span></label>
+                <input class="input" id="fn" value="Aminata" required>
+              </div>
+              <div class="field">
+                <label for="ln">Nom <span class="req">*</span></label>
+                <input class="input" id="ln" value="Diallo" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="em">E-mail <span class="req">*</span></label>
+              <input class="input is-error" id="em" value="aminata@" aria-invalid="true" aria-describedby="em-err">
+              <p class="error" id="em-err" role="alert">Saisissez une adresse e-mail valide.</p>
+            </div>
+            <div class="field">
+              <label for="ph">Téléphone <span class="req">*</span></label>
+              <input class="input" id="ph" value="+233 24 000 0000">
+              <p class="help">Utilisé pour la livraison et les notifications de commande.</p>
+            </div>
+            <div class="field">
+              <label for="ct">Ville</label>
+              <select id="ct">
+                <option>Accra</option>
+                <option>Kumasi</option>
+                <option>Tamale</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="nt">Notes de livraison</label>
+              <textarea id="nt" placeholder="Repère, étage, horaire préféré…"></textarea>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:24px">
+            <h3>Paiement</h3>
+            <fieldset>
+              <legend class="legend">Mode de paiement</legend>
+              <label class="radio-card">
+                <input type="radio" name="pay" checked>
+                <span><strong>Carte bancaire ou mobile money</strong><span>Paiement sécurisé par Paystack — MTN MoMo, Vodafone Cash, Visa, Mastercard.</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="pay">
+                <span><strong>Paiement à la livraison</strong><span>Disponible à Accra uniquement, sous réserve de confirmation.</span></span>
+              </label>
+            </fieldset>
+            <label class="check" style="margin-top:20px">
+              <input type="checkbox" checked>
+              <span>J'accepte les conditions générales et la politique de retour.</span>
+            </label>
+            <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+              <button class="btn btn--gold btn--lg" type="button" aria-busy="true" style="min-width:240px">Paiement en cours…</button>
+              <button class="btn btn--ghost" type="button">Retour</button>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="panel" style="position:sticky;top:104px">
+            <h3>Récapitulatif</h3>
+            <div class="cart-line" style="padding-top:0">
+              <div class="cart-thumb" aria-hidden="true"></div>
+              <div>
+                <h4>Robe Aïcha</h4>
+                <p class="muted">Noir · Taille S · Qté 1</p>
+              </div>
+              <p class="price" style="font-size:15px;margin-left:auto">1 250,00</p>
+            </div>
+            <div class="cart-line" style="border-bottom:0">
+              <div class="cart-thumb" style="background:linear-gradient(150deg,#6b5a3e,#241d15 70%)" aria-hidden="true"></div>
+              <div>
+                <h4>Ensemble Kadi</h4>
+                <p class="muted">Sable · Taille M · Qté 1</p>
+              </div>
+              <p class="price" style="font-size:15px;margin-left:auto">980,00</p>
+            </div>
+
+            <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+              <div class="summary-row"><span>Sous-total</span><span>2 230,00 GH₵</span></div>
+              <div class="summary-row"><span>Livraison — Accra</span><span>35,00 GH₵</span></div>
+              <div class="summary-row"><span>TVA (affichée)</span><span>incluse</span></div>
+            </div>
+            <div class="summary-total"><span>Total</span><span>2 265,00 GH₵</span></div>
+
+            <button class="btn btn--primary btn--lg" type="button" style="width:100%;margin-top:20px">Payer maintenant</button>
+            <p class="help" style="text-align:center">Vous serez redirigé vers Paystack.</p>
+
+            <div class="alert alert--success" style="margin-top:20px">
+              <span aria-hidden="true">✓</span>
+              <span>Paiement reçu · Réf. SRK-2026-000142</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Admin -->
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Administration</p>
+      <h2 style="font-size:30px;margin-bottom:8px">Tableau de bord</h2>
+      <p class="kit-sub" style="margin-bottom:32px">Cartes de statistiques, badges de statut et tableau de commandes.</p>
+
+      <div class="stat-grid" style="margin-bottom:24px">
+        <div class="stat">
+          <p class="k">Commandes du jour</p>
+          <p class="v">18</p>
+          <p class="d d--up">+12 % vs hier</p>
+        </div>
+        <div class="stat">
+          <p class="k">Chiffre d'affaires</p>
+          <p class="v">14 320 GH₵</p>
+          <p class="d d--up">+8 % vs hier</p>
+        </div>
+        <div class="stat">
+          <p class="k">En attente de paiement</p>
+          <p class="v">4</p>
+          <p class="d d--down">2 expirent bientôt</p>
+        </div>
+        <div class="stat">
+          <p class="k">Rendez-vous à venir</p>
+          <p class="v">6</p>
+          <p class="d muted">Cette semaine</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Commande</th>
+              <th>Client</th>
+              <th>Statut</th>
+              <th>Paiement</th>
+              <th class="num">Total</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SRK-2026-000142</td>
+              <td>Aminata Diallo</td>
+              <td><span class="badge badge--success">Confirmée</span></td>
+              <td><span class="badge badge--solid">Payée</span></td>
+              <td class="num">2 265,00 GH₵</td>
+              <td class="muted">5 nov. 2026</td>
+            </tr>
+            <tr>
+              <td>SRK-2026-000141</td>
+              <td>Kwame Mensah</td>
+              <td><span class="badge badge--info">En production</span></td>
+              <td><span class="badge badge--solid">Payée</span></td>
+              <td class="num">1 640,00 GH₵</td>
+              <td class="muted">5 nov. 2026</td>
+            </tr>
+            <tr>
+              <td>SRK-2026-000140</td>
+              <td>Fatou Traoré</td>
+              <td><span class="badge badge--warn">En attente</span></td>
+              <td><span class="badge badge--warn">En attente</span></td>
+              <td class="num">980,00 GH₵</td>
+              <td class="muted">4 nov. 2026</td>
+            </tr>
+            <tr>
+              <td>SRK-2026-000139</td>
+              <td>Yaw Boateng</td>
+              <td><span class="badge badge--danger">Annulée</span></td>
+              <td><span class="badge badge--danger">Échouée</span></td>
+              <td class="num">870,00 GH₵</td>
+              <td class="muted">4 nov. 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="spec-note">En dessous de 768 px, le tableau devient une liste de définitions empilées.</p>
+    </div>
+  </section>
+
+  <!-- Feedback + empty -->
+  <section class="section section--beige">
+    <div class="container">
+      <p class="eyebrow">Retours d'état</p>
+      <h2 style="font-size:30px;margin-bottom:24px">Alertes et états vides</h2>
+      <div style="display:grid;gap:16px;max-width:720px">
+        <div class="alert alert--success"><span aria-hidden="true">✓</span><span>Votre commande SRK-2026-000142 a été confirmée. Un e-mail de confirmation vous a été envoyé.</span></div>
+        <div class="alert alert--info"><span aria-hidden="true">i</span><span>Votre rendez-vous du 12 novembre à 14:30 est en attente d'approbation par l'atelier.</span></div>
+        <div class="alert alert--danger"><span aria-hidden="true">!</span><span>Le paiement n'a pas pu être vérifié. Aucun montant n'a été débité. Vous pouvez réessayer.</span></div>
+      </div>
+
+      <div class="empty" style="margin-top:32px;max-width:720px">
+        <h3>Votre panier est vide</h3>
+        <p>Découvrez la collection et ajoutez vos pièces favorites.</p>
+        <a class="btn btn--primary" href="#">Voir la boutique</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <p class="wordmark" style="margin-bottom:12px">SARA<span>KI</span></p>
+        <p style="font-size:14px;color:rgba(245,241,232,.7);max-width:34ch">Maison de couture contemporaine. Accra, Ghana.</p>
+      </div>
+      <div>
+        <h4>Boutique</h4>
+        <ul>
+          <li><a href="#">Nouveautés</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Sur mesure</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Aide</h4>
+        <ul>
+          <li><a href="#">Livraison et retours</a></li>
+          <li><a href="#">Guide des tailles</a></li>
+          <li><a href="#">Nous contacter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">+233 24 000 0000</a></li>
+          <li><a href="#">bonjour@saraki.com</a></li>
+          <li><a href="#">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 SARAKI. Tous droits réservés.</span>
+      <div class="paymarks" aria-label="Moyens de paiement">
+        <span>PAYSTACK</span><span>VISA</span><span>MASTERCARD</span><span>MTN MOMO</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
