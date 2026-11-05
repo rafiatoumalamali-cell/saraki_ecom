@@ -222,12 +222,12 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 1.1 | Initialize the project repository | Separate git repo in `saraki/`; initial commit; `.gitignore` verified; no secrets tracked | 0.25h | Proposed |
-| 1.2 | Install Laravel 13 + Breeze (Blade) + Tailwind + Alpine | App boots locally; Breeze auth pages render | 0.75h | Proposed |
-| 1.3 | Configure the environment | `.env.example`, app key, MySQL connection, timezone `Africa/Accra`, locale `fr`, currency GHS (configurable), Paystack placeholders | 0.5h | Proposed |
-| 1.4 | Create all v1 migrations | Includes `product_variants`, `payments`, `payment_events`, `refunds`; `php artisan migrate:fresh --seed` succeeds; constraints/indexes verified | 4h | Proposed |
-| 1.5 | Models, relationships, factories | Product ↔ variants, payments ↔ refunds/events, order items; factories generate valid data | 3h | Proposed |
-| 1.6 | Seeders | Admin user, 6 categories, 20 sample products with variants, 3 services, default settings | 2h | Proposed |
+| 1.1 | Initialize the project repository | Separate git repo in `saraki/`; initial commit; `.gitignore` verified; no secrets tracked | 0.25h | Done — nested repo on `main`, `.env` ignored, LF enforced |
+| 1.2 | Install Laravel 13 + Breeze (Blade) + Tailwind + Alpine | App boots locally; Breeze auth pages render | 0.75h | Done — Laravel 13.40, Breeze 2.4.2 Blade+Pest, Vite build passes |
+| 1.3 | Configure the environment | `.env.example`, app key, MySQL connection, timezone `Africa/Accra`, locale `fr`, currency GHS (configurable), Paystack placeholders | 0.5h | Done — committed as `.env.example`; secrets stay local |
+| 1.4 | Create all v1 migrations | Includes `product_variants`, `payments`, `payment_events`, `refunds`; `php artisan migrate:fresh --seed` succeeds; constraints/indexes verified | 4h | Done — 28 tables, 11 CHECKs, 24 FKs verified against MySQL 8.4 (`--seed` completes in 1.6) |
+| 1.5 | Models, relationships, factories | Product ↔ variants, payments ↔ refunds/events, order items; factories generate valid data | 3h | Done — 22 models, 9 enums, 18 factories; 15 factory/model tests pass |
+| 1.6 | Seeders | Admin user, 6 categories, 20 sample products with variants, 3 services, default settings | 2h | Done — 6 categories, 20 products / 139 variants, 3 services, 7 working-hour rows, 10 settings; `migrate:fresh --seed` verified and idempotent |
 | 1.7 | Authentication flows | Register, login, logout, password reset, profile update; validation and rate limiting | 2h | Proposed |
 | 1.8 | Roles and authorization | Customer blocked from `/admin`; admin policies enforced on every admin route | 1.5h | Proposed |
 | 1.9 | Public layout | Header, footer, navigation, flash messages, mobile menu, FR/EN switcher | 3h | Proposed |
