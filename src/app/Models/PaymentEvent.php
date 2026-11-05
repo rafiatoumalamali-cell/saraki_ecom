@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+#[Fillable(['payment_id', 'provider', 'event_id', 'event_type', 'reference', 'payload', 'signature_valid', 'processed_at'])]
+class PaymentEvent extends Model
+{
+    public const UPDATED_AT = null;
+
+    protected function casts(): array
+    {
+        return [
+            'payload' => 'array',
+            'signature_valid' => 'boolean',
+            'processed_at' => 'datetime',
+        ];
+    }
+
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class);
+    }
+}
