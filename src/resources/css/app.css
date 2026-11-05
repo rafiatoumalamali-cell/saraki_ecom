@@ -1,3 +1,85 @@
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/700.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design tokens as CSS custom properties so emails and static pages can reuse them. */
+:root {
+    --color-charcoal: #0a0a0a;
+    --color-beige: #f5f1e8;
+    --color-gold: #d4af37;
+    --color-gold-text: #8a6d1f;
+    --color-danger: #a3202b;
+    --color-success: #1e6f45;
+    --font-display: 'Playfair Display', 'Times New Roman', serif;
+    --font-sans: Montserrat, 'Helvetica Neue', Arial, sans-serif;
+}
+
+@layer base {
+    body {
+        @apply bg-canvas font-sans text-ink;
+        font-size: 16px;
+        line-height: 1.625;
+    }
+
+    h1,
+    h2,
+    h3 {
+        @apply font-display;
+    }
+
+    /* Gold focus ring on every interactive element (design system 5.1). */
+    :focus-visible {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 2px;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    .label-upper {
+        @apply text-label font-semibold uppercase tracking-[0.08em];
+    }
+
+    .field {
+        @apply h-12 w-full rounded-xs border border-line bg-canvas px-3 text-body-md text-ink placeholder:text-ink-muted;
+    }
+
+    .field:focus {
+        border-color: var(--color-charcoal);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+    }
+
+    .field-error {
+        @apply border-danger;
+    }
+
+    textarea.field {
+        @apply h-auto py-3;
+        resize: vertical;
+    }
+
+    .link {
+        @apply text-ink underline decoration-gold underline-offset-4 transition-colors duration-150 ease-brand hover:text-ink-soft;
+    }
+
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

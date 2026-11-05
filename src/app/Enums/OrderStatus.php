@@ -15,4 +15,23 @@ enum OrderStatus: string
     {
         return $this === self::Delivered || $this === self::Cancelled;
     }
+
+    /**
+     * Badge tone from the design system status table (§2.4).
+     */
+    public function badgeTone(): string
+    {
+        return match ($this) {
+            self::Pending => 'warning',
+            self::Confirmed, self::InProduction => 'info',
+            self::Ready => 'success',
+            self::Delivered => 'success-filled',
+            self::Cancelled => 'danger',
+        };
+    }
+
+    public function label(): string
+    {
+        return __('statuses.order.'.$this->value);
+    }
 }
