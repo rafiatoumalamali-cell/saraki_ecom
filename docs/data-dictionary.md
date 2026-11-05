@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | Task | 0.5 — Produce the data dictionary |
-| Version | 0.1 — For review |
+| Version | 1.0 — Approved at G0-final (2026-11-05) |
 | Date | 2026-11-05 |
 | Database | MySQL 8.0+, InnoDB, `utf8mb4_unicode_ci` |
 | Currency (v1) | **GHS** (configurable for a later XOF switch) |
-| Status | In review |
+| Status | Approved; implemented in Task 1.4 |
 
 ---
 
@@ -502,7 +502,7 @@ Laravel 13 creates these additional tables. They are not part of the business do
 | `job_batches` | Batch jobs (unused) |
 | `failed_jobs` | Failed jobs (unused) |
 
-`jobs`, `job_batches`, and `failed_jobs` may be removed in Task 1.4 because v1 uses synchronous mail and the scheduler, not queues.
+`jobs`, `job_batches`, and `failed_jobs` were removed in Task 1.4: v1 uses synchronous mail and the scheduler, not queues. Failed-job logging uses the file driver.
 
 ---
 
