@@ -34,4 +34,40 @@ class AppointmentFactory extends Factory
             $appointment->end_time = $end->format('H:i:s');
         });
     }
+
+    public function pending(): static
+    {
+        return $this->withStatus(AppointmentStatus::Pending);
+    }
+
+    public function approved(): static
+    {
+        return $this->withStatus(AppointmentStatus::Approved);
+    }
+
+    public function rescheduled(): static
+    {
+        return $this->withStatus(AppointmentStatus::Rescheduled);
+    }
+
+    public function cancelled(): static
+    {
+        return $this->withStatus(AppointmentStatus::Cancelled);
+    }
+
+    public function completed(): static
+    {
+        return $this->withStatus(AppointmentStatus::Completed);
+    }
+
+    /**
+     * The status column is guarded, so the state is forced on the model itself
+     * rather than handed to the constructor.
+     */
+    public function withStatus(AppointmentStatus $status): static
+    {
+        return $this
+            ->afterMaking(fn (Appointment $appointment) => $appointment->forceFill(['status' => $status]))
+            ->afterCreating(fn (Appointment $appointment) => $appointment->forceFill(['status' => $status])->save());
+    }
 }

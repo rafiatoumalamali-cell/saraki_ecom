@@ -14,8 +14,8 @@ test('both locales serve the storefront', function (string $locale, string $titl
         ->assertSee('lang="'.$locale.'"', false)
         ->assertSee($title);
 })->with([
-    ['fr', 'La boutique ouvre en phase 2'],
-    ['en', 'The catalogue opens in Phase 2'],
+    ['fr', 'Taillé pour votre allure'],
+    ['en', 'Tailored to the way you move'],
 ]);
 
 test('an unsupported locale prefix is not routed', function () {

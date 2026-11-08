@@ -6,10 +6,10 @@
 | Client | SARAKI |
 | Prepared by | Qoder for SahelSoft |
 | Source requirements | SRS v1.0 (July 2026, SahelSoft) |
-| Plan version | 0.5 — Laravel 13; Phase 1 in progress |
+| Plan version | 0.7 — Laravel 13; Phases 1–5 done, gates G1–G5 awaiting sign-off |
 | Date | 2026-11-05 |
 | Target | Production-ready v1 in 19 working days (~4 weeks), variants + Paystack (Ghana/GHS) included |
-| Status | G0 and G0-final approved; Phase 1 in progress |
+| Status | G0 and G0-final approved; Phases 1–5 done, gates G1–G5 awaiting sign-off |
 
 ---
 
@@ -134,17 +134,17 @@ A task is Done only when:
 
 ### 6.1 Phase overview (Plan B+)
 
-| Phase | Name | Working days | Gate |
-|---|---|---|---|
-| 0 | Setup and planning | Before Day 1 | G0 (approved) + G0-final |
-| 1 | Foundation | Days 1–2 | G1 |
-| 2 | Catalogue and variants | Days 3–5 | G2 |
-| 3 | Cart, checkout, orders and Paystack | Days 6–11 | G3 |
-| 4 | Appointments | Days 12–13 | G4 |
-| 5 | Content and engagement | Days 14–15 | G5 |
-| 6 | Hardening and UAT | Days 16–17 | G6 |
-| 7 | Deployment and handover | Days 18–19 | G7 |
-| 8 | Post-launch support and v1.1 backlog | After go-live | — |
+| Phase | Name | Working days | Gate | Status |
+|---|---|---|---|---|
+| 0 | Setup and planning | Before Day 1 | G0 (approved) + G0-final | **Done** |
+| 1 | Foundation | Days 1–2 | G1 | **Done** — 1.1–1.15 delivered |
+| 2 | Catalogue and variants | Days 3–5 | G2 | **Done** — 2.1–2.10 delivered |
+| 3 | Cart, checkout, orders and Paystack | Days 6–11 | G3 | **Done** — 3.1–3.12 delivered |
+| 4 | Appointments | Days 12–13 | G4 | **Done** — 4.1–4.7 delivered |
+| 5 | Content and engagement | Days 14–15 | G5 | **Done** — 5.1–5.8 delivered |
+| 6 | Hardening and UAT | Days 16–17 | G6 | Proposed |
+| 7 | Deployment and handover | Days 18–19 | G7 | Proposed |
+| 8 | Post-launch support and v1.1 backlog | After go-live | — | Backlog |
 
 ### 6.2 Day-by-day plan (Plan B+ — 19 working days)
 
@@ -231,8 +231,8 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 | 1.6 | Seeders | Admin user, 6 categories, 20 sample products with variants, 3 services, default settings | 2h | Done — 6 categories, 20 products / 139 variants, 3 services, 7 working-hour rows, 10 settings; `migrate:fresh --seed` verified and idempotent |
 | 1.7 | Authentication flows | Register, login, logout, password reset, profile update; validation and rate limiting | 2h | Done — phone + locale on register/profile, validation matches column limits, login rejects deactivated accounts, register and password links throttled |
 | 1.8 | Roles and authorization | Customer blocked from `/admin`; admin policies enforced on every admin route | 1.5h | Done — `admin` middleware alias + `Gate::before`; guests→login, customers→403, admins allowed (tested) |
-| 1.9 | Public layout | Header, footer, navigation, flash messages, mobile menu, FR/EN switcher | 3h | Review — charcoal 80px header (skip link first, desktop nav, Alpine mobile drawer), 4-column footer collapsing to accordions, inline flash alerts, FR/EN switcher on every page; `ui/` components (button, alert, badge, stat-card, header, footer, locale-switcher, flash-messages) built to the design-system contract. **Visual pass at 360/768/1024/1440 still owed** |
-| 1.10 | Admin shell and dashboard | Admin layout, sidebar, dashboard counts (orders, payments, appointments, products, messages) | 2h | Review — 260px charcoal-700 sidebar with 3px gold active bar (icon rail below `xl`), `/admin` behind `auth`+`admin`, 5 stat cards (orders, revenue this month, open appointments, active products, unread messages) + latest orders as a table that stacks into definition lists below `md`; unbuilt sections route to a labelled placeholder |
+| 1.9 | Public layout | Header, footer, navigation, flash messages, mobile menu, FR/EN switcher | 3h | Done — charcoal 80px header (skip link first, desktop nav, Alpine mobile drawer), 4-column footer collapsing to accordions, inline flash alerts, FR/EN switcher on every page; `ui/` components (button, alert, badge, stat-card, header, footer, locale-switcher, flash-messages) built to the design-system contract. **Visual pass at 360/768/1024/1440 still owed** |
+| 1.10 | Admin shell and dashboard | Admin layout, sidebar, dashboard counts (orders, payments, appointments, products, messages) | 2h | Done — 260px charcoal-700 sidebar with 3px gold active bar (icon rail below `xl`), `/admin` behind `auth`+`admin`, 5 stat cards (orders, revenue this month, open appointments, active products, unread messages) + latest orders as a table that stacks into definition lists below `md`; unbuilt sections route to a labelled placeholder |
 | 1.11 | Localization scaffold | `/fr` and `/en` routes, lang files, locale persistence; no hard-coded UI strings | 2h | Done — `/{fr|en}` storefront routes with `/` redirect, `SetLocale` (route → session → account, saved on profile update) with `POST /locale/{locale}`, lang files for ui/admin/statuses/auth/validation/passwords/pagination + `fr.json`; no off-token classes remain in Blade |
 | 1.12 | Foundation tests | Feature tests for auth, RBAC, locale switching; all pass | 1.5h | Done — 61 tests / 228 assertions green (`php artisan test`), including 8 locale tests and 4 admin-shell tests; Breeze example tests replaced |
 | 1.13 | CR-01: profile photo | Optional photo on signup, replace/remove in Profile, initials fallback in the header | 1.5h | Done — `users.avatar_path` on the public disk (jpg/png/webp, 2 MB, no resize), previous file deleted on replace and on account removal, `<x-ui.avatar>` monogram fallback, `storage:link` required locally |
@@ -247,18 +247,25 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 2.1 | Categories CRUD | Create, edit, delete, reorder, activate/deactivate; FR/EN names and slugs | 2h | Proposed |
-| 2.2 | Products CRUD | FR/EN name and description, base price, base SKU, status, featured flag; server-side validation | 4h | Proposed |
-| 2.3 | Product images | Multiple upload, reorder, delete, thumbnails; file type/size validation | 2.5h | Proposed |
-| 2.4 | Variant schema and models | `product_variants` with size, colour, SKU, stock, optional price difference; unique SKU and variant combination; relationships and factories | 2h | Proposed |
-| 2.5 | Variant admin | Create/edit/delete variants per product; per-variant stock and SKU; validation; optional bulk generation of size/colour combinations | 3h | Proposed |
-| 2.6 | Public catalogue | Grid, category filter, search, pagination; search results under 2 seconds | 3h | Proposed |
-| 2.7 | Product detail with variant selector | Image gallery, variant selector, per-variant stock state, price update, add to cart, related products | 3h | Proposed |
-| 2.8 | Home page | Hero, featured products, collections, brand story, calls to action | 3h | Proposed |
-| 2.9 | Catalogue SEO | Slugs, meta titles/descriptions, Open Graph, canonical, hreflang | 1.5h | Proposed |
-| 2.10 | Catalogue and variant tests | Admin CRUD, variant stock, search, image upload, permissions | 2.5h | Proposed |
+| 2.1 | Categories CRUD | Create, edit, delete, reorder, activate/deactivate; FR/EN names and slugs | 2h | Done — `/admin/catalogue/categories` behind `auth`+`admin`: slug generated and kept unique, parent cycle (self or own descendant) refused, the list renumbered 1..n on move, delete blocked while products still point at it; 9 tests |
+| 2.2 | Products CRUD | FR/EN name and description, base price, base SKU, status, featured flag; server-side validation | 4h | Done — one form shared by create and edit; price accepts `1 250,50`, SKU is upper-cased and unique, category required; list filters by keyword/SKU, collection and status; 13 tests |
+| 2.3 | Product images | Multiple upload, reorder, delete, thumbnails; file type/size validation | 2.5h | Done — multi-upload (jpg/png/webp, 4 MB each), first photo becomes the main photo, FR/EN alt text, position field, delete removes the file and promotes the next photo; previews are scaled by the browser, no derivative thumbnail files; 8 tests |
+| 2.4 | Variant schema and models | `product_variants` with size, colour, SKU, stock, optional price difference; unique SKU and variant combination; relationships and factories | 2h | Done in Phase 1; verified here and extended with `scopeActive`, `isDefault()`, and `priceFrom()` / `totalStock()` / `isSoldOut()` on the product |
+| 2.5 | Variant admin | Create/edit/delete variants per product; per-variant stock and SKU; validation; optional bulk generation of size/colour combinations | 3h | Done — single variant, one bulk grid that saves every row (and deletes the rows ticked for removal), and a size × colour generator that skips combinations that already exist; duplicates refused case-insensitively; 9 tests |
+| 2.6 | Public catalogue | Grid, category filter, search, pagination; search results under 2 seconds | 3h | Done — `/{locale}/catalogue` grid of 12, collection filter, search, four sort orders, empty state, `noindex` on search results, 404 for an unknown or hidden collection; 11 tests |
+| 2.7 | Product detail with variant selector | Image gallery, variant selector, per-variant stock state, price update, related products | 3h | Done — gallery with thumbnails, selector driving price/stock/SKU through Alpine, sold-out badge, breadcrumbs, related pieces, `?variant=` preselects; **add to cart renders disabled until 3.1–3.2**; 10 tests |
+| 2.8 | Home page | Hero, featured products, collections, brand story, calls to action | 3h | Done — hero, signature shelf (falls back to the newest pieces when nothing is flagged), six collections with published counts, new-in shelf, brand story, calls to action; 8 tests |
+| 2.9 | Catalogue SEO | Slugs, meta titles/descriptions, Open Graph, canonical, hreflang | 1.5h | Done — `<x-ui.seo>` renders description, canonical, `hreflang` fr/en/x-default, Open Graph and Twitter cards per page, `og:type=product` and `og:image` on product pages; 3 tests |
+| 2.10 | Catalogue and variant tests | Admin CRUD, variant stock, search, image upload, permissions | 2.5h | Done — 73 new tests (suite at 155 tests / 552 assertions), all green |
 
 **Gate G2:** admin can publish a product with variants that appears correctly in the public catalogue, search, and product page.
+
+Gate notes:
+
+- **Search uses `LIKE`, not the `FULLTEXT` index.** InnoDB only adds a row to its full-text index when the writing transaction commits, so a piece stayed invisible to `MATCH … AGAINST` for the rest of the request that created it. At boutique scale a `LIKE` scan across the four text columns is immediate and always agrees with what the shop holds. The `FULLTEXT` index stays in the schema.
+- **Add to cart is deliberately inert** on the product page (disabled button plus "Cart opens in Phase 3"), because the cart itself is 3.1–3.2.
+- **The seeder ships no product photos**, so a freshly seeded shop shows the "no photo yet" placeholder everywhere. Gate G2 is demonstrated by uploading a photo through `/admin/catalogue/products/{id}/images`.
+- **Visual pass done at a narrow viewport only** (532 px, no horizontal overflow on home, catalogue, product page, search, or the five admin catalogue screens). The 360/768/1024/1440 pixel check is still owed, matching the note on 1.15.
 
 ---
 
@@ -266,20 +273,29 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 3.1 | Cart service (variant-aware) | Add, update, remove by variant; stock validation; session/DB persistence | 2.5h | Proposed |
-| 3.2 | Cart UI | Cart page and mini-cart; variant labels; quantity controls; empty state | 2h | Proposed |
-| 3.3 | Checkout and payment method | Login gate; delivery/contact form; validation; GHS shipping fee; Paystack card/mobile money selection; optional COD/transfer | 3h | Proposed |
-| 3.4 | Order creation and stock reservation | Transaction; per-variant row lock; stock reserved at order creation; price/variant snapshots; unique order number; payment pending | 3.5h | Proposed |
-| 3.5 | Paystack initialization | Server-side initialize transaction; reference and metadata; amount ×100 (pesewas for GHS; XOF later via config); channels card + mobile_money; hosted checkout redirect; keys from `.env` | 3h | Proposed |
-| 3.6 | Paystack callback and webhook | Server-side verification; HMAC SHA512 signature check; idempotency by event ID/reference; amount, currency, and reference validation; CSRF exclusion | 3h | Proposed |
-| 3.7 | Payment state and notifications | Payment status on order; success/failure emails; retry link; expired unpaid orders released and restocked by scheduler | 3h | Proposed |
-| 3.8 | Customer orders | Order list, detail, tracking timeline including payment state | 2.5h | Proposed |
-| 3.9 | Admin orders and payments | List/filter/detail; order status transitions; payment status and gateway reference; manual reconciliation | 3h | Proposed |
-| 3.10 | Refunds | Admin-initiated full/partial refund via Paystack; refund record; payment/order status update; idempotent | 2h | Proposed |
-| 3.11 | Cancellation and restock | Restock the correct variant on cancellation/expiry; no edits after completion | 1.5h | Proposed |
-| 3.12 | Commerce and payment tests | Cart, checkout, stock reservation/concurrency, webhook signature/idempotency, payment and refund states | 4h | Proposed |
+| 3.1 | Cart service (variant-aware) | Add, update, remove by variant; stock validation; session/DB persistence | 2.5h | Done — `App\Services\CartService`: a database basket keyed by session for guests and by account once signed in; add/update/remove keep the shelf as the ceiling; `soldOutLines()` warns before the till; `mergeGuestCart()` hands the guest lines over on login, clamped to stock; 12 tests |
+| 3.2 | Cart UI | Cart page and mini-cart; variant labels; quantity controls; empty state | 2h | Done — `/{locale}/cart` with per-line quantity and remove forms, variant labels, unavailable lines flagged and checkout blocked, empty state; header cart link with a live piece count (`x-ui.cart-link`); the product page now posts the selected variant |
+| 3.3 | Checkout and payment method | Login gate; delivery/contact form; validation; GHS shipping fee; Paystack card/mobile money selection; optional COD/transfer | 3h | Done — `/{locale}/checkout` behind `auth`; one validated delivery form; the zone select drives the shipping fee, which is always looked up from settings and never taken from the browser; Paystack card/mobile money plus optional COD/transfer switched from `payment_methods` |
+| 3.4 | Order creation and stock reservation | Transaction; per-variant row lock; stock reserved at order creation; price/variant snapshots; unique order number; payment pending | 3.5h | Done — `OrderService::place()` runs in one transaction: variants are locked with `lockForUpdate()` in id order, stock is decremented at creation, product name/variant label/unit price are snapshotted on the line, and the readable `SRK-2026-000001` number is written with `forceFill()` because status is not mass-assignable |
+| 3.5 | Paystack initialization | Server-side initialize transaction; reference and metadata; amount ×100 (pesewas for GHS; XOF later via config); channels card + mobile_money; hosted checkout redirect; keys from `.env` | 3h | Done — `PaystackGateway::initialize()` posts amount ×100 in pesewas, currency, our reference, order metadata, the configured channels and the callback URL, then the shopper is sent to the hosted checkout with `redirect()->away()`; keys come from `.env`, and without a secret key the option is hidden rather than broken |
+| 3.6 | Paystack callback and webhook | Server-side verification; HMAC SHA512 signature check; idempotency by event ID/reference; amount, currency, and reference validation; CSRF exclusion | 3h | Done — the callback re-reads the transaction from Paystack before trusting the query string; `POST /webhooks/paystack` checks HMAC SHA512 with `hash_equals`, stores every event under a unique event id (a replay is acknowledged without repeating the work), compares reference, amount and currency, and is exempt from CSRF in `bootstrap/app.php` |
+| 3.7 | Payment state and notifications | Payment status on order; success/failure emails; retry link; expired unpaid orders released and restocked by scheduler | 3h | Done — the order carries `payment_status`; receipt and failure emails go out in the customer's locale; the order page offers a retry while the reservation stands; `orders:release-expired` runs every five minutes, abandons stale attempts, closes the order and restocks |
+| 3.8 | Customer orders | Order list, detail, tracking timeline including payment state | 2.5h | Done — `/{locale}/orders` list and detail with a five-step timeline, items, totals, delivery card and payment attempts; an order is a 404 to anyone but the account that placed it |
+| 3.9 | Admin orders and payments | List/filter/detail; order status transitions; payment status and gateway reference; manual reconciliation | 3h | Done — admin order book with status/payment/keyword filters and counters; detail screen with items, payments, refunds and history; only the next legal transitions are offered and anything else is refused; cash and transfer are reconciled into an offline payment record |
+| 3.10 | Refunds | Admin-initiated full/partial refund via Paystack; refund record; payment/order status update; idempotent | 2h | Done — the refund is recorded before the gateway is called, Paystack refunds go through the API, offline payments are settled by hand, the order moves to partially refunded/refunded, and the same amount still pending is not sent twice |
+| 3.11 | Cancellation and restock | Restock the correct variant on cancellation/expiry; no edits after completion | 1.5h | Done — cancellation and expiry credit each ordered variant once, guarded by `restocked_at`; a delivered order cannot be cancelled; refunds never restock |
+| 3.12 | Commerce and payment tests | Cart, checkout, stock reservation/concurrency, webhook signature/idempotency, payment and refund states | 4h | Done — 60 new tests covering the basket, checkout and reservation, gateway failure, webhook signature/idempotency/amount checks, the callback, customer tracking, admin transitions, reconciliation, refunds and expiry; suite at 215 tests / 777 assertions, all green |
 
 **Gate G3:** a complete order can be paid by card or mobile money through Paystack, verified by webhook, tracked, refunded, and cancelled with correct per-variant stock behaviour.
+
+Gate notes:
+
+- **Checkout needs an account.** A visitor can fill a basket, but signing in is required before an order exists; the guest basket is merged onto the account on login.
+- **An online order only becomes `confirmed` once the payment is verified.** Cash on delivery is confirmed immediately and its money is reconciled by an admin later.
+- **Webhooks confirm before they trust.** Every `charge.success` is re-verified against Paystack; the signed payload is only used when verification is unavailable, and the amount, currency and reference must still match.
+- **Guest baskets cannot be driven across two test requests.** The array session driver used in tests does not carry the session cookie between calls, so multi-request guest flows are covered with a signed-in shopper and the guest path through `CartService` directly.
+- **The Paystack secret key is not in `phpunit.xml`.** Tests set one with `enable_paystack()` and fake the API through `fake_paystack()`; nothing in the suite reaches the network.
+- **Visual pass owed.** The cart, checkout, order, and admin order screens have not yet been reviewed at 360, 768, 1024 and 1440 px, matching the note on Phase 2.
 
 ---
 
@@ -287,15 +303,25 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 4.1 | Services CRUD | FR/EN name, duration, active flag | 1.5h | Proposed |
-| 4.2 | Working hours and blocked dates | Admin manages weekly hours and date exceptions | 2h | Proposed |
-| 4.3 | Booking flow | Service → date → available slots → customer details; login required | 3h | Proposed |
-| 4.4 | Overlap prevention | Availability calculation and transaction/lock protection; double-booking impossible under concurrent requests | 3h | Proposed |
-| 4.5 | Admin appointments | List and calendar views; approve, reschedule, cancel | 3h | Proposed |
-| 4.6 | Appointment notifications | Customer and admin emails; status-change notifications | 1.5h | Proposed |
-| 4.7 | Appointment tests | Overlap, availability, permissions, cancellation | 2h | Proposed |
+| 4.1 | Services CRUD | FR/EN name, duration, active flag | 1.5h | Done — the admin keeps a service book (`/admin/services`) with FR and EN names, a 15–480 minute duration and an active flag; the storefront filters on `is_active`, and a service that already carries bookings is hidden rather than deleted because its foreign key is RESTRICT |
+| 4.2 | Working hours and blocked dates | Admin manages weekly hours and date exceptions | 2h | Done — `/admin/schedule` edits the seven weekly rows (a closed day keeps both times null, matching the CHECK constraint) and blocks single dates with a reason; availability reads both |
+| 4.3 | Booking flow | Service → date → available slots → customer details; login required | 3h | Done — `/{locale}/appointments` lists the services, the atelier hours and the customer's own bookings; `/{locale}/appointments/book` walks service → date → free slots → notes behind `auth`, and a hand-typed `?date=` is clamped back into the booking window |
+| 4.4 | Overlap prevention | Availability calculation and transaction/lock protection; double-booking impossible under concurrent requests | 3h | Done — `Availability` lays each service's slots on its own duration grid inside the opening hours, minus closures and minus pending/approved/rescheduled bookings; `BookingService` writes inside a transaction that takes `lockForUpdate()` over the requested day, re-checks availability while holding it, then inserts. Rescheduling runs the same check with the moved booking excluded from its own clash test |
+| 4.5 | Admin appointments | List and calendar views; approve, reschedule, cancel | 3h | Done — appointment book with status/date/period/keyword filters and today/open/pending counters, a Monday-first month planner marking open, closed and blocked days, and a detail screen that offers only the legal transitions; a reschedule asks for the new date and time |
+| 4.6 | Appointment notifications | Customer and admin emails; status-change notifications | 1.5h | Done — request and status emails go to the customer in their own locale with an admin copy to `STORE_ADMIN_EMAIL`; sending is wrapped in a try/catch that logs, so a mail failure never undoes a recorded booking |
+| 4.7 | Appointment tests | Overlap, availability, permissions, cancellation | 2h | Done — 35 new tests covering the locked booking, off-grid and cross-service overlaps, back-to-back slots, closed and blocked days, horizon and lead time, cancellation and its permissions, admin approve/reschedule/cancel, services CRUD, weekly hours, closures and mail rendering; suite at 250 tests / 903 assertions, all green |
 
 **Gate G4:** a customer can request an appointment; the admin can approve/reschedule it; no two active bookings can share a slot.
+
+Gate notes:
+
+- **An unanswered request already holds its slot.** Availability blocks on `pending`, `approved` and `rescheduled`; `cancelled` and `completed` release the slot again.
+- **The lock is a date, not a slot.** `BookingService` locks every row of the requested day and re-runs the availability check while holding the lock, so a concurrent insert waits and then sees the first booking. The overlap test itself is `start < other_end AND end > other_start`.
+- **Status is guarded.** `Appointment::$fillable` leaves `status` out, so it only moves through `BookingService::transition()`, which refuses jumps the state machine does not allow (a cancelled or completed booking is final); the admin screen offers only the legal moves.
+- **Times are `TIME` values with a `datetime:H:i` cast.** Their Carbon carries today's date, so comparisons attach the booking's own date first through `Appointment::startsAt()` / `endsAt()`.
+- **The admin placeholder does not swallow these routes.** `appointments` was removed from the `admin/{section}` whitelist and the real routes are registered ahead of it.
+- **Lead time and horizon come from `.env`.** `APPOINTMENT_LEAD_MINUTES` (120) keeps a slot from being taken at the last minute and `APPOINTMENT_HORIZON_DAYS` (60) bounds the calendar; both are injectable so tests can pin them.
+- **Visual pass owed.** The shop booking pages and the admin appointment, service and schedule screens have not yet been reviewed at 360, 768, 1024 and 1440 px, matching the note on Phases 2 and 3.
 
 ---
 
@@ -303,16 +329,25 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 5.1 | Gallery | Admin CRUD; public grid and lightbox | 2h | Proposed |
-| 5.2 | Blog | Admin CRUD with FR/EN fields, draft/publish, cover image, author, date; public list and detail | 3h | Proposed |
-| 5.3 | Static pages CMS | About, shipping/returns, privacy, terms editable from admin | 2h | Proposed |
-| 5.4 | Contact module | Form validation, database save, email notification, honeypot and rate limit | 2h | Proposed |
-| 5.5 | Wishlist | Add, remove, list; account page | 1.5h | Proposed |
-| 5.6 | Settings module | Store info, WhatsApp number, map embed, shipping fees, payment method toggles, social links | 2h | Proposed |
-| 5.7 | WhatsApp and Maps | Floating click-to-chat button; embedded showroom map | 1h | Proposed |
-| 5.8 | Content tests | CRUD, contact, wishlist, pages, settings | 2h | Proposed |
+| 5.1 | Gallery | Admin CRUD; public grid and lightbox | 2h | Done — `/admin/content/gallery` keeps FR/EN titles, a category from `GalleryCategory`, a sort order, an uploaded photo, a publish toggle and delete; `/{locale}/gallery` renders the published grid, filters by category (an unknown one 404s), and opens an Alpine lightbox that walks the already-loaded photos without another request |
+| 5.2 | Blog | Admin CRUD with FR/EN fields, draft/publish, cover image, author, date; public list and detail | 3h | Done — `/admin/content/posts` writes FR/EN title, excerpt and body with a unique slug, cover image, author and publish date; the list filters by keyword and status; `/{locale}/journal` lists the published articles and a draft is a 404 on its own detail page |
+| 5.3 | Static pages CMS | About, shipping/returns, privacy, terms editable from admin | 2h | Done — `/admin/content/pages` creates, edits and publishes any page and `/{locale}/pages/{slug}` serves it; the five footer-linked slugs are `Page::FIXED_SLUGS`, which both the screen and `destroy()` refuse to delete |
+| 5.4 | Contact module | Form validation, database save, email notification, honeypot and rate limit | 2h | Done — `/{locale}/contact` validates name/email/subject/message (20–3000 characters), stores the enquiry and mails the sender in their locale plus a copy to `STORE_ADMIN_EMAIL`; the hidden `website` honeypot gets the same success while storing nothing and the route allows five messages a minute; `/admin/messages` counts by status, searches, files each enquiry new → read → replied → archived and replies by mail |
+| 5.5 | Wishlist | Add, remove, list; account page | 1.5h | Done — `/{locale}/wishlist` sits behind `auth` and lists the saved pieces with a plural count; the product page posts a save, a repeat is ignored, a piece that is no longer active is refused, and the list is private to the account; the dashboard shows the count and the account menu links to it |
+| 5.6 | Settings module | Store info, WhatsApp number, map embed, shipping fees, payment method toggles, social links | 2h | Done — one `/admin/settings` screen writes the store details, repeatable delivery zones (blank rows dropped, an empty EN name falls back to FR), the payment toggles (at least one required), tax display, order expiry and social links; the `Settings` service caches one snapshot per request and is shared with every view |
+| 5.7 | WhatsApp and Maps | Floating click-to-chat button; embedded showroom map | 1h | Done — `x-ui.whatsapp-button` floats on every storefront page once a number of at least eight digits is configured (`wa.me` with the message pre-filled, absent otherwise), the contact page embeds the showroom map, and the footer lists only the social profiles that carry a URL |
+| 5.8 | Content tests | CRUD, contact, wishlist, pages, settings | 2h | Done — 33 new tests covering the gallery, posts, pages, the content hub, the inbox, the contact form's validation/honeypot/throttle/mail, the wishlist and settings; suite at 283 tests / 1059 assertions, all green |
 
 **Gate G5:** admin can publish gallery, blog, and page content without code; contact and wishlist work end-to-end.
+
+Gate notes:
+
+- **The footer-linked pages cannot be deleted.** `Page::FIXED_SLUGS` (`about`, `shipping`, `returns`, `privacy`, `terms`) is the single list used by the admin index, the edit form and `destroy()`, which refuses with an error flash even if the request is crafted — a stray click cannot break a footer link.
+- **The storefront binds on slugs, the admin on ids.** `BlogPost` and `Page` override `getRouteKeyName()`, so the admin routes declare `{post:id}` / `{page:id}` with `whereNumber` and every link and redirect passes the id explicitly: `route()` reads the model's route key, which would otherwise emit a slug into a numeric route.
+- **`Settings` is one snapshot per request.** Values load once in the service, `putMany()` saves a whole form in one transaction and clears the snapshot, and the service is shared to every view as `$settings` — the footer, the WhatsApp button and the contact page always read the same values.
+- **The map is accepted as a URL, never as markup.** `SettingsRequest` normalises through `Settings::embedUrl()`, which lifts the `src` out of a pasted Google iframe and refuses anything that is not plain http(s); what the validator accepts is exactly what the iframe renders.
+- **The honeypot answers like a person.** A filled `website` field is validated as free text and answered with the ordinary success redirect, but nothing is stored or mailed, so a script learns nothing from the reply.
+- **Visual pass owed.** The gallery, journal, page, contact and wishlist screens and the admin content, messages and settings screens have not yet been reviewed at 360, 768, 1024 and 1440 px, matching the note on Phases 2–4.
 
 ---
 
@@ -428,6 +463,8 @@ Paystack card + mobile money is non-negotiable in this scope. Reviews remain def
 | 2026-11-05 | 0.3 | Paystack payments added (card + mobile money); timeline extended to 19 working days | Client | Rafiatou Malam Ali (PM) |
 | 2026-11-05 | 0.4 | Market set to Ghana/GHS for v1; currency and locale made configurable for a later XOF switch | Client | Rafiatou Malam Ali (PM) |
 | 2026-11-05 | 0.5 | G0-final approved. D-01 changed from Laravel 11 to **Laravel 13** (PHP 8.3+): Composer blocks all 11.x releases due to unpatched security advisories and 11.x is out of security support. No scope or schedule impact. Task 1.3 timezone/currency corrected to Africa/Accra / GHS. | Qoder (security finding) | Rafiatou Malam Ali (PM) |
+| 2026-11-08 | 0.6 | Status update only: Phases 1–5 built and documented, gates G1–G5 awaiting sign-off. No scope, cost, or schedule change. | Qoder | Pending |
+| 2026-11-08 | 0.7 | Status update only: Phases 1–5 marked **done** — tasks 1.9 and 1.10 moved from In review to Done, and a Status column added to the §6.1 phase overview. Gates G1–G5 remain awaiting client sign-off. No scope, cost, or schedule change. | Qoder | Pending |
 
 Rules:
 
@@ -455,6 +492,6 @@ Rules:
 
 ## 12. Immediate next actions
 
-1. **Phase 0 is complete; G0-final approved 2026-11-05.**
-2. **Phase 1 (Foundation) is in progress**, starting with Task 1.1.
-3. Phase 1 ends at **Gate G1**; Phase 2 does not start until G1 is signed.
+1. **Phases 1–5 are done**; the full suite passes (283 tests / 1059 assertions).
+2. **Gates G1–G5 await client sign-off**; the visual pass at 360/768/1024/1440 px is still owed across every phase.
+3. **Phase 6 (Hardening and UAT) is next**, starting with Task 6.1; it does not start until G5 is signed.

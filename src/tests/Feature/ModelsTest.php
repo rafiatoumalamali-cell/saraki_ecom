@@ -9,6 +9,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\PostStatus;
 use App\Enums\UserRole;
 use App\Models\Appointment;
+use App\Models\AppointmentService;
 use App\Models\BlockedDate;
 use App\Models\BlogPost;
 use App\Models\Cart;
@@ -128,7 +129,7 @@ test('payment factory mirrors the order total', function () {
 });
 
 test('appointment end time follows the service duration and status stays guarded', function () {
-    $service = \App\Models\AppointmentService::factory()->create(['duration_min' => 45]);
+    $service = AppointmentService::factory()->create(['duration_min' => 45]);
     $appointment = Appointment::factory()->for($service, 'service')->create(['start_time' => '10:00:00']);
 
     expect($appointment->end_time->format('H:i'))->toBe('10:45')

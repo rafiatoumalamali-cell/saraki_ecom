@@ -4,9 +4,30 @@
 
     <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="rounded-sm border border-line bg-canvas p-6">
-            <p class="label-upper text-gold-700">{{ __('ui.soon') }}</p>
-            <h2 class="mt-2 font-display text-heading-sm">{{ __('ui.orders') }}</h2>
-            <p class="mt-2 text-body-sm text-ink-muted">{{ __('ui.coming_soon_text') }}</p>
+            <h2 class="font-display text-heading-sm">{{ __('ui.orders') }}</h2>
+
+            @forelse ($recentOrders as $order)
+                <a href="{{ route('orders.show', ['locale' => app()->getLocale(), 'order' => $order]) }}" class="mt-3 flex items-center justify-between gap-3 text-body-sm">
+                    <span class="tabular">{{ $order->order_number }}</span>
+                    <span class="text-ink-muted">{{ money($order->total) }}</span>
+                </a>
+            @empty
+                <p class="mt-2 text-body-sm text-ink-muted">{{ __('ui.orders_empty') }}</p>
+            @endforelse
+
+            <x-ui.button :href="route('orders.index', app()->getLocale())" variant="secondary" size="compact" class="mt-4">
+                {{ __('ui.orders') }}
+            </x-ui.button>
+        </div>
+
+        <div class="rounded-sm border border-line bg-canvas p-6">
+            <h2 class="font-display text-heading-sm">{{ __('shop.wishlist.title') }}</h2>
+            <p class="mt-2 text-body-sm text-ink-muted">
+                {{ trans_choice('shop.wishlist.count', $wishlistCount) }}
+            </p>
+            <x-ui.button :href="route('wishlist.index', app()->getLocale())" variant="secondary" size="compact" class="mt-4">
+                {{ __('shop.wishlist.view') }}
+            </x-ui.button>
         </div>
 
         <div class="rounded-sm border border-line bg-canvas p-6">

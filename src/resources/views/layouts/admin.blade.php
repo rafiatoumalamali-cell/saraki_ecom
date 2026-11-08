@@ -1,19 +1,17 @@
 @php
-    $activeSection = request()->routeIs('admin.section') ? request()->route('section') : null;
-
     $sections = collect([
-        'orders' => ['admin.section', 'orders'],
-        'catalogue' => ['admin.section', 'catalogue'],
-        'appointments' => ['admin.section', 'appointments'],
+        'orders' => ['admin.orders.index', []],
+        'catalogue' => ['admin.catalogue.products.index', []],
+        'appointments' => ['admin.appointments.index', []],
         'customers' => ['admin.customers.index', []],
-        'content' => ['admin.section', 'content'],
-        'messages' => ['admin.section', 'messages'],
-        'settings' => ['admin.section', 'settings'],
+        'content' => ['admin.content.index', []],
+        'messages' => ['admin.messages.index', []],
+        'settings' => ['admin.settings.edit', []],
     ])->map(fn (array $route, string $key) => [
         'key' => $key,
         'label' => __('admin.nav.'.$key),
         'href' => route($route[0], $route[1]),
-        'active' => $activeSection === $key || request()->routeIs('admin.'.$key.'.*'),
+        'active' => request()->routeIs('admin.'.$key.'.*'),
     ])->all();
 @endphp
 

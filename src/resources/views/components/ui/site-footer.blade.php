@@ -1,10 +1,27 @@
 @php
     $locale = app()->getLocale();
+    $socials = $settings->socialLinks();
 
     $columns = [
-        'shop' => [__('ui.catalogue'), __('ui.appointments'), __('ui.orders')],
-        'help' => [__('ui.shipping'), __('ui.returns'), __('ui.faq')],
-        'contact' => [__('ui.contact'), __('ui.about'), __('ui.whatsapp')],
+        'shop' => [
+            ['label' => __('ui.catalogue'), 'href' => route('shop.index', $locale)],
+            ['label' => __('ui.gallery'), 'href' => route('gallery.index', $locale)],
+            ['label' => __('ui.journal'), 'href' => route('journal.index', $locale)],
+            ['label' => __('ui.appointments'), 'href' => route('appointments.index', $locale)],
+            ['label' => __('ui.orders'), 'href' => auth()->check() ? route('dashboard') : null],
+        ],
+        'help' => [
+            ['label' => __('ui.shipping'), 'href' => route('pages.show', ['locale' => $locale, 'page' => 'shipping'])],
+            ['label' => __('ui.returns'), 'href' => route('pages.show', ['locale' => $locale, 'page' => 'returns'])],
+            ['label' => __('ui.faq'), 'href' => null],
+            ['label' => __('ui.privacy'), 'href' => route('pages.show', ['locale' => $locale, 'page' => 'privacy'])],
+            ['label' => __('ui.terms'), 'href' => route('pages.show', ['locale' => $locale, 'page' => 'terms'])],
+        ],
+        'contact' => [
+            ['label' => __('ui.contact'), 'href' => route('contact.show', $locale)],
+            ['label' => __('ui.about'), 'href' => route('pages.show', ['locale' => $locale, 'page' => 'about'])],
+            ['label' => __('ui.whatsapp'), 'href' => $settings->whatsappLink()],
+        ],
     ];
 @endphp
 
@@ -16,6 +33,21 @@
                     {{ config('saraki.store_name') }}
                 </a>
                 <p class="mt-4 max-w-prose text-body-sm text-beige/70">{{ __('ui.footer.tagline') }}</p>
+
+                @if ($socials !== [])
+                    <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-3">
+                        @foreach ($socials as $network => $url)
+                            <li>
+                                <a
+                                    href="{{ $url }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="label-upper text-beige/70 transition-colors duration-150 ease-brand hover:text-gold"
+                                >{{ __('ui.footer.social.'.$network) }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
             </div>
 
             @foreach ($columns as $key => $items)
@@ -24,7 +56,11 @@
                     <ul class="space-y-3 pb-6 lg:pb-0">
                         @foreach ($items as $item)
                             <li>
-                                <span class="text-body-sm text-beige/70" aria-disabled="true" title="{{ __('ui.soon') }}">{{ $item }}</span>
+                                @if ($item['href'])
+                                    <a href="{{ $item['href'] }}" class="text-body-sm text-beige/70 transition-colors duration-150 ease-brand hover:text-beige">{{ $item['label'] }}</a>
+                                @else
+                                    <span class="text-body-sm text-beige/70" aria-disabled="true" title="{{ __('ui.soon') }}">{{ $item['label'] }}</span>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

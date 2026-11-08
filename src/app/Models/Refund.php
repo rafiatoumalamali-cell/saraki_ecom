@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\Enums\RefundStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['payment_id', 'amount', 'reason', 'provider_reference', 'processed_by'])]
 class Refund extends Model
 {
+    use HasFactory;
+
     protected $attributes = [
         'status' => 'pending',
     ];

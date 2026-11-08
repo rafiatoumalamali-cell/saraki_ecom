@@ -31,6 +31,15 @@ return [
     'account_title' => 'My account',
     'account_intro' => 'Track your orders and keep your details up to date.',
     'admin_area' => 'Administration',
+    'dashboard' => 'My account',
+    'gallery' => 'Gallery',
+    'journal' => 'Journal',
+    'privacy' => 'Privacy',
+    'terms' => 'Terms of sale',
+    'close' => 'Close',
+    'orders_empty' => 'No orders yet.',
+    'whatsapp_cta' => 'Chat on WhatsApp',
+    'whatsapp_message' => 'Hello SARAKI, I would like some information.',
 
     'footer' => [
         'tagline' => 'Contemporary African fashion, made to order in Accra.',
@@ -39,6 +48,11 @@ return [
         'contact' => 'Contact',
         'rights' => 'All rights reserved.',
         'payments' => 'Secure payment by card or mobile money.',
+        'social' => [
+            'instagram' => 'Instagram',
+            'facebook' => 'Facebook',
+            'tiktok' => 'TikTok',
+        ],
     ],
 
 ];

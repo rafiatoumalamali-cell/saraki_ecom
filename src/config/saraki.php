@@ -18,6 +18,12 @@ return [
 
     'order_expiry_minutes' => (int) env('ORDER_EXPIRY_MINUTES', 30),
 
+    // Appointments: no slot may start sooner than the lead time, and the booking
+    // calendar stops a couple of months out so the atelier can plan ahead.
+    'appointment_lead_minutes' => (int) env('APPOINTMENT_LEAD_MINUTES', 120),
+
+    'appointment_horizon_days' => (int) env('APPOINTMENT_HORIZON_DAYS', 60),
+
     'admin_email' => env('STORE_ADMIN_EMAIL', 'admin@saraki.test'),
 
 ];

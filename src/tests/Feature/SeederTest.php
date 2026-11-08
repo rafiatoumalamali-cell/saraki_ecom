@@ -18,7 +18,7 @@ test('the seeder builds a demo store with an admin', function () {
         ->and(Product::count())->toBe(20)
         ->and(Product::featured()->count())->toBe(4)
         ->and(Product::has('variants')->count())->toBe(20)
-        ->and(Setting::count())->toBe(10)
+        ->and(Setting::count())->toBe(13)
         ->and(Setting::firstWhere('key', 'currency')->value)->toBe('GHS')
         ->and(AppointmentService::count())->toBe(3)
         ->and(WorkingHour::count())->toBe(7)

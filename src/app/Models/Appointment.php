@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 #[Fillable(['user_id', 'service_id', 'appointment_date', 'start_time', 'end_time', 'notes', 'admin_notes'])]
 class Appointment extends Model
@@ -41,5 +42,19 @@ class Appointment extends Model
     public function scopeOnDate($query, string $date)
     {
         return $query->whereDate('appointment_date', $date);
+    }
+
+    /**
+     * The booking's real start, with the calendar date attached, so it can be
+     * compared against "now" and against other bookings.
+     */
+    public function startsAt(): Carbon
+    {
+        return $this->appointment_date->copy()->setTimeFromTimeString($this->start_time->format('H:i'));
+    }
+
+    public function endsAt(): Carbon
+    {
+        return $this->appointment_date->copy()->setTimeFromTimeString($this->end_time->format('H:i'));
     }
 }

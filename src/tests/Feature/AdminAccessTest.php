@@ -66,4 +66,3 @@ test('unbuilt admin sections show a placeholder and unknown ones 404', function 
     $this->actingAs($admin)->get('/admin/orders')->assertOk()->assertSee('Orders');
     $this->actingAs($admin)->get('/admin/hacking')->assertNotFound();
 });
-

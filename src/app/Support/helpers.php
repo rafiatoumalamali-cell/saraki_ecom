@@ -63,6 +63,27 @@ if (! function_exists('localized_date')) {
     }
 }
 
+if (! function_exists('localized_month')) {
+    /**
+     * Stand-alone month and year in the active locale, e.g. "novembre 2026".
+     */
+    function localized_month(Carbon|string $date, ?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+        $intlLocale = config("saraki.currency_locale.{$locale}") ?? config('saraki.currency_locale.en');
+        $carbon = $date instanceof Carbon ? $date : Carbon::parse($date)->timezone(config('app.timezone'));
+
+        return IntlDateFormatter::create(
+            $intlLocale,
+            IntlDateFormatter::LONG,
+            IntlDateFormatter::NONE,
+            config('app.timezone'),
+            IntlDateFormatter::GREGORIAN,
+            'LLLL y',
+        )->format($carbon->toDateTime());
+    }
+}
+
 if (! function_exists('localized_time')) {
     /**
      * 24-hour time, e.g. "14:30".

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
@@ -53,9 +54,14 @@ class User extends Authenticatable
 
     public function avatarUrl(): ?string
     {
+        // The Storage facade only advertises the Filesystem contract, which has no
+        // url(); the public disk is always an adapter, which does.
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
         return $this->avatar_path === null
             ? null
-            : Storage::disk('public')->url($this->avatar_path);
+            : $disk->url($this->avatar_path);
     }
 
     /**

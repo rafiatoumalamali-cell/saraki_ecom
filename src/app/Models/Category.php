@@ -39,4 +39,28 @@ class Category extends Model
     {
         $query->where('is_active', true);
     }
+
+    public function scopeOrdered(Builder $query): void
+    {
+        $query->orderBy('sort_order')->orderBy('name_fr');
+    }
+
+    /**
+     * Ids of the categories nested below this one, used to keep the parent picker
+     * from creating a loop.
+     *
+     * @return array<int, int>
+     */
+    public function descendantIds(): array
+    {
+        $ids = [];
+        $frontier = $this->children()->pluck('id')->all();
+
+        while ($frontier !== []) {
+            $ids = [...$ids, ...$frontier];
+            $frontier = self::query()->whereIn('parent_id', $frontier)->pluck('id')->all();
+        }
+
+        return $ids;
+    }
 }

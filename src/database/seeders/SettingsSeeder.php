@@ -13,6 +13,9 @@ class SettingsSeeder extends Seeder
             ['group' => 'general', 'key' => 'store_name', 'value' => config('saraki.store_name')],
             ['group' => 'general', 'key' => 'currency', 'value' => config('saraki.currency')],
             ['group' => 'general', 'key' => 'default_locale', 'value' => config('app.locale')],
+            ['group' => 'general', 'key' => 'contact_email', 'value' => config('saraki.admin_email')],
+            ['group' => 'general', 'key' => 'contact_phone', 'value' => null],
+            ['group' => 'general', 'key' => 'store_address', 'value' => null],
             ['group' => 'general', 'key' => 'whatsapp_number', 'value' => null],
             ['group' => 'general', 'key' => 'map_embed', 'value' => null],
 

@@ -3,10 +3,11 @@
 
     $links = [
         ['label' => __('ui.home'), 'href' => route('home', $locale), 'active' => request()->routeIs('home')],
-        ['label' => __('ui.catalogue'), 'href' => null],
-        ['label' => __('ui.appointments'), 'href' => null],
-        ['label' => __('ui.about'), 'href' => null],
-        ['label' => __('ui.contact'), 'href' => null],
+        ['label' => __('ui.catalogue'), 'href' => route('shop.index', $locale), 'active' => request()->routeIs('shop.*')],
+        ['label' => __('ui.gallery'), 'href' => route('gallery.index', $locale), 'active' => request()->routeIs('gallery.*')],
+        ['label' => __('ui.journal'), 'href' => route('journal.index', $locale), 'active' => request()->routeIs('journal.*')],
+        ['label' => __('ui.appointments'), 'href' => route('appointments.index', $locale), 'active' => request()->routeIs('appointments.*')],
+        ['label' => __('ui.contact'), 'href' => route('contact.show', $locale), 'active' => request()->routeIs('contact.*')],
     ];
 @endphp
 
@@ -43,6 +44,8 @@
         </nav>
 
         <div class="flex items-center gap-3">
+            <x-ui.cart-link class="hidden sm:flex" />
+
             <x-ui.locale-switcher class="hidden sm:flex" />
 
             @auth
@@ -58,6 +61,10 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('dashboard')">{{ __('ui.dashboard') }}</x-dropdown-link>
+
+                        <x-dropdown-link :href="route('wishlist.index', $locale)">{{ __('shop.wishlist.title') }}</x-dropdown-link>
+
                         <x-dropdown-link :href="route('profile.edit')">{{ __('ui.profile') }}</x-dropdown-link>
 
                         @if (auth()->user()->isAdmin())
@@ -124,6 +131,12 @@
 
         <div class="mt-8 border-t border-charcoal-700 px-6 pt-6">
             <x-ui.locale-switcher />
+
+            <div class="mt-6">
+                <x-ui.button :href="route('cart.index', $locale)" variant="on-dark" class="w-full">
+                    {{ __('shop.cart.title') }}
+                </x-ui.button>
+            </div>
 
             @guest
                 <div class="mt-6 flex flex-col gap-3">

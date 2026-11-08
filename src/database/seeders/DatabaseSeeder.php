@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             SettingsSeeder::class,
+            PageSeeder::class,
             CatalogueSeeder::class,
             AppointmentSeeder::class,
             CustomerSeeder::class,
@@ -30,7 +31,9 @@ class DatabaseSeeder extends Seeder
      */
     private function seedAdmin(): void
     {
-        $password = env('SEED_ADMIN_PASSWORD');
+        // An empty value in .env reads as "not configured" rather than as an empty
+        // password, which would otherwise let anyone sign in with a blank field.
+        $password = filled(env('SEED_ADMIN_PASSWORD')) ? env('SEED_ADMIN_PASSWORD') : null;
 
         if ($password === null && app()->environment('production')) {
             throw new RuntimeException('Set SEED_ADMIN_PASSWORD before seeding in production.');

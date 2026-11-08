@@ -7,6 +7,9 @@
 
         <title>{{ isset($title) ? $title.' · '.config('saraki.store_name') : config('saraki.store_name') }}</title>
 
+        {{-- Description, canonical, Open Graph and hreflang tags are pushed by <x-ui.seo>. --}}
+        @stack('head')
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-canvas font-sans text-ink antialiased">
@@ -20,5 +23,7 @@
         </main>
 
         <x-ui.site-footer />
+
+        <x-ui.whatsapp-button />
     </body>
 </html>

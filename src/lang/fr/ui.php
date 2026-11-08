@@ -31,6 +31,15 @@ return [
     'account_title' => 'Mon compte',
     'account_intro' => 'Suivez vos commandes et tenez vos coordonnées à jour.',
     'admin_area' => 'Administration',
+    'dashboard' => 'Mon espace',
+    'gallery' => 'Galerie',
+    'journal' => 'Journal',
+    'privacy' => 'Confidentialité',
+    'terms' => 'Conditions générales',
+    'close' => 'Fermer',
+    'orders_empty' => 'Aucune commande pour l’instant.',
+    'whatsapp_cta' => 'Écrire sur WhatsApp',
+    'whatsapp_message' => 'Bonjour SARAKI, je souhaite avoir un renseignement.',
 
     'footer' => [
         'tagline' => 'Mode africaine contemporaine, confectionnée sur mesure à Accra.',
@@ -39,6 +48,11 @@ return [
         'contact' => 'Contact',
         'rights' => 'Tous droits réservés.',
         'payments' => 'Paiement sécurisé par carte ou mobile money.',
+        'social' => [
+            'instagram' => 'Instagram',
+            'facebook' => 'Facebook',
+            'tiktok' => 'TikTok',
+        ],
     ],
 
 ];
