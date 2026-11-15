@@ -6,10 +6,10 @@
 | Client | SARAKI |
 | Prepared by | Qoder for SahelSoft |
 | Source requirements | SRS v1.0 (July 2026, SahelSoft) |
-| Plan version | 0.7 — Laravel 13; Phases 1–5 done, gates G1–G5 awaiting sign-off |
+| Plan version | 0.8 — Laravel 13; Phases 1–5 done, G1–G5 approved, Phase 6 in progress |
 | Date | 2026-11-05 |
 | Target | Production-ready v1 in 19 working days (~4 weeks), variants + Paystack (Ghana/GHS) included |
-| Status | G0 and G0-final approved; Phases 1–5 done, gates G1–G5 awaiting sign-off |
+| Status | G0–G5 approved; Phases 1–5 done; Phase 6 in progress |
 
 ---
 
@@ -142,8 +142,8 @@ A task is Done only when:
 | 3 | Cart, checkout, orders and Paystack | Days 6–11 | G3 | **Done** — 3.1–3.12 delivered |
 | 4 | Appointments | Days 12–13 | G4 | **Done** — 4.1–4.7 delivered |
 | 5 | Content and engagement | Days 14–15 | G5 | **Done** — 5.1–5.8 delivered |
-| 6 | Hardening and UAT | Days 16–17 | G6 | Proposed |
-| 7 | Deployment and handover | Days 18–19 | G7 | Proposed |
+| 6 | Hardening and UAT | Days 16–17 | G6 | **In progress** — tasks 6.1–6.7 and 6.10 done; 6.8 awaiting client walkthrough (Paystack test payments verified) |
+| 7 | Deployment and handover | Days 18–19 | G7 | **Blocked on client inputs** — 7.6 docs delivered; 7.1–7.5 need hosting (D-11), SMTP, domain/DNS, live Paystack keys |
 | 8 | Post-launch support and v1.1 backlog | After go-live | — | Backlog |
 
 ### 6.2 Day-by-day plan (Plan B+ — 19 working days)
@@ -355,15 +355,16 @@ Gate notes:
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 6.1 | Responsive QA | 360/768/1024/1440 px; Chrome, Firefox, Safari, Edge; defects fixed | 3h | Proposed |
-| 6.2 | Accessibility pass | Contrast, labels, keyboard navigation, focus states, alt text | 2h | Proposed |
-| 6.3 | Performance | WebP/thumbnails, lazy loading, caching, query review, pagination | 3h | Proposed |
-| 6.4 | Security hardening | Validation audit, CSRF, XSS, upload checks, rate limits, security headers, session settings, webhook replay protection | 3h | Proposed |
-| 6.5 | Error handling | 404/500/419 pages, logging, health check | 1.5h | Proposed |
-| 6.6 | Backups | Daily database + uploads, 14-day retention, successful restore test | 2h | Proposed |
-| 6.7 | SEO | Meta/Open Graph, sitemap, robots, canonical, hreflang | 2h | Proposed |
-| 6.8 | UAT | Written UAT script, client walkthrough, bug log; GHS card and mobile money test payments | 4h | Proposed |
+| 6.1 | Responsive QA | 360/768/1024/1440 px; Chrome, Firefox, Safari, Edge; defects fixed | 3h | Done locally — Playwright sweep at all four widths across Chrome, Edge, Firefox, and WebKit (Safari engine; real Safari cannot run on Windows): 352 page checks over public, auth, and admin routes, 0 horizontal overflow, 0 page errors, admin login OK. Earlier Chromium fixes for 1024 px header overflow, mobile cart-link merging, and 360 px admin overflow remain verified. Real Safari on macOS/iOS is still recommended before G6. |
+| 6.2 | Accessibility pass | Contrast, labels, keyboard navigation, focus states, alt text | 2h | Done — axe-core scan (WCAG 2.0/2.1 A+AA + best-practice) of 22 public/auth/admin routes at 360 and 1440 px in Chrome: 44 scans, 0 violations after fixes. Fixed icon-only control names, image alt text, heading order, landmarks, meta viewport, and color contrast; repaired a malformed Alpine expression on appointment booking; added `aria-haspopup`/`aria-expanded` plus Escape-to-close with focus return on the account dropdown. Keyboard automation verified skip link, mobile menu, visible focus, and form labels (14/14 checks); Pest suite green (283 tests). |
+| 6.3 | Performance | WebP/thumbnails, lazy loading, caching, query review, pagination | 3h | Done — uploads (product photos, gallery, journal covers) now re-encode to WebP capped at 1600 px via `intervention/image` + `App\Services\ImageOptimizer`, with a 640 px thumbnail stored alongside (`thumb_path`/`cover_thumb` columns); cards, grids and admin lists serve thumbnails while detail views keep full files, and pre-pipeline uploads fall back to the original. `php artisan images:optimize` backfills existing uploads (2 local images converted). Lazy loading was already in place; settings snapshot is now cached across requests (5 min TTL, invalidated on admin save); gallery category counts use one grouped query instead of N+1; catalogue/journal/orders already paginate. `.htaccess` adds immutable caching for fingerprinted `/build/assets` and 30-day caching for `/storage` uploads (Apache/XAMPP). Suite green: 286 tests / 1075 assertions. |
+| 6.4 | Security hardening | Validation audit, CSRF, XSS, upload checks, rate limits, security headers, session settings, webhook replay protection | 3h | Done — audited and verified: all `{!! !!}` outputs are `e()`-escaped, uploads validate mime+size (now also WebP-encoded, avatars capped at 256 px), CSRF exempt only the signed Paystack webhook which has HMAC + unique `event_id` dedup + server-side re-verify, sessions are httpOnly/lax. Added: `SecurityHeaders` middleware on all web responses (nosniff, SAMEORIGIN, Referrer-Policy, Permissions-Policy, cross-domain policies none; CSP deferred — Alpine needs unsafe-inline), login POST throttle (was unprotected) plus throttles on checkout, appointment booking, pay-retry, and payment callback; `SESSION_SECURE_COOKIE=true` documented for production HTTPS. Suite green: 288 tests / 1092 assertions. |
+| 6.5 | Error handling | 404/500/419 pages, logging, health check | 1.5h | Done — branded localized error pages for 403/404/419/429/500/503 (`resources/views/errors/`, `lang/{en,fr}/errors.php`) on a DB-free layout so a 500 still renders when the database is down; new global `PathLocale` middleware keeps the URL's locale prefix on unrouted 404s. `/up` health endpoint verified (200). Logging already daily/stack with 14-day retention. Suite green: 292 tests / 1105 assertions. |
+| 6.6 | Backups | Daily database + uploads, 14-day retention, successful restore test | 2h | Done — `backup:run` (scheduled daily via `routes/console.php`) writes `db-*.sql.gz` (mysqldump, password via `MYSQL_PWD`) and `uploads-*.zip` of `storage/app/public` into `storage/app/backups`, pruning anything older than `BACKUP_KEEP_DAYS` (default 14). `backup:restore {db|uploads|all} --force [--file=name]` restores newest or a named archive. Verified live: restore round-trip on `saraki_local` left data intact (20 products / 6 users / 4 orders, site 200, uploads present); uploads zip extracted cleanly; 2 new Pest tests cover archive creation + retention pruning. Suite green: 294 tests / 1112 assertions. Production still needs the scheduler/cron entry and an off-site copy of `storage/app/backups`. |
+| 6.7 | SEO | Meta/Open Graph, sitemap, robots, canonical, hreflang | 2h | Done — meta/OG/canonical/hreflang already shipped per-page via `<x-ui.seo>` with `noindex` on cart/checkout/orders/wishlist/booking/search results. Added: dynamic `/sitemap.xml` (`SitemapController`, 1 h cache) covering static pages, categories, active products, published posts and pages in both locales with `xhtml:link` hreflang alternates and `lastmod`; dynamic `/robots.txt` replacing the static allow-all file — disallows admin, account and transactional paths per locale and emits the real `Sitemap:` URL; JSON-LD — Organization site-wide in the app layout, Product (price/availability) on product pages, Article on journal posts; `noindex,nofollow` added to dashboard/profile and the guest auth layout; `x-default` hreflang now points at the primary locale (fr) instead of the translation fallback (en). Suite green: 299 tests / 1141 assertions. |
+| 6.8 | UAT | Written UAT script, client walkthrough, bug log; GHS card and mobile money test payments | 4h | In progress — `docs/uat/uat-script.md` written (sections A–G) and `docs/uat/bug-log.md` created. Developer self-UAT via Playwright/Chrome: 9/9 checks passed (register→login→cart→COD order `SRK-2026-000005`). **Paystack test payments verified end-to-end in test mode** against the real API: hosted checkout initialize works; card flow → order `SRK-2026-000010` paid/confirmed; Mobile Money (MTN test MSISDN) → order `SRK-2026-000012` paid/confirmed; callback → server-side verify → paid + stock committed. Notes: Paystack rejects `.test`-TLD emails (test-data artifact, real customers unaffected); checkout.paystack.com sits behind Cloudflare bot check — passes in normal browsers, needed headed mode for automation. **Still owed:** client walkthrough on staging. |
 | 6.9 | Regression | Full test suite; critical and high defects fixed | 2h | Proposed |
+| 6.10 | Payment configuration visibility | Warn on `/admin/settings` when Paystack is ticked but `PAYSTACK_SECRET_KEY` is empty (name the variable); dashboard banner when no method is actually available; regression test for the unconfigured state | 1.5h | Done — `PaymentMethods::paystackRequestedButUnconfigured()` exposes the ticked-but-keyless state; settings page shows a warning naming `PAYSTACK_SECRET_KEY`; admin dashboard shows a banner when `keys()` is empty (no usable method at checkout). Two regression tests cover both states. Suite green: 301 tests / 1145 assertions. |
 
 **Gate G6:** UAT sign-off; no open critical or high defects; successful test payment for card and mobile money.
 
@@ -373,12 +374,12 @@ Gate notes:
 
 | ID | Task | Deliverable and acceptance criteria | Est. | Status |
 |---|---|---|---|---|
-| 7.1 | Provision staging and production | PHP 8.3+, MySQL 8, SSL, cron, document root `src/public`; credentials recorded securely | 2h | Proposed |
-| 7.2 | Staging deployment | App runs on staging; storage link and permissions correct; Paystack test mode verified | 2h | Proposed |
-| 7.3 | SMTP configuration | Test emails delivered to customer and admin inboxes | 1h | Proposed |
-| 7.4 | Cron and backups | Scheduler (payment expiry, backups) running on the server | 1h | Proposed |
-| 7.5 | Production cutover | DNS/SSL, live Paystack keys (Ghana/GHS), webhook URL, go-live checklist, smoke tests on all critical flows | 2h | Proposed |
-| 7.6 | Handover | Admin guide, deployment runbook, credential transfer, maintenance checklist | 2h | Proposed |
+| 7.1 | Provision staging and production | PHP 8.3+, MySQL 8, SSL, cron, document root `src/public`; credentials recorded securely | 2h | **Blocked** — needs hosting decision (D-11 open) and client credentials |
+| 7.2 | Staging deployment | App runs on staging; storage link and permissions correct; Paystack test mode verified | 2h | **Blocked** — needs 7.1; Paystack test-mode payment flow already verified locally |
+| 7.3 | SMTP configuration | Test emails delivered to customer and admin inboxes | 1h | **Blocked** — needs SMTP credentials (client input) |
+| 7.4 | Cron and backups | Scheduler (payment expiry, backups) running on the server | 1h | **Blocked** — needs 7.1; commands verified locally (`schedule:list` shows both jobs) |
+| 7.5 | Production cutover | DNS/SSL, live Paystack keys (Ghana/GHS), webhook URL, go-live checklist, smoke tests on all critical flows | 2h | **Blocked** — needs domain/DNS + live Paystack keys |
+| 7.6 | Handover | Admin guide, deployment runbook, credential transfer, maintenance checklist | 2h | In progress — `docs/admin-guide.md` (dashboard, catalogue, orders, appointments, customers, content, messages, settings + daily routine), `deploy/runbook.md` (requirements, full env checklist, deploy steps, cron, Paystack go-live, go-live checklist, rollback), and `docs/maintenance-checklist.md` (daily/weekly/monthly/quarterly + escalation) written. **Still owed:** credential transfer session with the client once hosting exists. |
 
 **Gate G7:** production site live over HTTPS; a real card/mobile money payment succeeds; handover accepted.
 
@@ -465,6 +466,7 @@ Gate notes:
 | 2026-11-05 | 0.5 | G0-final approved. D-01 changed from Laravel 11 to **Laravel 13** (PHP 8.3+): Composer blocks all 11.x releases due to unpatched security advisories and 11.x is out of security support. No scope or schedule impact. Task 1.3 timezone/currency corrected to Africa/Accra / GHS. | Qoder (security finding) | Rafiatou Malam Ali (PM) |
 | 2026-11-08 | 0.6 | Status update only: Phases 1–5 built and documented, gates G1–G5 awaiting sign-off. No scope, cost, or schedule change. | Qoder | Pending |
 | 2026-11-08 | 0.7 | Status update only: Phases 1–5 marked **done** — tasks 1.9 and 1.10 moved from In review to Done, and a Status column added to the §6.1 phase overview. Gates G1–G5 remain awaiting client sign-off. No scope, cost, or schedule change. | Qoder | Pending |
+| 2026-11-10 | 0.8 | G1–G5 approved; Phase 6 and task 6.1 started. Approval log corrected to reflect Laravel 13 and the recorded D-01 update. Responsive QA fixed storefront header/cart-link and admin schedule/order-detail layout issues; other browser checks remain pending. No scope, cost, or schedule change. | Rafiatou Malam Ali (PM) | Rafiatou Malam Ali (PM) |
 
 Rules:
 
@@ -478,13 +480,13 @@ Rules:
 
 | Gate | Scope approved | Date | Approved by |
 |---|---|---|---|
-| G0 | Plan, stack (Laravel 11), variants included, Paystack included, Plan B+ timeline | 2026-11-05 | Rafiatou Malam Ali (PM) |
+| G0 | Plan, stack (Laravel 13; D-01 updated 2026-11-05), variants included, Paystack included, Plan B+ timeline | 2026-11-05 | Rafiatou Malam Ali (PM) |
 | G0-final | ERD, data dictionary, design tokens, environments | 2026-11-05 | Rafiatou Malam Ali (PM) |
-| G1 | Foundation | — | Pending |
-| G2 | Catalogue and variants | — | Pending |
-| G3 | Cart, checkout, orders and Paystack | — | Pending |
-| G4 | Appointments | — | Pending |
-| G5 | Content and engagement | — | Pending |
+| G1 | Foundation | 2026-11-10 | Rafiatou Malam Ali (PM) |
+| G2 | Catalogue and variants | 2026-11-10 | Rafiatou Malam Ali (PM) |
+| G3 | Cart, checkout, orders and Paystack | 2026-11-10 | Rafiatou Malam Ali (PM) |
+| G4 | Appointments | 2026-11-10 | Rafiatou Malam Ali (PM) |
+| G5 | Content and engagement | 2026-11-10 | Rafiatou Malam Ali (PM) |
 | G6 | Hardening and UAT | — | Pending |
 | G7 | Deployment and handover | — | Pending |
 
@@ -492,6 +494,6 @@ Rules:
 
 ## 12. Immediate next actions
 
-1. **Phases 1–5 are done**; the full suite passes (283 tests / 1059 assertions).
-2. **Gates G1–G5 await client sign-off**; the visual pass at 360/768/1024/1440 px is still owed across every phase.
-3. **Phase 6 (Hardening and UAT) is next**, starting with Task 6.1; it does not start until G5 is signed.
+1. **Phases 1–5 are done**; the full suite passes (292 tests / 1105 assertions).
+2. **Gates G1–G5 are approved**; Task 6.1 responsive QA is done locally across Chrome, Edge, Firefox, and WebKit at 360/768/1024/1440 px with no horizontal overflow.
+3. **Phase 6 (Hardening and UAT) is in progress**; tasks 6.1–6.7 and 6.10 are done. Task 6.8 UAT is prepared and developer-verified — Paystack **test-mode** card and Mobile Money payments both completed end-to-end against the real API (orders `SRK-2026-000010` and `SRK-2026-000012` paid/confirmed). Only the client walkthrough on staging remains before G6, plus Task 6.9 regression after any UAT bug fixes. A real Safari check on macOS/iOS remains recommended before G6.

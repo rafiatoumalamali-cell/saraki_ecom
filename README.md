@@ -4,10 +4,10 @@ Bilingual (French default / English) fashion e-commerce platform for a made-to-o
 tailor in Accra: catalogue with size/colour variants, Paystack card and mobile-money
 payment, studio appointments, and a CMS for products, gallery, blog and pages.
 
-**Status:** Phases 1–5 are built and the suite is green (283 tests / 1059 assertions).
-Gates **G1–G5** await client sign-off; **Phase 6 — hardening and UAT** is the next block
-of work. Everything below is the current source of truth; [plan.md](plan.md) drives the
-schedule.
+**Status:** Phases 1–5 are built and Phase 6 hardening is nearly complete (301 tests /
+1145 assertions green). Gates **G1–G5** await client sign-off; **Phase 6 — hardening and
+UAT** is in its final stretch (client walkthrough pending). Everything below is the
+current source of truth; [plan.md](plan.md) drives the schedule.
 
 ```
 saraki/
@@ -74,7 +74,7 @@ Entry points: `/fr`, `/en`, `/register`, `/login`, `/profile`, `/dashboard`, `/c
 ## Tests
 
 ```bash
-php artisan test           # 283 tests / 1059 assertions
+php artisan test           # 301 tests / 1145 assertions
 ./vendor/bin/pint --test   # style gate, from src/
 ```
 
@@ -107,15 +107,14 @@ php artisan test           # 283 tests / 1059 assertions
 
 ## What is left before go-live
 
-Phases 1–5 are done; start at task 6.1 in [plan.md](plan.md). Gate **G5 sign-off** is the
-trigger, and these items are still open:
+Phase 6 is nearly done; the remaining gate work is in [plan.md](plan.md). These items
+are still open:
 
-1. Sign-off for gates G1–G5, plus the responsive visual pass at 360/768/1024/1440 px for
-   every screen built so far (owed since Phase 1 — structure and behaviour are tested, but
-   pixels are not).
-2. Hosting, Paystack keys and SMTP details (D-11, D-12, D-14); Phase 7 cannot deploy
-   without them.
-3. Phase 6 hardening: accessibility, performance, security headers, error pages, backups
-   and sitemap.
-4. French currency symbol: ICU `fr_GH` renders `1 250,00 GHS` while the design doc expects
+1. Sign-off for gates G1–G5 and the client UAT walkthrough (`docs/uat/uat-script.md`).
+   The responsive pass (360/768/1024/1440 px, Chrome/Edge/Firefox/WebKit) and Paystack
+   **test-mode** card + mobile-money payments are already verified.
+2. Hosting, domain/DNS, SMTP credentials and **live** Paystack keys (D-11, D-12, D-14);
+   Phase 7 cannot deploy without them. Handover docs are ready: `deploy/runbook.md`,
+   `docs/admin-guide.md`, `docs/maintenance-checklist.md`.
+3. French currency symbol: ICU `fr_GH` renders `1 250,00 GHS` while the design doc expects
    `1 250,00 GH₵`; a decision from `money()` applies to `centimetres()` too.
