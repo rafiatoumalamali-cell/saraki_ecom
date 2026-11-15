@@ -87,9 +87,10 @@ return new class extends Migration
             $table->index(['order_id', 'created_at']);
         });
 
-        DB::statement('ALTER TABLE cart_items ADD CONSTRAINT chk_cart_items_qty CHECK (quantity >= 1)');
-        DB::statement('ALTER TABLE orders ADD CONSTRAINT chk_orders_amounts CHECK (subtotal >= 0 AND shipping_fee >= 0 AND total >= 0)');
-        DB::statement('ALTER TABLE order_items ADD CONSTRAINT chk_order_items_values CHECK (quantity >= 1 AND unit_price >= 0 AND line_total >= 0)');
+        $prefix = Schema::getConnection()->getTablePrefix();
+        DB::statement("ALTER TABLE {$prefix}cart_items ADD CONSTRAINT chk_cart_items_qty CHECK (quantity >= 1)");
+        DB::statement("ALTER TABLE {$prefix}orders ADD CONSTRAINT chk_orders_amounts CHECK (subtotal >= 0 AND shipping_fee >= 0 AND total >= 0)");
+        DB::statement("ALTER TABLE {$prefix}order_items ADD CONSTRAINT chk_order_items_values CHECK (quantity >= 1 AND unit_price >= 0 AND line_total >= 0)");
     }
 
     public function down(): void

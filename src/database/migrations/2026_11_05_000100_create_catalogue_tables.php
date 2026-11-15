@@ -37,7 +37,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['is_active', 'is_featured']);
-            $table->fullText(['name_fr', 'name_en', 'description_fr', 'description_en']);
+            $table->fullText(['name_fr', 'name_en', 'description_fr', 'description_en'], 'products_search_fulltext');
         });
 
         Schema::create('product_variants', function (Blueprint $table) {
@@ -69,8 +69,9 @@ return new class extends Migration
             $table->index(['product_id', 'is_primary']);
         });
 
-        DB::statement('ALTER TABLE products ADD CONSTRAINT chk_products_base_price CHECK (base_price >= 0)');
-        DB::statement('ALTER TABLE product_variants ADD CONSTRAINT chk_variants_stock CHECK (stock_qty >= 0)');
+        $prefix = Schema::getConnection()->getTablePrefix();
+        DB::statement("ALTER TABLE {$prefix}products ADD CONSTRAINT chk_products_base_price CHECK (base_price >= 0)");
+        DB::statement("ALTER TABLE {$prefix}product_variants ADD CONSTRAINT chk_variants_stock CHECK (stock_qty >= 0)");
     }
 
     public function down(): void

@@ -43,7 +43,7 @@ class GalleryItem extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)->orderBy('sort_order');
+        return $query->where('is_published', true);
     }
 
     public function url(): string

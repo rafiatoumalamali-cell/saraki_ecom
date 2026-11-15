@@ -10,7 +10,7 @@
     $pick = function (string $base): ?string {
         foreach (['svg', 'png', 'webp'] as $ext) {
             if (file_exists(public_path("brand/{$base}.{$ext}"))) {
-                return "/brand/{$base}.{$ext}";
+                return asset("brand/{$base}.{$ext}");
             }
         }
 

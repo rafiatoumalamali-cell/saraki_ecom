@@ -50,10 +50,11 @@ return new class extends Migration
             $table->index(['appointment_date', 'status']);
         });
 
-        DB::statement('ALTER TABLE appointment_services ADD CONSTRAINT chk_services_duration CHECK (duration_min > 0)');
-        DB::statement('ALTER TABLE working_hours ADD CONSTRAINT chk_working_hours_day CHECK (day_of_week BETWEEN 0 AND 6)');
-        DB::statement('ALTER TABLE working_hours ADD CONSTRAINT chk_working_hours_range CHECK (is_closed = 1 OR (open_time IS NOT NULL AND close_time IS NOT NULL AND close_time > open_time))');
-        DB::statement('ALTER TABLE appointments ADD CONSTRAINT chk_appointments_range CHECK (end_time > start_time)');
+        $prefix = Schema::getConnection()->getTablePrefix();
+        DB::statement("ALTER TABLE {$prefix}appointment_services ADD CONSTRAINT chk_services_duration CHECK (duration_min > 0)");
+        DB::statement("ALTER TABLE {$prefix}working_hours ADD CONSTRAINT chk_working_hours_day CHECK (day_of_week BETWEEN 0 AND 6)");
+        DB::statement("ALTER TABLE {$prefix}working_hours ADD CONSTRAINT chk_working_hours_range CHECK (is_closed = 1 OR (open_time IS NOT NULL AND close_time IS NOT NULL AND close_time > open_time))");
+        DB::statement("ALTER TABLE {$prefix}appointments ADD CONSTRAINT chk_appointments_range CHECK (end_time > start_time)");
     }
 
     public function down(): void

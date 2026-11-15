@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 use ZipArchive;
@@ -57,6 +58,15 @@ class BackupRun extends Command
             throw new \RuntimeException("Cannot write {$target}");
         }
 
+        // On a shared database (table prefix set) only dump our own tables,
+        // never the other applications living in the same schema.
+        $prefix = $connection['prefix'] ?? '';
+        $tables = collect(DB::select('SHOW TABLES'))
+            ->map(fn ($row) => array_values((array) $row)[0])
+            ->filter(fn (string $table) => $prefix === '' || str_starts_with($table, $prefix))
+            ->values()
+            ->all();
+
         $command = [
             config('backup.mysqldump'),
             '--single-transaction',
@@ -67,9 +77,17 @@ class BackupRun extends Command
             '--host='.($connection['host'] ?? '127.0.0.1'),
             '--port='.($connection['port'] ?? 3306),
             '--user='.($connection['username'] ?? 'root'),
-            '--databases',
-            $connection['database'],
         ];
+
+        if ($tables !== [] && $prefix !== '') {
+            // Table-scoped dump: no CREATE DATABASE, restore with `mysql db < dump`.
+            $command[] = $connection['database'];
+            $command[] = '--tables';
+            array_push($command, ...$tables);
+        } else {
+            $command[] = '--databases';
+            $command[] = $connection['database'];
+        }
 
         $env = isset($connection['password']) && $connection['password'] !== ''
             ? ['MYSQL_PWD' => $connection['password']]

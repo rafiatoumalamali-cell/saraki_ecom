@@ -50,8 +50,9 @@ return new class extends Migration
             $table->index('created_at');
         });
 
-        DB::statement('ALTER TABLE payments ADD CONSTRAINT chk_payments_amount CHECK (amount >= 0)');
-        DB::statement('ALTER TABLE refunds ADD CONSTRAINT chk_refunds_amount CHECK (amount > 0)');
+        $prefix = Schema::getConnection()->getTablePrefix();
+        DB::statement("ALTER TABLE {$prefix}payments ADD CONSTRAINT chk_payments_amount CHECK (amount >= 0)");
+        DB::statement("ALTER TABLE {$prefix}refunds ADD CONSTRAINT chk_refunds_amount CHECK (amount > 0)");
     }
 
     public function down(): void
