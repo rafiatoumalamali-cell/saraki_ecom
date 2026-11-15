@@ -20,6 +20,7 @@ class ProductFactory extends Factory
 
         return [
             'category_id' => CategoryFactory::new(),
+            'type' => Product::TYPE_READY_TO_WEAR,
             'name_fr' => $label,
             'name_en' => 'Piece '.static::$seq,
             'slug' => Str::slug($label).'-'.static::$seq,
@@ -49,5 +50,10 @@ class ProductFactory extends Factory
     public function inactive(): static
     {
         return $this->state(fn (array $attributes) => ['is_active' => false]);
+    }
+
+    public function madeToMeasure(): static
+    {
+        return $this->state(fn (array $attributes) => ['type' => Product::TYPE_MADE_TO_MEASURE]);
     }
 }

@@ -9,7 +9,7 @@
         </x-ui.button>
     </div>
 
-    <form method="GET" action="{{ route('admin.content.posts.index') }}" class="mt-8 rounded-sm border border-line bg-canvas p-4">
+    <form method="GET" action="{{ route('admin.content.posts.index') }}" class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-4">
         <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,13rem)_auto] md:items-end">
             <div>
                 <x-input-label for="q" :value="__('admin.posts.search_label')" />
@@ -31,11 +31,11 @@
     </form>
 
     @if ($posts->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ $posts->total() === 0 && $search === '' && $status === null ? __('admin.posts.empty') : __('admin.posts.no_results') }}
         </p>
     @else
-        <div class="mt-8 overflow-x-auto rounded-sm border border-line bg-canvas">
+        <div class="mt-8 overflow-x-auto rounded-xl border border-line bg-canvas shadow-card">
             <table class="w-full min-w-[860px] text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>
@@ -53,7 +53,7 @@
                                 <div class="flex items-center gap-3">
                                     <div class="h-16 w-24 shrink-0 overflow-hidden rounded-xs bg-beige-200">
                                         @if ($post->coverUrl())
-                                            <img src="{{ $post->coverUrl() }}" alt="" class="h-full w-full object-cover">
+                                            <img src="{{ $post->coverThumbUrl() }}" alt="" class="h-full w-full object-cover">
                                         @endif
                                     </div>
 

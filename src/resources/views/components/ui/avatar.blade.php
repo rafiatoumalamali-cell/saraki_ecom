@@ -14,13 +14,13 @@
 @if ($url = $user->avatarUrl())
     <img
         src="{{ $url }}"
-        alt="{{ $user->name }}"
+        alt=""
         loading="lazy"
-        {{ $attributes->merge(['class' => $shape.' rounded-full border border-line bg-canvas object-cover']) }}
+        {{ $attributes->merge(['class' => $shape.' rounded-full bg-canvas object-cover shadow-sm ring-1 ring-line']) }}
     />
 @else
     <span
         aria-hidden="true"
-        {{ $attributes->merge(['class' => $shape.' flex shrink-0 items-center justify-center rounded-full border border-line bg-beige-200 font-display font-semibold uppercase text-ink-soft']) }}
+        {{ $attributes->merge(['class' => $shape.' flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-beige-100 to-beige-200 font-display font-semibold uppercase text-ink-soft shadow-sm ring-1 ring-line']) }}
     >{{ $user->initials() }}</span>
 @endif

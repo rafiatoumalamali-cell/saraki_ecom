@@ -13,8 +13,8 @@
     };
 @endphp
 
-<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-    <div @click="open = ! open" @keydown.enter.prevent="open = ! open" @keydown.escape="open = false">
+<div class="relative" x-data="{ open: false }" x-ref="root" @click.outside="open = false" @close.stop="open = false" @keydown.escape.window="open && (open = false, $refs.trigger.querySelector('button')?.focus())">
+    <div x-ref="trigger" @click="open = ! open" @keydown.enter.prevent="open = ! open" @keydown.escape="open = false">
         {{ $trigger }}
     </div>
 
@@ -26,7 +26,7 @@
         x-transition:leave="transition duration-150 ease-brand"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="absolute z-50 mt-2 {{ $width }} rounded-sm border border-line bg-canvas shadow-md {{ $alignmentClasses }}"
+        class="absolute z-50 mt-2 {{ $width }} overflow-hidden rounded-md border border-line bg-canvas shadow-lift ring-1 ring-charcoal/5 {{ $alignmentClasses }}"
         style="display: none;"
         @click="open = false"
     >

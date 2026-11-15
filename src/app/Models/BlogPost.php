@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PostStatus;
 use App\Models\Concerns\HasTranslations;
+use App\Services\ImageOptimizer;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
-    'author_id', 'title_fr', 'title_en', 'slug', 'excerpt_fr', 'excerpt_en', 'body_fr', 'body_en', 'cover_image',
+    'author_id', 'title_fr', 'title_en', 'slug', 'excerpt_fr', 'excerpt_en', 'body_fr', 'body_en', 'cover_image', 'cover_thumb',
 ])]
 class BlogPost extends Model
 {
@@ -68,12 +69,26 @@ class BlogPost extends Model
 
     public function coverUrl(): ?string
     {
+        return $this->cover_image === null ? null : $this->diskUrl($this->cover_image);
+    }
+
+    /**
+     * Card-sized derivative for listings; covers uploaded before thumbnails
+     * existed simply serve the full file.
+     */
+    public function coverThumbUrl(): ?string
+    {
+        return $this->cover_thumb === null ? $this->coverUrl() : $this->diskUrl($this->cover_thumb);
+    }
+
+    private function diskUrl(string $path): string
+    {
         // The Storage facade only advertises the Filesystem contract, which has no
         // url(); the public disk is always an adapter, which does.
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('public');
 
-        return $this->cover_image === null ? null : $disk->url($this->cover_image);
+        return $disk->url($path);
     }
 
     /**
@@ -91,19 +106,28 @@ class BlogPost extends Model
      */
     public function storeCover(UploadedFile $file): void
     {
-        $previous = $this->cover_image;
+        $previous = [$this->cover_image, $this->cover_thumb];
 
-        $this->forceFill(['cover_image' => $file->store('content/posts', 'public')])->save();
+        $stored = app(ImageOptimizer::class)->store($file, 'content/posts');
 
-        if ($previous !== null) {
-            Storage::disk('public')->delete($previous);
-        }
+        $this->forceFill([
+            'cover_image' => $stored['path'],
+            'cover_thumb' => $stored['thumb'],
+        ])->save();
+
+        $this->deletePaths($previous);
     }
 
     public function deleteCover(): void
     {
-        if ($this->cover_image !== null) {
-            Storage::disk('public')->delete($this->cover_image);
-        }
+        $this->deletePaths([$this->cover_image, $this->cover_thumb]);
+    }
+
+    /**
+     * @param  array<int, ?string>  $paths
+     */
+    private function deletePaths(array $paths): void
+    {
+        Storage::disk('public')->delete(array_filter($paths));
     }
 }

@@ -26,35 +26,37 @@
     </header>
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div class="space-y-6">
-            <section class="rounded-sm border border-line bg-canvas">
+        <div class="min-w-0 space-y-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card">
                 <h3 class="border-b border-line px-6 py-4 font-display text-heading-sm">{{ __('admin.orders.items_heading') }}</h3>
 
-                <table class="w-full text-left text-body-sm">
-                    <thead class="bg-beige">
-                        <tr>
-                            <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.item') }}</th>
-                            <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.unit_price') }}</th>
-                            <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.quantity') }}</th>
-                            <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.line_total') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($order->items as $item)
-                            <tr class="border-t border-line">
-                                <td class="px-6 py-4">
-                                    <span class="block text-ink">{{ $item->product_name }}</span>
-                                    @if (filled($item->variant_label))
-                                        <span class="block text-ink-muted">{{ $item->variant_label }}</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-right tabular">{{ money($item->unit_price) }}</td>
-                                <td class="px-6 py-4 text-right tabular">{{ $item->quantity }}</td>
-                                <td class="px-6 py-4 text-right tabular">{{ money($item->line_total) }}</td>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-body-sm">
+                        <thead class="bg-beige">
+                            <tr>
+                                <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.item') }}</th>
+                                <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.unit_price') }}</th>
+                                <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.quantity') }}</th>
+                                <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.line_total') }}</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($order->items as $item)
+                                <tr class="border-t border-line">
+                                    <td class="px-6 py-4">
+                                        <span class="block text-ink">{{ $item->product_name }}</span>
+                                        @if (filled($item->variant_label))
+                                            <span class="block text-ink-muted">{{ $item->variant_label }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-right tabular">{{ money($item->unit_price) }}</td>
+                                    <td class="px-6 py-4 text-right tabular">{{ $item->quantity }}</td>
+                                    <td class="px-6 py-4 text-right tabular">{{ money($item->line_total) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
                 <dl class="space-y-2 border-t border-line px-6 py-4 text-body-sm">
                     <div class="flex items-baseline justify-between gap-4">
@@ -72,48 +74,50 @@
                 </dl>
             </section>
 
-            <section class="rounded-sm border border-line bg-canvas">
+            <section class="rounded-xl border border-line bg-canvas shadow-card">
                 <h3 class="border-b border-line px-6 py-4 font-display text-heading-sm">{{ __('admin.orders.payments_heading') }}</h3>
 
                 @if ($order->payments->isEmpty())
                     <p class="px-6 py-4 text-body-sm text-ink-muted">{{ __('admin.orders.no_payments') }}</p>
                 @else
-                    <table class="w-full text-left text-body-sm">
-                        <thead class="bg-beige">
-                            <tr>
-                                <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.attempt') }}</th>
-                                <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.channel') }}</th>
-                                <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.payment_status') }}</th>
-                                <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.amount') }}</th>
-                                <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.paid_at') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($order->payments as $payment)
-                                <tr class="border-t border-line align-top">
-                                    <td class="px-6 py-4">
-                                        <span class="block tabular">{{ $payment->reference }}</span>
-                                        <span class="block text-ink-muted">{{ $payment->provider }}</span>
-                                        @if (filled($payment->provider_reference))
-                                            <span class="block text-ink-muted">
-                                                {{ __('admin.orders.gateway_reference') }}: <span class="tabular">{{ $payment->provider_reference }}</span>
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {{ filled($payment->channel) ? __('shop.payment.channel_'.$payment->channel) : '—' }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <x-ui.badge :tone="$payment->status->badgeTone()">{{ $payment->status->label() }}</x-ui.badge>
-                                    </td>
-                                    <td class="px-6 py-4 text-right tabular">{{ money($payment->amount) }}</td>
-                                    <td class="px-6 py-4">
-                                        {{ $payment->paid_at ? localized_date($payment->paid_at) : '—' }}
-                                    </td>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-body-sm">
+                            <thead class="bg-beige">
+                                <tr>
+                                    <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.attempt') }}</th>
+                                    <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.channel') }}</th>
+                                    <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.payment_status') }}</th>
+                                    <th scope="col" class="label-upper px-6 py-3 text-right text-ink-muted">{{ __('admin.orders.amount') }}</th>
+                                    <th scope="col" class="label-upper px-6 py-3 text-ink-muted">{{ __('admin.orders.paid_at') }}</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($order->payments as $payment)
+                                    <tr class="border-t border-line align-top">
+                                        <td class="px-6 py-4">
+                                            <span class="block tabular">{{ $payment->reference }}</span>
+                                            <span class="block text-ink-muted">{{ $payment->provider }}</span>
+                                            @if (filled($payment->provider_reference))
+                                                <span class="block text-ink-muted">
+                                                    {{ __('admin.orders.gateway_reference') }}: <span class="tabular">{{ $payment->provider_reference }}</span>
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ filled($payment->channel) ? __('shop.payment.channel_'.$payment->channel) : '—' }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <x-ui.badge :tone="$payment->status->badgeTone()">{{ $payment->status->label() }}</x-ui.badge>
+                                        </td>
+                                        <td class="px-6 py-4 text-right tabular">{{ money($payment->amount) }}</td>
+                                        <td class="px-6 py-4">
+                                            {{ $payment->paid_at ? localized_date($payment->paid_at) : '—' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @endif
 
                 @if ($captured && $captured->refunds->isNotEmpty())
@@ -133,7 +137,7 @@
                 @endif
             </section>
 
-            <section class="rounded-sm border border-line bg-canvas">
+            <section class="rounded-xl border border-line bg-canvas shadow-card">
                 <h3 class="border-b border-line px-6 py-4 font-display text-heading-sm">{{ __('admin.orders.timeline') }}</h3>
 
                 @if ($order->statusHistory->isEmpty())
@@ -165,8 +169,8 @@
             </section>
         </div>
 
-        <div class="space-y-6">
-            <section class="rounded-sm border border-line bg-canvas p-6">
+        <div class="min-w-0 space-y-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.orders.update_status') }}</h3>
 
                 @if ($nextStatuses->isEmpty())
@@ -206,7 +210,7 @@
             </section>
 
             @if ($canReconcile)
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h3 class="font-display text-heading-sm">{{ __('admin.orders.reconcile_heading') }}</h3>
                     <p class="mt-2 text-body-sm text-ink-muted">{{ __('admin.orders.reconcile_hint') }}</p>
 
@@ -232,7 +236,7 @@
             @endif
 
             @if ($captured && $refundable > 0)
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h3 class="font-display text-heading-sm">{{ __('admin.refunds.heading') }}</h3>
                     <p class="mt-2 text-body-sm text-ink-muted">{{ __('admin.refunds.hint') }}</p>
                     <p class="mt-2 text-body-sm text-ink">
@@ -275,7 +279,7 @@
                 </section>
             @endif
 
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.orders.delivery_heading') }}</h3>
 
                 <address class="mt-3 text-body-sm not-italic text-ink-soft">

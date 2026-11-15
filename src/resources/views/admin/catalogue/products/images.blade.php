@@ -17,7 +17,7 @@
         method="POST"
         action="{{ route('admin.catalogue.products.images.store', $product) }}"
         enctype="multipart/form-data"
-        class="mt-8 rounded-sm border border-line bg-canvas p-6"
+        class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6"
     >
         @csrf
 
@@ -59,16 +59,16 @@
     </form>
 
     @if ($images->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.images.empty') }}
         </p>
     @else
         <ul class="mt-8 space-y-4">
             @foreach ($images as $image)
-                <li class="rounded-sm border border-line bg-canvas p-4">
+                <li class="rounded-xl border border-line bg-canvas shadow-card p-4">
                     <div class="grid gap-4 md:grid-cols-[7rem_minmax(0,1fr)_auto] md:items-start">
                         <div class="relative overflow-hidden rounded-xs bg-beige-200">
-                            <img src="{{ $image->url() }}" alt="{{ $image->altText() }}" loading="lazy" class="aspect-[3/4] w-full object-cover">
+                            <img src="{{ $image->thumbUrl() }}" alt="{{ $image->altText() }}" loading="lazy" class="aspect-[3/4] w-full object-cover">
 
                             @if ($image->is_primary)
                                 <span class="label-upper absolute start-2 top-2 rounded-xs bg-charcoal px-2 py-1 text-beige">

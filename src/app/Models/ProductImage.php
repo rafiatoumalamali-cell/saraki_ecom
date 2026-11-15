@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['product_id', 'path', 'alt_fr', 'alt_en', 'sort_order', 'is_primary'])]
+#[Fillable(['product_id', 'path', 'thumb_path', 'alt_fr', 'alt_en', 'sort_order', 'is_primary'])]
 class ProductImage extends Model
 {
     use HasFactory, HasTranslations;
@@ -40,12 +40,26 @@ class ProductImage extends Model
 
     public function url(): ?string
     {
+        return $this->path === null ? null : $this->diskUrl($this->path);
+    }
+
+    /**
+     * Card-sized derivative generated at upload time. Images uploaded before
+     * thumbnails existed have no thumb_path and simply serve the full file.
+     */
+    public function thumbUrl(): ?string
+    {
+        return $this->thumb_path === null ? $this->url() : $this->diskUrl($this->thumb_path);
+    }
+
+    private function diskUrl(string $path): string
+    {
         // The Storage facade only advertises the Filesystem contract, which has no
         // url(); the public disk is always an adapter, which does.
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('public');
 
-        return $this->path === null ? null : $disk->url($this->path);
+        return $disk->url($path);
     }
 
     /**
@@ -59,8 +73,6 @@ class ProductImage extends Model
 
     public function deleteFiles(): void
     {
-        if ($this->path !== null) {
-            Storage::disk('public')->delete($this->path);
-        }
+        Storage::disk('public')->delete(array_filter([$this->path, $this->thumb_path]));
     }
 }

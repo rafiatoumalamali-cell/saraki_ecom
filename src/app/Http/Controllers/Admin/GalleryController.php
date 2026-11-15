@@ -8,6 +8,7 @@ use App\Enums\GalleryCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GalleryItemRequest;
 use App\Models\GalleryItem;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -38,13 +39,15 @@ class GalleryController extends Controller
         ]);
     }
 
-    public function store(GalleryItemRequest $request): RedirectResponse
+    public function store(GalleryItemRequest $request, ImageOptimizer $optimizer): RedirectResponse
     {
         $data = $request->validated();
+        $stored = $optimizer->store($request->file('image'), 'content/gallery');
 
         $item = GalleryItem::create([
             ...collect($data)->except('image')->all(),
-            'image_path' => $request->file('image')->store('content/gallery', 'public'),
+            'image_path' => $stored['path'],
+            'thumb_path' => $stored['thumb'],
         ]);
 
         return redirect()
@@ -93,7 +96,7 @@ class GalleryController extends Controller
         // The row goes first: if the file cannot be removed the database still
         // holds no reference to an image nobody can see.
         $gallery->delete();
-        $gallery->deleteFile();
+        $gallery->deleteFiles();
 
         return redirect()
             ->route('admin.content.gallery.index')

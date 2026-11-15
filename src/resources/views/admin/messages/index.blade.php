@@ -29,7 +29,7 @@
         @endforeach
     </nav>
 
-    <form method="GET" action="{{ route('admin.messages.index') }}" class="mt-6 rounded-sm border border-line bg-canvas p-4">
+    <form method="GET" action="{{ route('admin.messages.index') }}" class="mt-6 rounded-xl border border-line bg-canvas shadow-card p-4">
         @if ($status !== null)
             <input type="hidden" name="status" value="{{ $status->value }}">
         @endif
@@ -45,11 +45,11 @@
     </form>
 
     @if ($messages->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ $total === 0 && $search === '' && $status === null ? __('admin.messages.empty') : __('admin.messages.no_results') }}
         </p>
     @else
-        <div class="mt-8 overflow-x-auto rounded-sm border border-line bg-canvas">
+        <div class="mt-8 overflow-x-auto rounded-xl border border-line bg-canvas shadow-card">
             <table class="w-full min-w-[720px] text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>

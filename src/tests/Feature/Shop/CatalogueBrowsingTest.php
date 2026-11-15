@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 
 test('the catalogue lists every published piece', function () {
     Product::factory()->create(['name_fr' => 'Boubou Royal', 'name_en' => 'Royal Boubou']);
@@ -119,6 +120,19 @@ test('the grid is paged twelve at a time', function () {
     expect($first->total())->toBe(13)
         ->and($first->count())->toBe(12)
         ->and($second->count())->toBe(1);
+});
+
+test('a card with several photos carries the hover carousel markup', function () {
+    $product = Product::factory()->create(['name_fr' => 'Boubou Royal']);
+    ProductImage::factory()->for($product)->primary()->create(['path' => 'products/one.jpg']);
+    ProductImage::factory()->for($product)->create(['path' => 'products/two.jpg']);
+
+    $this->get(route('shop.index', 'fr'))
+        ->assertOk()
+        ->assertSee('products/one.jpg', false)
+        ->assertSee('products/two.jpg', false)
+        ->assertSee('slides: 2', false)
+        ->assertSee('x-show="photo === 1"', false);
 });
 
 test('the catalogue carries its canonical link and both languages', function () {

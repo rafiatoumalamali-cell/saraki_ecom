@@ -6,17 +6,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SettingsRequest;
+use App\Services\PaymentMethods;
 use App\Services\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
 {
-    public function __construct(private readonly Settings $settings) {}
+    public function __construct(
+        private readonly Settings $settings,
+        private readonly PaymentMethods $paymentMethods,
+    ) {}
 
     public function edit(): View
     {
-        return view('admin.settings.edit');
+        return view('admin.settings.edit', [
+            'paystackUnconfigured' => $this->paymentMethods->paystackRequestedButUnconfigured(),
+        ]);
     }
 
     /**

@@ -34,7 +34,7 @@
 
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
             <div class="space-y-6">
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.settings.general') }}</h2>
                     <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.settings.general_hint') }}</p>
 
@@ -95,7 +95,7 @@
                     @endif
                 </section>
 
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.settings.shipping_zones') }}</h2>
                     <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.settings.shipping_hint') }}</p>
 
@@ -169,9 +169,15 @@
                     <x-input-error class="mt-2" :messages="$errors->get('shipping_zones')" />
                 </section>
 
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.settings.payment_methods') }}</h2>
                     <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.settings.payment_hint') }}</p>
+
+                    @if ($paystackUnconfigured)
+                        <x-ui.alert type="warning" class="mt-4">
+                            {{ __('admin.settings.paystack_missing_key') }}
+                        </x-ui.alert>
+                    @endif
 
                     <div class="mt-5 space-y-3">
                         @foreach ($methodLabels as $method => $label)
@@ -197,13 +203,13 @@
             </div>
 
             <div class="space-y-6">
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.settings.commerce') }}</h2>
 
                     <div class="mt-5 space-y-5">
                         <div>
                             <div class="flex items-center justify-between gap-3">
-                                <span class="text-body-md text-ink">{{ __('admin.settings.order_expiry_minutes') }}</span>
+                                <label for="order_expiry_minutes" class="text-body-md text-ink">{{ __('admin.settings.order_expiry_minutes') }}</label>
                             </div>
                             <x-text-input
                                 id="order_expiry_minutes"
@@ -237,7 +243,7 @@
                     </div>
                 </section>
 
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.settings.social') }}</h2>
                     <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.settings.social_hint') }}</p>
 

@@ -7,7 +7,7 @@ use Illuminate\View\View;
 
 class AppLayout extends Component
 {
-    public function __construct(public ?string $title = null) {}
+    public function __construct(public ?string $title = null, public bool $bare = false) {}
 
     public function render(): View
     {

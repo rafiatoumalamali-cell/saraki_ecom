@@ -42,7 +42,7 @@ return [
     'whatsapp_message' => 'Hello SARAKI, I would like some information.',
 
     'footer' => [
-        'tagline' => 'Contemporary African fashion, made to order in Accra.',
+        'tagline' => 'Contemporary African fashion, made to order in Niamey.',
         'shop' => 'Shop',
         'help' => 'Help',
         'contact' => 'Contact',

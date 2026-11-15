@@ -45,6 +45,33 @@ test('several photos can be uploaded in one go', function () {
     Storage::disk('public')->assertExists($images[0]->path);
 });
 
+test('uploads are converted to webp with a card-sized thumbnail', function () {
+    $this->actingAs($this->admin)
+        ->post(route('admin.catalogue.products.images.store', $this->product), [
+            'images' => [UploadedFile::fake()->image('front.jpg', 1200, 800)],
+        ])
+        ->assertSessionHasNoErrors();
+
+    $image = $this->product->images()->firstOrFail();
+
+    expect($image->path)->toEndWith('.webp')
+        ->and($image->thumb_path)->toEndWith('-thumb.webp')
+        ->and($image->thumbUrl())->toContain('-thumb.webp');
+
+    Storage::disk('public')->assertExists($image->path);
+    Storage::disk('public')->assertExists($image->thumb_path);
+});
+
+test('images uploaded before thumbnails existed still serve the full file', function () {
+    $image = ProductImage::factory()->for($this->product)->create([
+        'path' => 'products/legacy.jpg',
+        'thumb_path' => null,
+    ]);
+
+    expect($image->thumbUrl())->toContain('legacy.jpg')
+        ->not->toContain('-thumb');
+});
+
 test('an uploaded file that is not an image is refused', function () {
     $this->actingAs($this->admin)
         ->post(route('admin.catalogue.products.images.store', $this->product), [

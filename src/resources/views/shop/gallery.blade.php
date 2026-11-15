@@ -112,7 +112,7 @@
                             class="group relative block w-full overflow-hidden rounded-sm bg-beige-50 text-start"
                         >
                             <img
-                                src="{{ $item->url() }}"
+                                src="{{ $item->thumbUrl() }}"
                                 alt="{{ $item->translate('title') }}"
                                 loading="lazy"
                                 class="aspect-square w-full object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.03]"

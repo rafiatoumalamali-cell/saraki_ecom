@@ -27,7 +27,7 @@
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div class="space-y-6">
-            <section class="rounded-sm border border-line bg-canvas">
+            <section class="rounded-xl border border-line bg-canvas shadow-card">
                 <h3 class="border-b border-line px-6 py-4 font-display text-heading-sm">{{ __('admin.appointments.service') }}</h3>
 
                 <dl class="space-y-3 px-6 py-5 text-body-sm">
@@ -58,7 +58,7 @@
                 </dl>
             </section>
 
-            <section class="rounded-sm border border-line bg-canvas">
+            <section class="rounded-xl border border-line bg-canvas shadow-card">
                 <h3 class="border-b border-line px-6 py-4 font-display text-heading-sm">{{ __('admin.appointments.customer_notes') }}</h3>
 
                 <p class="px-6 py-5 text-body-sm {{ filled($appointment->notes) ? 'text-ink-soft' : 'text-ink-muted' }}">
@@ -67,7 +67,7 @@
             </section>
 
             @if (filled($appointment->admin_notes))
-                <section class="rounded-sm border border-line bg-canvas">
+                <section class="rounded-xl border border-line bg-canvas shadow-card">
                     <h3 class="border-b border-line px-6 py-4 font-display text-heading-sm">{{ __('admin.appointments.admin_notes') }}</h3>
 
                     <p class="px-6 py-5 text-body-sm text-ink-soft">{{ $appointment->admin_notes }}</p>
@@ -76,7 +76,7 @@
         </div>
 
         <div class="space-y-6">
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.appointments.update_status') }}</h3>
 
                 @if ($nextStatuses === [])
@@ -153,7 +153,7 @@
                 @endif
             </section>
 
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.appointments.customer') }}</h3>
 
                 <address class="mt-3 text-body-sm not-italic text-ink-soft">

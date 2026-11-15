@@ -42,7 +42,7 @@ return [
     'whatsapp_message' => 'Bonjour SARAKI, je souhaite avoir un renseignement.',
 
     'footer' => [
-        'tagline' => 'Mode africaine contemporaine, confectionnée sur mesure à Accra.',
+        'tagline' => 'Mode africaine contemporaine, confectionnée sur mesure à Niamey.',
         'shop' => 'Boutique',
         'help' => 'Aide',
         'contact' => 'Contact',

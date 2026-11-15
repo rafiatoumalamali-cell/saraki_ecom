@@ -12,11 +12,11 @@
     </form>
 
     @if ($customers->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.customers.no_results') }}
         </p>
     @else
-        <div class="mt-8 hidden overflow-hidden rounded-sm border border-line bg-canvas md:block">
+        <div class="mt-8 hidden overflow-hidden rounded-xl border border-line bg-canvas shadow-card md:block">
             <table class="w-full text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>
@@ -24,7 +24,7 @@
                         <th scope="col" class="label-upper px-6 py-4 text-ink-muted">{{ __('admin.customers.contact') }}</th>
                         <th scope="col" class="label-upper px-6 py-4 text-ink-muted">{{ __('admin.customers.sheet') }}</th>
                         <th scope="col" class="label-upper px-6 py-4 text-ink-muted">{{ __('admin.customers.created') }}</th>
-                        <th scope="col" class="label-upper px-6 py-4 text-right text-ink-muted">&nbsp;</th>
+                        <th scope="col" class="label-upper px-6 py-4 text-right text-ink-muted"><span class="sr-only">{{ __('admin.common.actions') }}</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,7 +59,7 @@
 
         <ul class="mt-8 space-y-4 md:hidden">
             @foreach ($customers as $customer)
-                <li class="rounded-sm border border-line bg-canvas p-4">
+                <li class="rounded-xl border border-line bg-canvas shadow-card p-4">
                     <div class="flex items-center gap-3">
                         <x-ui.avatar :user="$customer" size="md" />
                         <div class="min-w-0">

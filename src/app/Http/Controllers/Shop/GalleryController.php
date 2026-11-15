@@ -28,6 +28,13 @@ class GalleryController extends Controller
             ->orderByDesc('id')
             ->get();
 
+        // One grouped count for every filter chip instead of a query per category.
+        $counts = GalleryItem::query()
+            ->published()
+            ->selectRaw('category, COUNT(*) as total')
+            ->groupBy('category')
+            ->pluck('total', 'category');
+
         return view('shop.gallery', [
             'items' => $items,
             'category' => $category,
@@ -35,7 +42,7 @@ class GalleryController extends Controller
                 ->map(fn (GalleryCategory $case) => [
                     'value' => $case->value,
                     'label' => $case->label(),
-                    'count' => GalleryItem::query()->published()->where('category', $case)->count(),
+                    'count' => (int) ($counts[$case->value] ?? 0),
                 ])
                 ->all(),
             'seo' => [

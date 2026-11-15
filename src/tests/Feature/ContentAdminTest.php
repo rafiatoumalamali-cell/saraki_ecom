@@ -31,7 +31,10 @@ test('an admin publishes a gallery photo without touching code', function () {
 
     expect($item->is_published)->toBeTrue()
         ->and($item->category)->toBe(GalleryCategory::Event)
-        ->and(Storage::disk('public')->exists($item->image_path))->toBeTrue();
+        ->and($item->image_path)->toEndWith('.webp')
+        ->and($item->thumb_path)->toEndWith('-thumb.webp')
+        ->and(Storage::disk('public')->exists($item->image_path))->toBeTrue()
+        ->and(Storage::disk('public')->exists($item->thumb_path))->toBeTrue();
 
     $this->get(route('gallery.index', 'en'))
         ->assertOk()
@@ -80,6 +83,28 @@ test('an admin publishes an article the journal then serves', function () {
         ->assertOk()
         ->assertSee('The wax of Kumasi')
         ->assertSee('First paragraph of the text.');
+});
+
+test('an uploaded cover is stored as webp with a thumbnail', function () {
+    $this->actingAs($this->admin)->post(route('admin.content.posts.store'), [
+        'title_fr' => 'Guide des tailles',
+        'title_en' => 'Sizing guide',
+        'slug' => 'guide-des-tailles',
+        'excerpt_fr' => 'Comment prendre ses mesures.',
+        'excerpt_en' => 'How to take your measurements.',
+        'body_fr' => 'Corps.',
+        'body_en' => 'Body.',
+        'status' => PostStatus::Published->value,
+        'published_at' => '',
+        'cover' => UploadedFile::fake()->image('cover.jpg', 1200, 800),
+    ])->assertRedirect();
+
+    $post = BlogPost::firstOrFail();
+
+    expect($post->cover_image)->toEndWith('.webp')
+        ->and($post->cover_thumb)->toEndWith('-thumb.webp')
+        ->and(Storage::disk('public')->exists($post->cover_image))->toBeTrue()
+        ->and(Storage::disk('public')->exists($post->cover_thumb))->toBeTrue();
 });
 
 test('a draft article never reaches the journal', function () {

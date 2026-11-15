@@ -34,9 +34,9 @@
             @foreach ($posts as $post)
                 <li class="group relative flex flex-col">
                     <div class="overflow-hidden rounded-sm bg-beige-50">
-                        @if ($post->coverUrl())
+                        @if ($post->coverThumbUrl())
                             <img
-                                src="{{ $post->coverUrl() }}"
+                                src="{{ $post->coverThumbUrl() }}"
                                 alt="{{ $post->translate('title') }}"
                                 loading="lazy"
                                 class="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.03]"

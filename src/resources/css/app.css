@@ -1,6 +1,11 @@
-@import '@fontsource/montserrat/400.css';
-@import '@fontsource/montserrat/600.css';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+@import '@fontsource/manrope/700.css';
+@import '@fontsource/manrope/800.css';
 @import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/500.css';
+@import '@fontsource/playfair-display/600.css';
 @import '@fontsource/playfair-display/700.css';
 
 @tailwind base;
@@ -11,25 +16,47 @@
 :root {
     --color-charcoal: #0a0a0a;
     --color-beige: #f5f1e8;
+    --color-shell: #fbf9f5;
     --color-gold: #d4af37;
     --color-gold-text: #8a6d1f;
     --color-danger: #a3202b;
     --color-success: #1e6f45;
     --font-display: 'Playfair Display', 'Times New Roman', serif;
-    --font-sans: Montserrat, 'Helvetica Neue', Arial, sans-serif;
+    --font-sans: Manrope, 'Helvetica Neue', Arial, sans-serif;
 }
 
 @layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-        @apply bg-canvas font-sans text-ink;
+        @apply bg-beige-50 font-sans text-ink antialiased;
         font-size: 16px;
-        line-height: 1.625;
+        line-height: 1.65;
+        text-rendering: optimizeLegibility;
     }
 
     h1,
     h2,
     h3 {
         @apply font-display;
+        text-wrap: balance;
+    }
+
+    h4,
+    h5,
+    h6 {
+        text-wrap: balance;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    ::selection {
+        background: rgba(212, 175, 55, 0.28);
     }
 
     /* Gold focus ring on every interactive element (design system 5.1). */
@@ -45,20 +72,45 @@
 
 @layer components {
     .label-upper {
-        @apply text-label font-semibold uppercase tracking-[0.08em];
+        @apply text-label font-bold uppercase;
     }
 
     .field {
-        @apply h-12 w-full rounded-xs border border-line bg-canvas px-3 text-body-md text-ink placeholder:text-ink-muted;
+        @apply h-[52px] w-full rounded-md border border-line bg-canvas px-4 text-body-md text-ink shadow-sm transition-all duration-200 ease-brand placeholder:text-ink-muted/80;
+    }
+
+    .field:hover:not(:focus):not(:disabled) {
+        @apply border-line-strong;
     }
 
     .field:focus {
-        border-color: var(--color-charcoal);
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+        @apply border-charcoal outline-none;
+        box-shadow:
+            0 1px 2px rgba(10, 10, 10, 0.04),
+            0 0 0 3px rgba(212, 175, 55, 0.35);
+    }
+
+    .field:disabled {
+        @apply cursor-not-allowed bg-beige-50 text-ink-muted;
     }
 
     .field-error {
         @apply border-danger;
+    }
+
+    .field-error:focus {
+        box-shadow:
+            0 1px 2px rgba(10, 10, 10, 0.04),
+            0 0 0 3px rgba(163, 32, 43, 0.18);
+    }
+
+    /* Browsers paint autofilled fields yellow; keep them on the canvas colour. */
+    .field:-webkit-autofill,
+    .field:-webkit-autofill:hover,
+    .field:-webkit-autofill:focus {
+        -webkit-text-fill-color: var(--color-ink);
+        -webkit-box-shadow: 0 0 0 1000px #fff inset;
+        transition: background-color 9999s ease-out;
     }
 
     textarea.field {
@@ -66,20 +118,86 @@
         resize: vertical;
     }
 
+    select.field {
+        @apply pe-10;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236E6A63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.9rem center;
+        background-size: 1rem;
+    }
+
     .link {
-        @apply text-ink underline decoration-gold underline-offset-4 transition-colors duration-150 ease-brand hover:text-ink-soft;
+        @apply text-ink underline decoration-gold decoration-2 underline-offset-4 transition-colors duration-200 ease-brand hover:text-gold-700;
     }
 
     .tabular {
         font-variant-numeric: tabular-nums;
     }
+
+    /* Layered surface: white card on the warm shell background. */
+    .card {
+        @apply rounded-md border border-line bg-canvas shadow-card;
+    }
+
+    .card-hover {
+        @apply transition-all duration-300 ease-brand hover:-translate-y-1 hover:border-line-strong hover:shadow-lift;
+    }
+
+    .divider {
+        @apply border-t border-line;
+    }
+
+    /* Scroll reveal — gated on a class added by JS, so content is never hidden without it. */
+    .has-reveal [data-reveal] {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+            opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    .has-reveal [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    .skeleton {
+        @apply relative overflow-hidden rounded-sm bg-beige-200;
+    }
+
+    .skeleton::after {
+        @apply absolute inset-0;
+        content: '';
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        animation: shimmer 1.6s infinite;
+    }
+}
+
+@media print {
+    .has-reveal [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+
+    .has-reveal [data-reveal] {
+        opacity: 1;
+        transform: none;
     }
 }

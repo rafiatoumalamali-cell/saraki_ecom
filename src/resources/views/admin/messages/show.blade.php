@@ -18,11 +18,28 @@
 
     <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
         <div class="space-y-6">
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            @if ($message->product)
+                @php $model = $message->product; @endphp
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
+                    <h3 class="font-display text-heading-sm">{{ __('admin.messages.chosen_model') }}</h3>
+                    <a href="{{ route('admin.catalogue.products.edit', $model) }}" class="mt-4 flex items-center gap-4 group">
+                        <span class="h-20 w-16 shrink-0 overflow-hidden rounded-md bg-beige-100">
+                            <x-ui.product-media :product="$model" decorative class="h-full w-full object-cover transition-transform duration-500 ease-brand group-hover:scale-105" />
+                        </span>
+                        <span class="min-w-0">
+                            <span class="block font-semibold text-ink transition-colors group-hover:text-gold-700">{{ $model->translate('name') }}</span>
+                            <span class="mt-1 block text-body-sm text-ink-muted">{{ $model->category?->translate('name') }}</span>
+                            <span class="link mt-2 inline-block text-body-sm">{{ __('admin.messages.open_product') }}</span>
+                        </span>
+                    </a>
+                </section>
+            @endif
+
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <div class="whitespace-pre-line text-body-md text-ink-soft">{{ $message->message }}</div>
             </section>
 
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.messages.reply') }}</h3>
 
                 <a href="mailto:{{ $message->email }}?subject={{ rawurlencode('Re: '.($message->subject ?: __('admin.messages.no_subject'))) }}" class="mt-4 inline-flex items-center gap-2 link">
@@ -32,7 +49,7 @@
         </div>
 
         <div class="space-y-6">
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.messages.contact') }}</h3>
 
                 <dl class="mt-4 space-y-3 text-body-sm">
@@ -59,7 +76,7 @@
                 </dl>
             </section>
 
-            <section class="rounded-sm border border-line bg-canvas p-6">
+            <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                 <h3 class="font-display text-heading-sm">{{ __('admin.messages.update_status') }}</h3>
 
                 <form method="POST" action="{{ route('admin.messages.status', $message) }}" class="mt-4 space-y-4">

@@ -34,6 +34,20 @@ test('switching the locale is remembered for the next request', function () {
     $this->get('/login')->assertSee('Mot de passe oublié ?');
 });
 
+test('the language switch redirects to the same page in the new locale', function () {
+    $this->withHeader('referer', 'http://localhost/fr/catalogue?sort=name')
+        ->post(route('locale.update', 'en'))
+        ->assertRedirect('/en/catalogue?sort=name');
+});
+
+test('switching language updates the signed-in account preference', function () {
+    $customer = User::factory()->create(['locale' => 'fr']);
+
+    $this->actingAs($customer)->post(route('locale.update', 'en'));
+
+    expect($customer->refresh()->locale)->toBe('en');
+});
+
 test('a signed-in customer keeps their own language when nothing was chosen yet', function () {
     $customer = User::factory()->create(['locale' => 'en']);
 

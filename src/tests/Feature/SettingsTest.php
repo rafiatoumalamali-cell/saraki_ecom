@@ -147,6 +147,28 @@ test('saved settings come back on the edit form', function () {
         ->assertSee('Kumasi');
 });
 
+test('settings warns when paystack is ticked but the secret key is missing', function () {
+    config(['services.paystack.secret_key' => null]);
+    commerce_setting('payment_methods', ['paystack' => true, 'cod' => true, 'transfer' => false]);
+
+    $admin = User::factory()->admin()->create(['locale' => 'en']);
+
+    $this->actingAs($admin)->get(route('admin.settings.edit'))
+        ->assertOk()
+        ->assertSee('PAYSTACK_SECRET_KEY');
+});
+
+test('the dashboard warns when checkout has no usable payment method', function () {
+    config(['services.paystack.secret_key' => null]);
+    commerce_setting('payment_methods', ['paystack' => true, 'cod' => false, 'transfer' => false]);
+
+    $admin = User::factory()->admin()->create(['locale' => 'en']);
+
+    $this->actingAs($admin)->get(route('admin.dashboard'))
+        ->assertOk()
+        ->assertSee('No payment method is currently available', false);
+});
+
 test('the settings screen is reserved for the atelier', function () {
     $this->get(route('admin.settings.edit'))->assertRedirect('/login');
 

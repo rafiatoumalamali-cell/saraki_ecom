@@ -40,7 +40,7 @@
 
     <div class="mt-8 grid gap-4 lg:grid-cols-3">
         @foreach ($cards as $card)
-            <section class="flex flex-col rounded-sm border border-line bg-canvas p-6">
+            <section class="flex flex-col rounded-xl border border-line bg-canvas shadow-card p-6">
                 <div class="flex items-start justify-between gap-4">
                     <div class="min-w-0">
                         <h2 class="font-display text-heading-sm">{{ $card['title'] }}</h2>
@@ -70,7 +70,7 @@
     </div>
 
     <div class="mt-12 grid gap-6 lg:grid-cols-2">
-        <section class="rounded-sm border border-line bg-canvas p-6">
+        <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
             <div class="flex items-center justify-between gap-4">
                 <h2 class="font-display text-heading-sm">{{ __('admin.content.latest_posts') }}</h2>
                 <a href="{{ route('admin.content.posts.index') }}" class="link text-body-sm">{{ __('admin.content.manage') }}</a>
@@ -92,7 +92,7 @@
             @endif
         </section>
 
-        <section class="rounded-sm border border-line bg-canvas p-6">
+        <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
             <div class="flex items-center justify-between gap-4">
                 <h2 class="font-display text-heading-sm">{{ __('admin.content.latest_messages') }}</h2>
                 <a href="{{ route('admin.messages.index') }}" class="link text-body-sm">{{ __('admin.messages.title') }}</a>

@@ -2,6 +2,19 @@
     $locale = app()->getLocale();
     $body = (string) $post->translate('body');
     $paragraphs = preg_split('/\n\s*\n/', $body, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+    $articleSchema = array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => $post->translate('title'),
+        'description' => $seo['description'],
+        'image' => $post->coverUrl(),
+        'datePublished' => $post->publishedOn()?->toIso8601String(),
+        'dateModified' => $post->updated_at?->toIso8601String(),
+        'author' => $post->author ? ['@type' => 'Person', 'name' => $post->author->name] : null,
+        'publisher' => ['@type' => 'Organization', 'name' => config('saraki.store_name')],
+        'mainEntityOfPage' => $seo['canonical'],
+    ]);
 @endphp
 
 <x-app-layout :title="$seo['title']">
@@ -13,6 +26,7 @@
         :type="$seo['type']"
         :alternates="$seo['alternates']"
     />
+    <x-ui.json-ld :data="$articleSchema" />
 
     <nav aria-label="Breadcrumb" class="text-body-sm text-ink-muted">
         <ol class="flex flex-wrap items-center gap-2">
@@ -75,8 +89,8 @@
                 @foreach ($related as $item)
                     <article>
                         <a href="{{ $item->url($locale) }}" class="block overflow-hidden rounded-sm bg-beige-50">
-                            @if ($item->coverUrl())
-                                <img src="{{ $item->coverUrl() }}" alt="{{ $item->translate('title') }}" loading="lazy" class="aspect-[4/3] w-full object-cover">
+                            @if ($item->coverThumbUrl())
+                                <img src="{{ $item->coverThumbUrl() }}" alt="{{ $item->translate('title') }}" loading="lazy" class="aspect-[4/3] w-full object-cover">
                             @else
                                 <div class="flex aspect-[4/3] w-full items-center justify-center bg-beige">
                                     <span class="font-display text-heading-md tracking-[0.3em] text-beige-200">{{ config('saraki.store_name') }}</span>

@@ -9,7 +9,7 @@
         </x-ui.button>
     </div>
 
-    <form method="GET" action="{{ route('admin.catalogue.products.index') }}" class="mt-8 rounded-sm border border-line bg-canvas p-4">
+    <form method="GET" action="{{ route('admin.catalogue.products.index') }}" class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-4">
         <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,13rem)_minmax(0,11rem)_auto] md:items-end">
             <div>
                 <x-input-label for="q" :value="__('admin.products.search_label')" />
@@ -40,13 +40,13 @@
     </form>
 
     @if ($products->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ $products->total() === 0 && $search === '' && $categoryId === null && $status === ''
                 ? __('admin.products.empty')
                 : __('admin.products.no_results') }}
         </p>
     @else
-        <div class="mt-8 overflow-x-auto rounded-sm border border-line bg-canvas">
+        <div class="mt-8 overflow-x-auto rounded-xl border border-line bg-canvas shadow-card">
             <table class="w-full min-w-[1000px] text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>
@@ -65,7 +65,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <div class="h-16 w-12 shrink-0 overflow-hidden rounded-xs bg-beige-200">
-                                        <x-ui.product-media :product="$product" class="h-full w-full object-cover" />
+                                        <x-ui.product-media :product="$product" decorative class="h-full w-full object-cover" />
                                     </div>
 
                                     <div class="min-w-0">
@@ -100,6 +100,10 @@
 
                                     @if ($product->is_featured)
                                         <x-ui.badge tone="outline">{{ __('admin.products.featured') }}</x-ui.badge>
+                                    @endif
+
+                                    @if ($product->isMadeToMeasure())
+                                        <x-ui.badge tone="gold">{{ __('admin.products.type_made') }}</x-ui.badge>
                                     @endif
                                 </div>
                             </td>

@@ -16,7 +16,9 @@
     // Storage returns a path relative to the app root; crawlers need an absolute URL.
     $ogImage = filled($image) && ! preg_match('#^https?://#i', $image) ? url($image) : $image;
 
-    $fallback = $alternates[config('app.fallback_locale')] ?? $canonical;
+    // x-default is the site's primary language — the first supported locale —
+    // not the translation fallback, which is English here.
+    $fallback = $alternates[config('saraki.supported_locales')[0]] ?? $canonical;
 @endphp
 
 @push('head')

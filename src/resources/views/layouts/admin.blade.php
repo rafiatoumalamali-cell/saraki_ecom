@@ -32,46 +32,55 @@
         </a>
 
         <div class="min-h-screen lg:flex">
-            <aside class="flex shrink-0 items-stretch overflow-x-auto border-b border-charcoal bg-charcoal-700 text-beige lg:w-[260px] lg:flex-col lg:overflow-visible lg:border-b-0">
-                <div class="flex items-center px-6 py-6 lg:block">
-                    <a href="{{ route('home', app()->getLocale()) }}" class="font-display text-heading-sm tracking-[0.3em] text-beige whitespace-nowrap">
-                        {{ config('saraki.store_name') }}
+            {{-- Sidebar: sticky on desktop, horizontal bar on mobile --}}
+            <aside class="flex shrink-0 items-stretch overflow-x-auto border-b border-white/10 bg-gradient-to-b from-black via-charcoal to-charcoal-800 text-beige lg:sticky lg:top-0 lg:h-screen lg:w-[264px] lg:flex-col lg:overflow-visible lg:border-b-0 lg:border-e lg:border-white/10">
+                <div class="flex items-center gap-3 px-6 py-6 lg:block">
+                    <a href="{{ route('home', app()->getLocale()) }}" class="block whitespace-nowrap">
+                        <x-ui.logo tone="dark" class="h-7" />
                     </a>
-                    <p class="label-upper ms-3 text-gold-600 lg:ms-0 lg:mt-1">{{ __('admin.title') }}</p>
+                    <p class="label-upper ms-3 text-gold-600 lg:ms-0 lg:mt-1.5">{{ __('admin.title') }}</p>
                 </div>
 
-                <nav aria-label="{{ __('admin.nav.main_nav') }}" class="flex flex-1 items-stretch lg:flex-col lg:items-stretch lg:gap-1 lg:px-3">
+                <nav aria-label="{{ __('admin.nav.main_nav') }}" class="flex flex-1 items-stretch gap-1 px-3 lg:flex-col lg:items-stretch lg:px-4">
                     <a
                         href="{{ route('admin.dashboard') }}"
                         @class([
-                            'flex min-h-14 items-center gap-3 border-l-[3px] px-4 py-3 whitespace-nowrap transition-colors duration-150 ease-brand lg:rounded-xs lg:px-3',
-                            'border-gold bg-charcoal-800 text-beige' => request()->routeIs('admin.dashboard'),
-                            'border-transparent text-beige/70 hover:bg-charcoal-800 hover:text-beige' => ! request()->routeIs('admin.dashboard'),
+                            'flex min-h-12 items-center gap-3 rounded-lg px-4 py-2.5 whitespace-nowrap transition-all duration-200 ease-brand',
+                            'bg-gold/15 text-gold shadow-[inset_0_0_0_1px_rgba(212,175,55,0.25)]' => request()->routeIs('admin.dashboard'),
+                            'text-beige/65 hover:bg-white/5 hover:text-beige' => ! request()->routeIs('admin.dashboard'),
                         ])
                         @if (request()->routeIs('admin.dashboard')) aria-current="page" @endif
                     >
                         <x-ui.admin-icon name="dashboard" />
-                        <span class="label-upper lg:hidden xl:inline">{{ __('admin.nav.dashboard') }}</span>
+                        <span class="label-upper">{{ __('admin.nav.dashboard') }}</span>
                     </a>
 
                     @foreach ($sections as $section)
                         <a
                             href="{{ $section['href'] }}"
                             @class([
-                                'flex min-h-14 items-center gap-3 border-l-[3px] px-4 py-3 whitespace-nowrap transition-colors duration-150 ease-brand lg:rounded-xs lg:px-3',
-                                'border-gold bg-charcoal-800 text-beige' => $section['active'],
-                                'border-transparent text-beige/70 hover:bg-charcoal-800 hover:text-beige' => ! $section['active'],
+                                'flex min-h-12 items-center gap-3 rounded-lg px-4 py-2.5 whitespace-nowrap transition-all duration-200 ease-brand',
+                                'bg-gold/15 text-gold shadow-[inset_0_0_0_1px_rgba(212,175,55,0.25)]' => $section['active'],
+                                'text-beige/65 hover:bg-white/5 hover:text-beige' => ! $section['active'],
                             ])
                             @if ($section['active']) aria-current="page" @endif
                         >
                             <x-ui.admin-icon :name="$section['key']" />
-                            <span class="label-upper lg:hidden xl:inline">{{ $section['label'] }}</span>
+                            <span class="label-upper">{{ $section['label'] }}</span>
                         </a>
                     @endforeach
                 </nav>
 
-                <div class="hidden border-t border-charcoal p-3 lg:block">
-                    <a href="{{ route('home', app()->getLocale()) }}" class="flex items-center gap-3 rounded-xs px-3 py-3 text-beige/70 transition-colors duration-150 ease-brand hover:bg-charcoal-800 hover:text-beige">
+                <div class="hidden border-t border-white/10 p-4 lg:block">
+                    <div class="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-3">
+                        <x-ui.avatar :user="auth()->user()" size="sm" />
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-body-sm font-medium text-beige">{{ auth()->user()->name }}</p>
+                            <p class="label-upper text-[10px] text-gold-600">{{ __('admin.nav.admin_role') }}</p>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('home', app()->getLocale()) }}" class="mt-2 flex items-center gap-3 rounded-lg px-3 py-2.5 text-beige/65 transition-all duration-200 ease-brand hover:bg-white/5 hover:text-beige">
                         <x-ui.admin-icon name="store" />
                         <span class="label-upper">{{ __('admin.nav.view_store') }}</span>
                     </a>
@@ -79,7 +88,7 @@
             </aside>
 
             <div class="min-w-0 flex-1">
-                <header class="flex h-20 items-center justify-between gap-4 border-b border-line bg-canvas px-6">
+                <header class="sticky top-0 z-30 flex h-20 items-center justify-between gap-4 border-b border-line bg-canvas/85 px-6 backdrop-blur-md lg:px-8">
                     <h1 class="truncate font-display text-heading-md">{{ $title ?? __('admin.nav.dashboard') }}</h1>
 
                     <div class="flex items-center gap-3">
@@ -87,7 +96,7 @@
 
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
-                                <button type="button" class="label-upper flex h-11 items-center gap-2 rounded-xs px-3 text-charcoal transition-colors duration-150 ease-brand hover:bg-beige">
+                                <button type="button" aria-label="{{ auth()->user()->name }}" aria-haspopup="true" x-bind:aria-expanded="open" class="label-upper flex h-11 items-center gap-2 rounded-full border border-line bg-canvas px-3 text-charcoal transition-all duration-200 ease-brand hover:border-line-strong hover:shadow-card">
                                     <x-ui.avatar :user="auth()->user()" size="sm" />
                                     <span class="max-w-[12ch] truncate">{{ auth()->user()->name }}</span>
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
@@ -110,7 +119,7 @@
                     </div>
                 </header>
 
-                <main id="main" class="p-6 lg:p-8" tabindex="-1">
+                <main id="main" class="mx-auto w-full max-w-[1440px] p-6 lg:p-8" tabindex="-1">
                     <x-ui.flash-messages />
                     {{ $slot }}
                 </main>

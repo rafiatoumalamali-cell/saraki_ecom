@@ -9,6 +9,6 @@
 
 @foreach ($flashes as $type => $message)
     @if ($message)
-        <x-ui.alert :type="$type" class="mb-6">{{ $message }}</x-ui.alert>
+        <x-ui.alert :type="$type" class="mb-4 animate-fade-up">{{ $message }}</x-ui.alert>
     @endif
 @endforeach

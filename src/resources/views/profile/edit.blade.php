@@ -1,4 +1,5 @@
 <x-app-layout :title="__('ui.profile')">
+    <x-ui.seo robots="noindex,nofollow" />
     <h1 class="font-display text-display-md">{{ __('ui.profile') }}</h1>
 
     <div class="mt-10 max-w-2xl space-y-6">

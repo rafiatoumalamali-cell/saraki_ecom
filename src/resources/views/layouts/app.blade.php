@@ -10,16 +10,36 @@
         {{-- Description, canonical, Open Graph and hreflang tags are pushed by <x-ui.seo>. --}}
         @stack('head')
 
+        @php
+            $organization = array_filter([
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => config('saraki.store_name'),
+                'url' => route('home', app()->getLocale()),
+                'email' => $settings->text('contact_email'),
+                'telephone' => $settings->text('contact_phone'),
+                'address' => $settings->text('store_address'),
+            ], fn ($value) => $value !== null);
+        @endphp
+        <script type="application/ld+json">{!! json_encode($organization, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-canvas font-sans text-ink antialiased">
+    <body class="bg-beige-50 font-sans text-ink antialiased">
         <x-ui.site-header />
 
         <main id="main" tabindex="-1">
-            <div class="container py-12">
-                <x-ui.flash-messages />
+            @if ($bare)
+                <div class="container pt-6">
+                    <x-ui.flash-messages />
+                </div>
                 {{ $slot }}
-            </div>
+            @else
+                <div class="container py-10 lg:py-14">
+                    <x-ui.flash-messages />
+                    {{ $slot }}
+                </div>
+            @endif
         </main>
 
         <x-ui.site-footer />

@@ -16,3 +16,12 @@ Artisan::command('inspire', function () {
 Schedule::command('orders:release-expired')
     ->everyFiveMinutes()
     ->withoutOverlapping();
+
+/*
+|--------------------------------------------------------------------------
+| Nightly database + uploads backup with 14-day retention
+|--------------------------------------------------------------------------
+*/
+Schedule::command('backup:run')
+    ->daily()
+    ->withoutOverlapping();

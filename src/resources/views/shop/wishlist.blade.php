@@ -42,8 +42,8 @@
         <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             @foreach ($products as $product)
                 <li class="flex flex-col rounded-sm border border-line bg-canvas">
-                    <a href="{{ $product->url($locale) }}" class="block overflow-hidden rounded-t-sm bg-beige-50">
-                        <x-ui.product-media :product="$product" class="aspect-[3/4] w-full" />
+                    <a href="{{ $product->url($locale) }}" aria-label="{{ $product->translate('name') }}" class="block overflow-hidden rounded-t-sm bg-beige-50">
+                        <x-ui.product-media :product="$product" decorative class="aspect-[3/4] w-full" />
                     </a>
 
                     <div class="flex flex-1 flex-col p-4">

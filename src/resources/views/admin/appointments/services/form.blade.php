@@ -17,7 +17,7 @@
             @method('PATCH')
         @endif
 
-        <div class="rounded-sm border border-line bg-canvas p-6">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-6">
             <div class="grid gap-6 sm:grid-cols-2">
                 <div>
                     <x-input-label for="name_fr" :value="__('admin.services.name_fr')" />

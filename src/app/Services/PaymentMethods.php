@@ -25,15 +25,32 @@ class PaymentMethods
      */
     public function enabled(): array
     {
-        $configured = Setting::query()->where('key', 'payment_methods')->first()?->value;
-
-        $flags = is_array($configured) ? $configured : [self::PAYSTACK => true];
+        $flags = $this->flags();
 
         return [
             self::PAYSTACK => (bool) ($flags[self::PAYSTACK] ?? false) && $this->gateway->isConfigured(),
             self::COD => (bool) ($flags[self::COD] ?? false),
             self::TRANSFER => (bool) ($flags[self::TRANSFER] ?? false),
         ];
+    }
+
+    /**
+     * The admin checkbox is on but the gateway has no secret key, so the method
+     * is silently hidden at checkout. Admin screens surface this instead.
+     */
+    public function paystackRequestedButUnconfigured(): bool
+    {
+        return (bool) ($this->flags()[self::PAYSTACK] ?? false) && ! $this->gateway->isConfigured();
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function flags(): array
+    {
+        $configured = Setting::query()->where('key', 'payment_methods')->first()?->value;
+
+        return is_array($configured) ? $configured : [self::PAYSTACK => true];
     }
 
     /**

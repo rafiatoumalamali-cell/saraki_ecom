@@ -4,7 +4,7 @@
     <p class="max-w-prose text-body-md text-ink-soft">{{ __('admin.schedule.subtitle') }}</p>
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <section class="rounded-sm border border-line bg-canvas">
+        <section class="min-w-0 rounded-xl border border-line bg-canvas shadow-card">
             <div class="border-b border-line px-6 py-4">
                 <h2 class="font-display text-heading-sm">{{ __('admin.schedule.hours_heading') }}</h2>
                 <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.schedule.hours_hint') }}</p>
@@ -14,18 +14,19 @@
                 @csrf
                 @method('PUT')
 
-                <table class="w-full text-left text-body-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.day') }}</th>
-                            <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.closed') }}</th>
-                            <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.open_time') }}</th>
-                            <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.close_time') }}</th>
-                        </tr>
-                    </thead>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-body-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.day') }}</th>
+                                <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.closed') }}</th>
+                                <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.open_time') }}</th>
+                                <th scope="col" class="label-upper pb-3 text-ink-muted">{{ __('admin.schedule.close_time') }}</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                        @foreach (range(0, 6) as $day)
+                        <tbody>
+                            @foreach (range(0, 6) as $day)
                             @php
                                 $hour = $hours->get($day);
                                 $closed = old("hours.{$day}.is_closed", $hour?->is_closed ?? $day === 0);
@@ -61,6 +62,7 @@
                                         name="hours[{{ $day }}][open_time]"
                                         type="time"
                                         value="{{ $opens }}"
+                                        aria-label="{{ __('admin.schedule.open_time') }} — {{ __('admin.schedule.days.'.$day) }}"
                                         x-bind:disabled="closed"
                                         @class(['field tabular', 'field-error' => $errors->has("hours.{$day}.open_time")])
                                     >
@@ -75,6 +77,7 @@
                                         name="hours[{{ $day }}][close_time]"
                                         type="time"
                                         value="{{ $closes }}"
+                                        aria-label="{{ __('admin.schedule.close_time') }} — {{ __('admin.schedule.days.'.$day) }}"
                                         x-bind:disabled="closed"
                                         @class(['field tabular', 'field-error' => $errors->has("hours.{$day}.close_time")])
                                     >
@@ -83,9 +86,10 @@
                                     @enderror
                                 </td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="mt-6">
                     <x-ui.button type="submit" size="compact">{{ __('admin.schedule.save_hours') }}</x-ui.button>
@@ -93,7 +97,7 @@
             </form>
         </section>
 
-        <section class="rounded-sm border border-line bg-canvas">
+        <section class="rounded-xl border border-line bg-canvas shadow-card">
             <div class="border-b border-line px-6 py-4">
                 <h2 class="font-display text-heading-sm">{{ __('admin.schedule.blocked_heading') }}</h2>
                 <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.schedule.blocked_hint') }}</p>

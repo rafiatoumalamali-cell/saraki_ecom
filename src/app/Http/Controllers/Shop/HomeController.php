@@ -55,6 +55,7 @@ class HomeController extends Controller
     {
         return Product::query()
             ->active()
+            ->ofType(Product::TYPE_READY_TO_WEAR)
             ->when($scope !== null, fn ($query) => $scope($query))
             ->when($except !== [], fn ($query) => $query->whereKeyNot($except))
             ->with(['images', 'variants', 'category'])

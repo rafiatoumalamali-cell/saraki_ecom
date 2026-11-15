@@ -8,7 +8,7 @@
         href="{{ $whatsapp }}"
         target="_blank"
         rel="noopener noreferrer"
-        class="fixed bottom-6 end-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-charcoal text-gold shadow-md ring-1 ring-gold-600/50 transition-colors duration-150 ease-brand hover:bg-charcoal-800 hover:text-gold-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+        class="group fixed bottom-6 end-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-charcoal text-gold shadow-lg ring-1 ring-gold-600/50 transition-all duration-300 ease-brand hover:-translate-y-1 hover:bg-charcoal-800 hover:text-gold-600 hover:shadow-lift active:translate-y-0 max-sm:bottom-5 max-sm:end-4"
         aria-label="{{ __('ui.whatsapp_cta') }}"
         title="{{ __('ui.whatsapp_cta') }}"
     >

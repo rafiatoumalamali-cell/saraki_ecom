@@ -37,7 +37,7 @@ class OrderFactory extends Factory
             'delivery_phone' => fake()->numerify('+233## #### ###'),
             'delivery_email' => fake()->unique()->safeEmail(),
             'delivery_address' => fake()->streetAddress(),
-            'delivery_city' => 'Accra',
+            'delivery_city' => 'Niamey',
             'notes' => null,
             'placed_at' => now(),
         ];

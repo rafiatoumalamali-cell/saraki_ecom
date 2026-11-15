@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Setting;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -15,6 +16,10 @@ use Illuminate\Support\Facades\DB;
  */
 class Settings
 {
+    private const CACHE_KEY = 'settings.snapshot';
+
+    private const CACHE_TTL = 300;
+
     /** @var array<string, mixed>|null */
     private ?array $values = null;
 
@@ -23,7 +28,12 @@ class Settings
      */
     public function all(): array
     {
-        return $this->values ??= Setting::query()->pluck('value', 'key')->all();
+        // The footer, WhatsApp button and checkout all read settings, so the
+        // snapshot is shared across requests for a few minutes instead of
+        // hitting the table on every page. Writes drop it immediately.
+        return $this->values ??= Cache::remember(self::CACHE_KEY, self::CACHE_TTL, fn () => Setting::query()
+            ->pluck('value', 'key')
+            ->all());
     }
 
     public function get(string $key, mixed $default = null): mixed
@@ -59,7 +69,7 @@ class Settings
     {
         Setting::updateOrCreate(['key' => $key], ['group' => $group, 'value' => $value]);
 
-        $this->values = null;
+        $this->forgetCache();
     }
 
     /**
@@ -76,12 +86,18 @@ class Settings
             }
         });
 
-        $this->values = null;
+        $this->forgetCache();
     }
 
     public function forget(): void
     {
+        $this->forgetCache();
+    }
+
+    private function forgetCache(): void
+    {
         $this->values = null;
+        Cache::forget(self::CACHE_KEY);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GalleryCategory;
 use App\Models\Concerns\HasTranslations;
+use App\Services\ImageOptimizer;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['title_fr', 'title_en', 'category', 'image_path', 'sort_order', 'is_published'])]
+#[Fillable(['title_fr', 'title_en', 'category', 'image_path', 'thumb_path', 'sort_order', 'is_published'])]
 class GalleryItem extends Model
 {
     use HasFactory, HasTranslations;
@@ -47,12 +48,26 @@ class GalleryItem extends Model
 
     public function url(): string
     {
+        return $this->diskUrl($this->image_path);
+    }
+
+    /**
+     * Card-sized derivative for grids; items uploaded before thumbnails
+     * existed simply serve the full file.
+     */
+    public function thumbUrl(): string
+    {
+        return $this->thumb_path === null ? $this->url() : $this->diskUrl($this->thumb_path);
+    }
+
+    private function diskUrl(string $path): string
+    {
         // The Storage facade only advertises the Filesystem contract, which has no
         // url(); the public disk is always an adapter, which does.
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('public');
 
-        return $disk->url($this->image_path);
+        return $disk->url($path);
     }
 
     /**
@@ -61,19 +76,28 @@ class GalleryItem extends Model
      */
     public function storeImage(UploadedFile $file): void
     {
-        $previous = $this->image_path;
+        $previous = [$this->image_path, $this->thumb_path];
 
-        $this->forceFill(['image_path' => $file->store('content/gallery', 'public')])->save();
+        $stored = app(ImageOptimizer::class)->store($file, 'content/gallery');
 
-        $this->deleteFile($previous);
+        $this->forceFill([
+            'image_path' => $stored['path'],
+            'thumb_path' => $stored['thumb'],
+        ])->save();
+
+        $this->deletePaths($previous);
     }
 
-    public function deleteFile(?string $path = null): void
+    public function deleteFiles(): void
     {
-        $path ??= $this->image_path;
+        $this->deletePaths([$this->image_path, $this->thumb_path]);
+    }
 
-        if ($path !== null) {
-            Storage::disk('public')->delete($path);
-        }
+    /**
+     * @param  array<int, ?string>  $paths
+     */
+    private function deletePaths(array $paths): void
+    {
+        Storage::disk('public')->delete(array_filter($paths));
     }
 }

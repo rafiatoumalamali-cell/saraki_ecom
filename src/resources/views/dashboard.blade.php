@@ -1,4 +1,5 @@
 <x-app-layout :title="__('ui.account_title')">
+    <x-ui.seo robots="noindex,nofollow" />
     <h1 class="font-display text-display-md">{{ __('ui.account_title') }}</h1>
     <p class="mt-3 text-body-md text-ink-soft">{{ __('ui.account_intro') }}</p>
 

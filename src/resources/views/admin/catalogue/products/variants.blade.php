@@ -14,11 +14,11 @@
     </div>
 
     @if ($variants->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.variants.empty') }}
         </p>
     @else
-        <form method="POST" action="{{ route('admin.catalogue.products.variants.batch', $product) }}" class="mt-8 rounded-sm border border-line bg-canvas">
+        <form method="POST" action="{{ route('admin.catalogue.products.variants.batch', $product) }}" class="mt-8 rounded-xl border border-line bg-canvas shadow-card">
             @csrf
             @method('PATCH')
 
@@ -153,7 +153,7 @@
     @endif
 
     <div class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-start">
-        <section class="rounded-sm border border-line bg-canvas p-6">
+        <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
             <h3 class="font-display text-heading-sm">{{ __('admin.variants.add') }}</h3>
 
             <form method="POST" action="{{ route('admin.catalogue.products.variants.store', $product) }}" class="mt-4">
@@ -212,7 +212,7 @@
             </form>
         </section>
 
-        <section class="rounded-sm border border-line bg-canvas p-6">
+        <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
             <h3 class="font-display text-heading-sm">{{ __('admin.variants.generate_title') }}</h3>
             <p class="mt-1 max-w-prose text-body-sm text-ink-soft">{{ __('admin.variants.generate_text') }}</p>
 

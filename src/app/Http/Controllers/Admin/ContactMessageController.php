@@ -48,6 +48,8 @@ class ContactMessageController extends Controller
             $message->forceFill(['status' => ContactStatus::Read])->save();
         }
 
+        $message->loadMissing('product.images');
+
         return view('admin.messages.show', ['message' => $message]);
     }
 

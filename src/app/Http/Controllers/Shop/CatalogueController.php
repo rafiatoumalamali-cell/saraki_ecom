@@ -21,6 +21,12 @@ class CatalogueController extends Controller
         $term = trim((string) $request->query('q'));
         $sort = in_array($request->query('sort'), self::SORTS, true) ? (string) $request->query('sort') : 'newest';
 
+        // Prêt-à-porter and sur-mesure never share a grid: the type tab picks
+        // one collection at a time, and anything else falls back to ready-to-wear.
+        $type = $request->query('type') === Product::TYPE_MADE_TO_MEASURE
+            ? Product::TYPE_MADE_TO_MEASURE
+            : Product::TYPE_READY_TO_WEAR;
+
         $categories = Category::query()
             ->active()
             ->withCount(['products' => fn ($query) => $query->active()])
@@ -35,6 +41,7 @@ class CatalogueController extends Controller
 
         $products = Product::query()
             ->active()
+            ->ofType($type)
             ->with(['images', 'variants', 'category'])
             ->when($category !== null, fn ($query) => $query->where('category_id', $category->id))
             ->search($term)
@@ -47,12 +54,13 @@ class CatalogueController extends Controller
             'products' => $products,
             'categories' => $categories,
             'category' => $category,
+            'type' => $type,
             'term' => $term,
             'sort' => $sort,
             'sorts' => $this->sortOptions(),
             'seo' => [
-                'title' => $this->listingTitle($category, $term),
-                'description' => $this->listingDescription($category, $term),
+                'title' => $this->listingTitle($category, $term, $type),
+                'description' => $this->listingDescription($category, $term, $type),
                 'canonical' => $this->listingUrl($locale, $category),
                 'alternates' => $this->alternates($category),
                 // Search result pages are not useful in an index; collections are.
@@ -102,6 +110,7 @@ class CatalogueController extends Controller
     {
         return Product::query()
             ->active()
+            ->ofType($product->type)
             ->where('category_id', $product->category_id)
             ->whereKeyNot($product->id)
             ->with(['images', 'variants', 'category'])
@@ -160,19 +169,27 @@ class CatalogueController extends Controller
             ->all();
     }
 
-    private function listingTitle(?Category $category, string $term): string
+    private function listingTitle(?Category $category, string $term, string $type): string
     {
         if ($term !== '') {
             return __('shop.search.title', ['term' => $term]);
         }
 
+        if ($type === Product::TYPE_MADE_TO_MEASURE) {
+            return __('shop.catalogue.sur_mesure_title');
+        }
+
         return $category?->translate('name') ?? __('shop.catalogue.title');
     }
 
-    private function listingDescription(?Category $category, string $term): string
+    private function listingDescription(?Category $category, string $term, string $type): string
     {
         if ($term !== '') {
             return __('shop.search.description', ['term' => $term]);
+        }
+
+        if ($type === Product::TYPE_MADE_TO_MEASURE) {
+            return __('shop.catalogue.sur_mesure_description');
         }
 
         return $category === null

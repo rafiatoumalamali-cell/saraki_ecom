@@ -43,7 +43,7 @@
                         <li class="grid grid-cols-[88px_minmax(0,1fr)] gap-5 py-6">
                             <div class="overflow-hidden rounded-sm bg-beige-50">
                                 @if ($product)
-                                    <x-ui.product-media :product="$product" class="aspect-[3/4] w-full" />
+                                    <x-ui.product-media :product="$product" decorative class="aspect-[3/4] w-full" />
                                 @else
                                     <span class="flex aspect-[3/4] w-full items-center justify-center bg-beige-200 text-body-sm text-ink-muted">
                                         {{ __('shop.card.no_image') }}

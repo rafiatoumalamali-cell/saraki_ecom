@@ -34,16 +34,16 @@
     </nav>
 
     @if ($items->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.gallery.empty') }}
         </p>
     @else
         <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             @foreach ($items as $item)
-                <li class="flex flex-col overflow-hidden rounded-sm border border-line bg-canvas">
+                <li class="flex flex-col overflow-hidden rounded-xl border border-line bg-canvas shadow-card">
                     <div class="relative bg-beige-200">
                         <img
-                            src="{{ $item->url() }}"
+                            src="{{ $item->thumbUrl() }}"
                             alt="{{ $item->title_fr }}"
                             class="aspect-square w-full object-cover"
                         >

@@ -20,9 +20,8 @@ class SettingsSeeder extends Seeder
             ['group' => 'general', 'key' => 'map_embed', 'value' => null],
 
             ['group' => 'commerce', 'key' => 'shipping_zones', 'value' => [
-                ['name' => 'Grand Accra', 'name_en' => 'Greater Accra', 'fee' => 30, 'delivery_days' => 2],
-                ['name' => 'Tema', 'name_en' => 'Tema', 'fee' => 45, 'delivery_days' => 3],
-                ['name' => 'Kumasi', 'name_en' => 'Kumasi', 'fee' => 60, 'delivery_days' => 4],
+                ['name' => 'Niamey', 'name_en' => 'Niamey', 'fee' => 30, 'delivery_days' => 2],
+                ['name' => 'Capitales régionales', 'name_en' => 'Regional capitals', 'fee' => 60, 'delivery_days' => 4],
                 ['name' => 'Autre ville', 'name_en' => 'Other city', 'fee' => 80, 'delivery_days' => 6],
             ]],
             ['group' => 'commerce', 'key' => 'payment_methods', 'value' => [

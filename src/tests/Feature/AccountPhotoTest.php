@@ -25,8 +25,9 @@ test('registration accepts an optional profile photo', function () {
 
     $user = User::where('email', 'ama@example.test')->firstOrFail();
 
-    expect($user->avatar_path)->not->toBeNull()
-        ->and(Storage::disk('public')->exists($user->avatar_path))->toBeTrue();
+    expect($user->avatar_path)->not->toBeNull();
+    expect($user->avatar_path)->toEndWith('.webp');
+    expect(Storage::disk('public')->exists($user->avatar_path))->toBeTrue();
 });
 
 test('registration still works without a photo', function () {

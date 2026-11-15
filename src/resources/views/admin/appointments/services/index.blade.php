@@ -10,11 +10,11 @@
     </div>
 
     @if ($services->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.services.empty') }}
         </p>
     @else
-        <div class="mt-8 overflow-x-auto rounded-sm border border-line bg-canvas">
+        <div class="mt-8 overflow-x-auto rounded-xl border border-line bg-canvas shadow-card">
             <table class="w-full min-w-[760px] text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>

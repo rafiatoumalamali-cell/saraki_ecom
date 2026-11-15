@@ -20,7 +20,7 @@
 
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
             <div class="space-y-6">
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.pages.heading') }}</h2>
 
                     <div class="mt-4 grid gap-6 sm:grid-cols-2">
@@ -50,7 +50,7 @@
                     </div>
                 </section>
 
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.pages.body') }}</h2>
 
                     <div class="mt-4 space-y-6">
@@ -71,7 +71,7 @@
             </div>
 
             <div class="space-y-6">
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.common.status') }}</h2>
 
                     <div class="mt-4">
@@ -86,7 +86,7 @@
                 </section>
 
                 @if ($editing)
-                    <section class="rounded-sm border border-line bg-canvas p-6">
+                    <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                         <ul class="space-y-3 text-body-sm">
                             <li class="flex items-center justify-between gap-3">
                                 <span class="text-ink-muted">{{ __('admin.pages.view_in_store') }}</span>

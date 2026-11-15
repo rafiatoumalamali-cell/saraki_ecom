@@ -2,21 +2,21 @@
     <p class="text-body-md text-ink-soft">{{ __('admin.orders.subtitle') }}</p>
 
     <dl class="mt-6 grid gap-4 sm:grid-cols-3">
-        <div class="rounded-sm border border-line bg-canvas p-5">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-5">
             <dt class="label-upper text-ink-muted">{{ __('admin.orders.awaiting') }}</dt>
             <dd class="mt-2 font-display text-heading-md tabular">{{ $counts['awaiting'] }}</dd>
         </div>
-        <div class="rounded-sm border border-line bg-canvas p-5">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-5">
             <dt class="label-upper text-ink-muted">{{ __('admin.orders.paid_orders') }}</dt>
             <dd class="mt-2 font-display text-heading-md tabular">{{ $counts['paid'] }}</dd>
         </div>
-        <div class="rounded-sm border border-line bg-canvas p-5">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-5">
             <dt class="label-upper text-ink-muted">{{ __('admin.orders.in_production') }}</dt>
             <dd class="mt-2 font-display text-heading-md tabular">{{ $counts['in_production'] }}</dd>
         </div>
     </dl>
 
-    <form method="GET" action="{{ route('admin.orders.index') }}" class="mt-8 flex flex-wrap items-end gap-4 rounded-sm border border-line bg-canvas p-5">
+    <form method="GET" action="{{ route('admin.orders.index') }}" class="mt-8 flex flex-wrap items-end gap-4 rounded-xl border border-line bg-canvas shadow-card p-5">
         <div class="min-w-[160px]">
             <label for="status" class="label-upper text-ink">{{ __('admin.orders.filter_status') }}</label>
             <select id="status" name="status" class="field mt-2">
@@ -61,11 +61,11 @@
     </form>
 
     @if ($orders->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.orders.no_results') }}
         </p>
     @else
-        <div class="mt-8 hidden overflow-hidden rounded-sm border border-line bg-canvas md:block">
+        <div class="mt-8 hidden overflow-hidden rounded-xl border border-line bg-canvas shadow-card md:block">
             <table class="w-full text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>
@@ -75,7 +75,7 @@
                         <th scope="col" class="label-upper px-6 py-4 text-ink-muted">{{ __('admin.orders.status') }}</th>
                         <th scope="col" class="label-upper px-6 py-4 text-ink-muted">{{ __('admin.orders.payment') }}</th>
                         <th scope="col" class="label-upper px-6 py-4 text-right text-ink-muted">{{ __('admin.orders.total') }}</th>
-                        <th scope="col" class="label-upper px-6 py-4 text-right text-ink-muted">&nbsp;</th>
+                        <th scope="col" class="label-upper px-6 py-4 text-right text-ink-muted"><span class="sr-only">{{ __('admin.common.actions') }}</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,7 +109,7 @@
 
         <ul class="mt-8 space-y-4 md:hidden">
             @foreach ($orders as $order)
-                <li class="rounded-sm border border-line bg-canvas p-4">
+                <li class="rounded-xl border border-line bg-canvas shadow-card p-4">
                     <div class="flex items-start justify-between gap-3">
                         <a href="{{ route('admin.orders.show', $order) }}" class="link tabular">{{ $order->order_number }}</a>
                         <span class="tabular text-ink">{{ money($order->total) }}</span>

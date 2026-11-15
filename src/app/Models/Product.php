@@ -13,15 +13,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-#[Fillable(['category_id', 'name_fr', 'name_en', 'slug', 'description_fr', 'description_en', 'base_price', 'base_sku', 'is_active', 'is_featured'])]
+#[Fillable(['category_id', 'type', 'name_fr', 'name_en', 'slug', 'description_fr', 'description_en', 'base_price', 'base_sku', 'fabric_price', 'fabric_unit', 'confection_price', 'is_active', 'is_featured'])]
 class Product extends Model
 {
     use HasFactory, HasTranslations;
+
+    public const TYPE_READY_TO_WEAR = 'ready_to_wear';
+
+    public const TYPE_MADE_TO_MEASURE = 'made_to_measure';
 
     protected function casts(): array
     {
         return [
             'base_price' => 'decimal:2',
+            'fabric_price' => 'decimal:2',
+            'confection_price' => 'decimal:2',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
         ];
@@ -55,6 +61,30 @@ class Product extends Model
     public function scopeFeatured(Builder $query): void
     {
         $query->where('is_featured', true);
+    }
+
+    public function scopeOfType(Builder $query, string $type): void
+    {
+        $query->where('type', $type);
+    }
+
+    /**
+     * Sur-mesure pieces are not bought off the rack: the customer picks the
+     * model and the atelier tailors it, in SARAKI fabric or the client's own.
+     */
+    public function isMadeToMeasure(): bool
+    {
+        return $this->type === self::TYPE_MADE_TO_MEASURE;
+    }
+
+    /**
+     * Sur-mesure pieces carry a price breakdown: the fabric (sold per meter
+     * or per pagne) and the tailor's making fee. Both are indicative — the
+     * final quote is confirmed in the atelier.
+     */
+    public function hasTailoringPrices(): bool
+    {
+        return $this->fabric_price !== null || $this->confection_price !== null;
     }
 
     /**
@@ -152,6 +182,18 @@ class Product extends Model
         $image = $images->firstWhere('is_primary', true) ?? $images->first();
 
         return $image?->url();
+    }
+
+    /**
+     * The card-sized derivative of the primary image, for grids and lists.
+     */
+    public function imageThumbUrl(): ?string
+    {
+        $images = $this->relationLoaded('images') ? $this->images : $this->images()->get();
+
+        $image = $images->firstWhere('is_primary', true) ?? $images->first();
+
+        return $image?->thumbUrl();
     }
 
     public function url(?string $locale = null): string

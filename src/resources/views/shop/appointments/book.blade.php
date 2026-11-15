@@ -146,7 +146,7 @@
                             </div>
                             <div class="flex items-baseline justify-between gap-4">
                                 <dt class="text-ink-muted">{{ __('shop.appointments.choose_slot') }}</dt>
-                                <dd class="text-right tabular text-ink" x-text="slot || '—">{{ old('start_time', '—') }}</dd>
+                                <dd class="text-right tabular text-ink" x-text="slot || '\u2014'">{{ old('start_time', '—') }}</dd>
                             </div>
                         </dl>
 

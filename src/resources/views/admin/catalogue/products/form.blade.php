@@ -19,7 +19,7 @@
 
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
             <div class="space-y-6">
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.products.product') }}</h2>
 
                     <div class="mt-4 grid gap-6 sm:grid-cols-2">
@@ -54,10 +54,24 @@
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('category_id')" />
                         </div>
+
+                        <div>
+                            <x-input-label for="type" :value="__('admin.products.type')" />
+                            <select id="type" name="type" class="field mt-1" required>
+                                <option value="{{ \App\Models\Product::TYPE_READY_TO_WEAR }}" @selected(old('type', $product->type) === \App\Models\Product::TYPE_READY_TO_WEAR)>
+                                    {{ __('admin.products.type_ready') }}
+                                </option>
+                                <option value="{{ \App\Models\Product::TYPE_MADE_TO_MEASURE }}" @selected(old('type', $product->type) === \App\Models\Product::TYPE_MADE_TO_MEASURE)>
+                                    {{ __('admin.products.type_made') }}
+                                </option>
+                            </select>
+                            <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.products.type_hint') }}</p>
+                            <x-input-error class="mt-2" :messages="$errors->get('type')" />
+                        </div>
                     </div>
                 </section>
 
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.products.price') }}</h2>
 
                     <div class="mt-4 grid gap-6 sm:grid-cols-2">
@@ -75,9 +89,38 @@
                             <x-input-error class="mt-2" :messages="$errors->get('base_sku')" />
                         </div>
                     </div>
+
+                    <div class="mt-6 border-t border-line pt-6">
+                        <h3 class="text-body-md font-semibold text-ink">{{ __('admin.products.tailoring_prices') }}</h3>
+                        <p class="mt-1 text-body-sm text-ink-muted">{{ __('admin.products.tailoring_prices_hint') }}</p>
+
+                        <div class="mt-4 grid gap-6 sm:grid-cols-3">
+                            <div>
+                                <x-input-label for="fabric_price" :value="__('admin.products.fabric_price')" />
+                                <x-text-input id="fabric_price" name="fabric_price" type="text" inputmode="decimal" class="mt-1 tabular" :value="old('fabric_price', $product->fabric_price)" />
+                                <x-input-error class="mt-2" :messages="$errors->get('fabric_price')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="fabric_unit" :value="__('admin.products.fabric_unit')" />
+                                <select id="fabric_unit" name="fabric_unit" class="field mt-1">
+                                    <option value="">{{ __('admin.products.fabric_unit_none') }}</option>
+                                    <option value="meter" @selected(old('fabric_unit', $product->fabric_unit) === 'meter')>{{ __('admin.products.fabric_unit_meter') }}</option>
+                                    <option value="pagne" @selected(old('fabric_unit', $product->fabric_unit) === 'pagne')>{{ __('admin.products.fabric_unit_pagne') }}</option>
+                                </select>
+                                <x-input-error class="mt-2" :messages="$errors->get('fabric_unit')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="confection_price" :value="__('admin.products.confection_price')" />
+                                <x-text-input id="confection_price" name="confection_price" type="text" inputmode="decimal" class="mt-1 tabular" :value="old('confection_price', $product->confection_price)" />
+                                <x-input-error class="mt-2" :messages="$errors->get('confection_price')" />
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('shop.product.details') }}</h2>
 
                     <div class="mt-4 space-y-6">
@@ -97,7 +140,7 @@
             </div>
 
             <div class="space-y-6">
-                <section class="rounded-sm border border-line bg-canvas p-6">
+                <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                     <h2 class="font-display text-heading-sm">{{ __('admin.common.status') }}</h2>
 
                     <div class="mt-4 space-y-4">
@@ -124,7 +167,7 @@
                 </section>
 
                 @if ($editing)
-                    <section class="rounded-sm border border-line bg-canvas p-6">
+                    <section class="rounded-xl border border-line bg-canvas shadow-card p-6">
                         <ul class="space-y-3 text-body-sm">
                             <li class="flex items-center justify-between gap-3">
                                 <span class="text-ink-muted">{{ __('admin.products.manage_images') }}</span>

@@ -40,7 +40,7 @@
         </li>
     </ul>
 
-    <div class="mt-6 overflow-x-auto rounded-sm border border-line bg-canvas">
+    <div class="mt-6 overflow-x-auto rounded-xl border border-line bg-canvas shadow-card">
         <table class="w-full min-w-[860px] table-fixed border-collapse">
             <caption class="sr-only">{{ $title }}</caption>
 

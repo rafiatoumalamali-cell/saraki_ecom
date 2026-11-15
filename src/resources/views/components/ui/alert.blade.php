@@ -9,10 +9,10 @@
     };
 @endphp
 
-<div role="alert" {{ $attributes->merge(['class' => 'flex items-start gap-3 rounded-sm p-4 text-body-sm '.$tones['box']]) }}>
+<div role="alert" {{ $attributes->merge(['class' => 'flex items-start gap-3 rounded-md border border-charcoal/5 p-4 text-body-sm shadow-sm '.$tones['box']]) }}>
     <svg class="mt-0.5 h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="{{ $tones['icon'] }}" />
     </svg>
 
-    <div class="min-w-0">{{ $slot }}</div>
+    <div class="min-w-0 flex-1 [&_a]:font-semibold [&_a]:underline [&_a]:underline-offset-2">{{ $slot }}</div>
 </div>

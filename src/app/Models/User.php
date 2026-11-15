@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
+use App\Services\ImageOptimizer;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -84,7 +85,10 @@ class User extends Authenticatable
     {
         $previous = $this->avatar_path;
 
-        $this->forceFill(['avatar_path' => $file->store('avatars', 'public')])->save();
+        // Avatars render at a few dozen pixels, so a single small WebP is enough.
+        $stored = app(ImageOptimizer::class)->store($file, 'avatars', 256, null);
+
+        $this->forceFill(['avatar_path' => $stored['path']])->save();
 
         if ($previous !== null) {
             Storage::disk('public')->delete($previous);

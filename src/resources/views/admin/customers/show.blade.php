@@ -27,7 +27,7 @@
     </header>
 
     @if (! $sheet)
-        <p class="mt-10 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-10 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('measurements.empty') }}
         </p>
     @else
@@ -40,7 +40,7 @@
                 </x-ui.badge>
             </div>
 
-            <dl class="mt-6 grid gap-6 rounded-sm border border-line bg-canvas p-6 sm:grid-cols-3">
+            <dl class="mt-6 grid gap-6 rounded-xl border border-line bg-canvas shadow-card p-6 sm:grid-cols-3">
                 <div>
                     <dt class="label-upper text-ink-muted">{{ __('measurements.labels.fit_preference') }}</dt>
                     <dd class="mt-1 text-body-md">{{ $sheet->fit_preference?->label() ?? __('measurements.fit_placeholder') }}</dd>
@@ -64,7 +64,7 @@
 
                 <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($groupFields as $field)
-                        <div class="rounded-sm border border-line bg-canvas p-4">
+                        <div class="rounded-xl border border-line bg-canvas shadow-card p-4">
                             <p class="label-upper text-ink-muted">{{ \App\Models\CustomerMeasurement::label($field) }}</p>
                             <p class="mt-2 font-display text-display-md tabular">
                                 {{ $sheet->display($field) ?? __('measurements.not_recorded') }}

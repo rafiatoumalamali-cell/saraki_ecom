@@ -4,21 +4,21 @@
     <p class="text-body-md text-ink-soft">{{ __('admin.appointments.subtitle') }}</p>
 
     <dl class="mt-6 grid gap-4 sm:grid-cols-3">
-        <div class="rounded-sm border border-line bg-canvas p-5">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-5">
             <dt class="label-upper text-ink-muted">{{ __('admin.appointments.today') }}</dt>
             <dd class="mt-2 font-display text-heading-md tabular">{{ $counts['today'] }}</dd>
         </div>
-        <div class="rounded-sm border border-line bg-canvas p-5">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-5">
             <dt class="label-upper text-ink-muted">{{ __('admin.appointments.open') }}</dt>
             <dd class="mt-2 font-display text-heading-md tabular">{{ $counts['open'] }}</dd>
         </div>
-        <div class="rounded-sm border border-line bg-canvas p-5">
+        <div class="rounded-xl border border-line bg-canvas shadow-card p-5">
             <dt class="label-upper text-ink-muted">{{ __('admin.appointments.pending') }}</dt>
             <dd class="mt-2 font-display text-heading-md tabular">{{ $counts['pending'] }}</dd>
         </div>
     </dl>
 
-    <form method="GET" action="{{ route('admin.appointments.index') }}" class="mt-8 flex flex-wrap items-end gap-4 rounded-sm border border-line bg-canvas p-5">
+    <form method="GET" action="{{ route('admin.appointments.index') }}" class="mt-8 flex flex-wrap items-end gap-4 rounded-xl border border-line bg-canvas shadow-card p-5">
         <div class="min-w-[150px]">
             <label for="view" class="label-upper text-ink">{{ __('admin.appointments.view') }}</label>
             <select id="view" name="view" class="field mt-2">
@@ -65,11 +65,11 @@
     </form>
 
     @if ($appointments->isEmpty())
-        <p class="mt-8 rounded-sm border border-line bg-canvas p-6 text-body-sm text-ink-muted">
+        <p class="mt-8 rounded-xl border border-line bg-canvas shadow-card p-6 text-body-sm text-ink-muted">
             {{ __('admin.appointments.no_results') }}
         </p>
     @else
-        <div class="mt-8 hidden overflow-hidden rounded-sm border border-line bg-canvas md:block">
+        <div class="mt-8 hidden overflow-hidden rounded-xl border border-line bg-canvas shadow-card md:block">
             <table class="w-full text-left text-body-sm">
                 <thead class="bg-beige">
                     <tr>
@@ -109,7 +109,7 @@
 
         <ul class="mt-8 space-y-4 md:hidden">
             @foreach ($appointments as $appointment)
-                <li class="rounded-sm border border-line bg-canvas p-4">
+                <li class="rounded-xl border border-line bg-canvas shadow-card p-4">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
                             <p class="text-ink">{{ $appointment->user?->name }}</p>

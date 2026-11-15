@@ -24,17 +24,45 @@ use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\CatalogueController;
 use App\Http\Controllers\Shop\CheckoutController;
 use App\Http\Controllers\Shop\ContactController;
+use App\Http\Controllers\Shop\FaqController;
+use App\Http\Controllers\Shop\MadeToMeasureController;
 use App\Http\Controllers\Shop\GalleryController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\OrderController;
 use App\Http\Controllers\Shop\PageController;
 use App\Http\Controllers\Shop\PaymentController;
+use App\Http\Controllers\Shop\SitemapController;
 use App\Http\Controllers\Shop\WishlistController;
 use App\Http\Controllers\Webhooks\PaystackWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::pattern('locale', 'fr|en');
+
+/*
+|--------------------------------------------------------------------------
+| Crawlers — sitemap and robots are generated so the Sitemap line always
+| carries the real domain instead of a placeholder baked into a static file.
+|--------------------------------------------------------------------------
+*/
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $disallow = ['/admin', '/dashboard', '/profile', '/login', '/register',
+        '/forgot-password', '/reset-password', '/verify-email', '/confirm-password'];
+
+    foreach (config('saraki.supported_locales') as $locale) {
+        array_push($disallow,
+            "/{$locale}/cart", "/{$locale}/checkout", "/{$locale}/orders",
+            "/{$locale}/wishlist", "/{$locale}/appointments/book", "/{$locale}/payment");
+    }
+
+    $body = "User-agent: *\n"
+        .collect($disallow)->map(fn (string $path) => "Disallow: {$path}")->implode("\n")
+        ."\n\nSitemap: ".route('sitemap')."\n";
+
+    return response($body, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+})->name('robots');
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +76,9 @@ Route::prefix('{locale}')->group(function () {
 
     Route::get('catalogue', [CatalogueController::class, 'index'])->name('shop.index');
     Route::get('catalogue/{product:slug}', [CatalogueController::class, 'show'])->name('shop.show');
+    Route::post('catalogue/{product:slug}/sur-mesure', [MadeToMeasureController::class, 'store'])
+        ->middleware('throttle:contact')
+        ->name('products.tailoring');
 
     /*
     |----------------------------------------------------------------------
@@ -65,6 +96,8 @@ Route::prefix('{locale}')->group(function () {
 
     Route::get('journal', [BlogController::class, 'index'])->name('journal.index');
     Route::get('journal/{post}', [BlogController::class, 'show'])->name('journal.show');
+
+    Route::get('faq', [FaqController::class, 'index'])->name('faq.index');
 
     Route::get('pages/{page}', [PageController::class, 'show'])->name('pages.show');
 
@@ -95,14 +128,20 @@ Route::prefix('{locale}')->group(function () {
     */
     Route::middleware('auth')->group(function () {
         Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout.show');
-        Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+        Route::post('checkout', [CheckoutController::class, 'store'])
+            ->middleware('throttle:10,1')
+            ->name('checkout.store');
 
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-        Route::post('orders/{order}/pay', [OrderController::class, 'pay'])->name('orders.pay');
+        Route::post('orders/{order}/pay', [OrderController::class, 'pay'])
+            ->middleware('throttle:10,1')
+            ->name('orders.pay');
 
         Route::get('appointments/book', [AppointmentController::class, 'create'])->name('appointments.create');
-        Route::post('appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+        Route::post('appointments', [AppointmentController::class, 'store'])
+            ->middleware('throttle:10,1')
+            ->name('appointments.store');
         Route::delete('appointments/{appointment}', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
 
         Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
@@ -111,10 +150,39 @@ Route::prefix('{locale}')->group(function () {
     });
 
     // Paystack sends the browser back here; the reference is re-verified server-side.
-    Route::get('payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+    Route::get('payment/callback', [PaymentController::class, 'callback'])
+        ->middleware('throttle:30,1')
+        ->name('payment.callback');
 });
 
-Route::post('/locale/{locale}', fn (Request $request) => back())->name('locale.update');
+Route::post('/locale/{locale}', function (Request $request, string $locale) {
+    $request->session()->put('locale', $locale);
+
+    // Keep the account preference in step so the choice follows the customer
+    // to other devices; guests only have the session.
+    $user = $request->user();
+    if ($user !== null && $user->locale !== $locale) {
+        $user->forceFill(['locale' => $locale])->save();
+    }
+
+    // Swap the locale prefix so the visitor lands on the same page in the new
+    // language; SetLocale would otherwise keep honouring the old URL prefix.
+    $referer = (string) $request->headers->get('referer');
+    $path = (string) (parse_url($referer, PHP_URL_PATH) ?: '');
+    $query = parse_url($referer, PHP_URL_QUERY);
+
+    foreach (config('saraki.supported_locales') as $supported) {
+        if ($path === '/'.$supported || str_starts_with($path, '/'.$supported.'/')) {
+            $rest = substr($path, strlen($supported) + 1);
+
+            return redirect('/'.$locale.$rest.($query ? '?'.$query : ''));
+        }
+    }
+
+    // Non-prefixed pages (login, dashboard, admin) have no prefix to swap —
+    // the session value drives the language on the next render.
+    return back();
+})->name('locale.update');
 
 /*
 |--------------------------------------------------------------------------

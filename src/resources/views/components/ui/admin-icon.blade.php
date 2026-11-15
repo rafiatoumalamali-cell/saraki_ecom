@@ -15,6 +15,8 @@
         'messages' => '<rect x="3.5" y="5.5" width="17" height="13" rx="1"/><path d="m4 6.5 8 6 8-6"/>',
         'settings' => '<circle cx="12" cy="12" r="3.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>',
         'store' => '<path d="M4 9.5V20h16V9.5"/><path d="M2.5 9.5 5 4h14l2.5 5.5ZM9.5 20v-6h5v6"/>',
+        'cash' => '<rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/>',
+        'box' => '<path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3.5 8.5 8.5 4.8 8.5-4.8M12 21V13.3"/>',
     ];
 @endphp
 

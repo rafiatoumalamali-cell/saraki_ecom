@@ -41,7 +41,7 @@ class ProductController extends Controller
     public function create(): View
     {
         return view('admin.catalogue.products.form', [
-            'product' => new Product(['is_active' => true, 'is_featured' => false]),
+            'product' => new Product(['is_active' => true, 'is_featured' => false, 'type' => Product::TYPE_READY_TO_WEAR]),
             'categories' => Category::query()->ordered()->get(),
         ]);
     }

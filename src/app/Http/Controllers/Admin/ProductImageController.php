@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\ProductImageRequest;
 use App\Http\Requests\Admin\ProductImageUpdateRequest;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,14 +27,17 @@ class ProductImageController extends Controller
      * Uploads are accepted one or many at a time. The first photo of a product
      * becomes its primary image, which is what the catalogue card shows.
      */
-    public function store(ProductImageRequest $request, Product $product): RedirectResponse
+    public function store(ProductImageRequest $request, Product $product, ImageOptimizer $optimizer): RedirectResponse
     {
         $sortOrder = (int) $product->images()->max('sort_order');
         $hasPrimary = $product->images()->where('is_primary', true)->exists();
 
         foreach ($request->file('images', []) as $file) {
+            $stored = $optimizer->store($file, 'products');
+
             $product->images()->create([
-                'path' => $file->store('products', 'public'),
+                'path' => $stored['path'],
+                'thumb_path' => $stored['thumb'],
                 'alt_fr' => $request->input('alt_fr') ?: $product->name_fr,
                 'alt_en' => $request->input('alt_en') ?: $product->name_en,
                 'sort_order' => ++$sortOrder,
