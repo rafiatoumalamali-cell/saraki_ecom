@@ -168,14 +168,21 @@ Route::post('/locale/{locale}', function (Request $request, string $locale) {
     // Swap the locale prefix so the visitor lands on the same page in the new
     // language; SetLocale would otherwise keep honouring the old URL prefix.
     $referer = (string) $request->headers->get('referer');
+    $base = rtrim((string) parse_url((string) config('app.url'), PHP_URL_PATH), '/');
     $path = (string) (parse_url($referer, PHP_URL_PATH) ?: '');
     $query = parse_url($referer, PHP_URL_QUERY);
+
+    // The school host installs the app under /~user/, so the referer carries a
+    // base path in front of the locale; strip it before matching the prefix.
+    if ($base !== '' && str_starts_with($path, $base)) {
+        $path = substr($path, strlen($base)) ?: '/';
+    }
 
     foreach (config('saraki.supported_locales') as $supported) {
         if ($path === '/'.$supported || str_starts_with($path, '/'.$supported.'/')) {
             $rest = substr($path, strlen($supported) + 1);
 
-            return redirect('/'.$locale.$rest.($query ? '?'.$query : ''));
+            return redirect($base.'/'.$locale.$rest.($query ? '?'.$query : ''));
         }
     }
 

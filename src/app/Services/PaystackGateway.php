@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Exceptions\PaymentGatewayException;
 use App\Models\Payment;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -126,6 +127,11 @@ class PaystackGateway
             $response = Http::withToken((string) config('services.paystack.secret_key'))
                 ->acceptJson()
                 ->timeout(20)
+                // The school link to api.paystack.co occasionally drops the first
+                // connection; transient failures are retried silently while
+                // permanent API refusals (4xx) still reach unwrap() untouched.
+                ->retry(2, 500, fn ($exception) => $exception instanceof RequestException
+                    && ($exception->response->serverError() || $exception->response->status() === 429), throw: false)
                 ->baseUrl(rtrim((string) config('services.paystack.base_url'), '/'))
                 ->{$method}($path, $payload);
         } catch (ConnectionException $exception) {

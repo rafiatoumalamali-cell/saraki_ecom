@@ -122,6 +122,29 @@ test('alt text and position are saved from the row form', function () {
         ->and($image->sort_order)->toBe(7);
 });
 
+test('a photo can be tagged with a variant colour', function () {
+    $image = ProductImage::factory()->for($this->product)->create();
+
+    $this->actingAs($this->admin)
+        ->patch(route('admin.catalogue.products.images.update', [$this->product, $image]), [
+            'color' => 'Noir',
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($image->refresh()->color)->toBe('Noir');
+});
+
+test('the colour is applied to photos uploaded in one batch', function () {
+    $this->actingAs($this->admin)
+        ->post(route('admin.catalogue.products.images.store', $this->product), [
+            'images' => [UploadedFile::fake()->image('noir.jpg')],
+            'color' => 'Noir',
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($this->product->images()->firstOrFail()->color)->toBe('Noir');
+});
+
 test('the whole gallery can be reordered at once', function () {
     $first = ProductImage::factory()->for($this->product)->create(['sort_order' => 1]);
     $second = ProductImage::factory()->for($this->product)->create(['sort_order' => 2]);

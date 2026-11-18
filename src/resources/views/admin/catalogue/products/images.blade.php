@@ -51,6 +51,19 @@
                 <x-text-input id="alt_en" name="alt_en" type="text" class="mt-1" :value="old('alt_en')" placeholder="{{ $product->name_en }}" />
                 <x-input-error class="mt-2" :messages="$errors->get('alt_en')" />
             </div>
+
+            @if ($colors->isNotEmpty())
+                <div>
+                    <x-input-label for="color" :value="__('admin.images.color')" />
+                    <select id="color" name="color" class="field mt-1">
+                        <option value="">{{ __('admin.images.color_none') }}</option>
+                        @foreach ($colors as $color)
+                            <option value="{{ $color }}" @selected(old('color') === $color)>{{ $color }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error class="mt-2" :messages="$errors->get('color')" />
+                </div>
+            @endif
         </div>
 
         <p class="mt-4 text-body-sm text-ink-muted">{{ __('admin.images.alt_hint') }}</p>
@@ -80,7 +93,7 @@
                         <form
                             method="POST"
                             action="{{ route('admin.catalogue.products.images.update', [$product, $image]) }}"
-                            class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_6rem_auto] sm:items-end"
+                            class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_6rem_9rem_auto] sm:items-end"
                         >
                             @csrf
                             @method('PATCH')
@@ -99,6 +112,18 @@
                                 <x-input-label :for="'sort_'.$image->id" :value="__('admin.images.position')" />
                                 <x-text-input :id="'sort_'.$image->id" name="sort_order" type="number" min="0" max="9999" class="mt-1 tabular" :value="$image->sort_order" />
                             </div>
+
+                            @if ($colors->isNotEmpty())
+                                <div>
+                                    <x-input-label :for="'color_'.$image->id" :value="__('admin.images.color')" />
+                                    <select :id="'color_'.$image->id" name="color" class="field mt-1">
+                                        <option value="">{{ __('admin.images.color_none') }}</option>
+                                        @foreach ($colors as $color)
+                                            <option value="{{ $color }}" @selected($image->color === $color)>{{ $color }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
 
                             <x-ui.button type="submit" variant="secondary" size="compact">{{ __('admin.images.save') }}</x-ui.button>
 

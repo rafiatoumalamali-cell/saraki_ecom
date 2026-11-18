@@ -40,6 +40,14 @@ test('the language switch redirects to the same page in the new locale', functio
         ->assertRedirect('/en/catalogue?sort=name');
 });
 
+test('the language switch works when the app lives in a subdirectory', function () {
+    config(['app.url' => 'http://localhost/~rafiatou.ali']);
+
+    $this->withHeader('referer', 'http://localhost/~rafiatou.ali/fr/catalogue?sort=name')
+        ->post(route('locale.update', 'en'))
+        ->assertRedirect('/~rafiatou.ali/en/catalogue?sort=name');
+});
+
 test('switching language updates the signed-in account preference', function () {
     $customer = User::factory()->create(['locale' => 'fr']);
 

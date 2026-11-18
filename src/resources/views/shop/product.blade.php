@@ -11,6 +11,7 @@
         'id' => $variant->id,
         'label' => $variant->label ?: __('shop.product.single_variant'),
         'sku' => $variant->sku,
+        'color' => $variant->color === \App\Models\ProductVariant::DEFAULT ? null : $variant->color,
         'inStock' => $variant->isInStock(),
         'priceLabel' => money($variant->price),
         'stockLabel' => match (true) {
@@ -21,6 +22,15 @@
     ])->values()->all();
 
     $basePriceLabel = money($product->base_price);
+
+    // Fed to Alpine so picking a variant colour filters the gallery to the
+    // photos tagged with that colour; untagged products show every photo.
+    $galleryPhotos = $images->map(fn ($image) => [
+        'url' => $image->url(),
+        'thumb' => $image->thumbUrl(),
+        'alt' => $image->altText(),
+        'color' => $image->color,
+    ])->values()->all();
 
     $productSchema = array_filter([
         '@context' => 'https://schema.org',
@@ -70,40 +80,62 @@
         </ol>
     </nav>
 
-    <div class="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-16">
+    <div
+        class="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-16"
+        x-data="{
+            choice: {{ $selected?->id ?? 'null' }},
+            options: @js($variants),
+            photos: @js($galleryPhotos),
+            photo: 0,
+            get current() {
+                return this.options.find((option) => option.id === this.choice) || null;
+            },
+            get visiblePhotos() {
+                const color = this.current ? this.current.color : null;
+                if (! color) {
+                    return this.photos;
+                }
+                const matching = this.photos.filter((item) => item.color === color);
+                return matching.length ? matching : this.photos;
+            },
+            init() {
+                this.$watch('choice', () => { this.photo = 0; });
+            },
+        }"
+    >
         {{-- Gallery --}}
-        <section aria-label="{{ __('shop.product.gallery_label', ['name' => $name]) }}" x-data="{ photo: 0 }" class="lg:sticky lg:top-28 lg:self-start">
+        <section aria-label="{{ __('shop.product.gallery_label', ['name' => $name]) }}" class="lg:sticky lg:top-28 lg:self-start">
             <div class="overflow-hidden rounded-lg border border-line bg-beige-50 shadow-card">
-                @forelse ($images as $index => $image)
-                    <img
-                        x-show="photo === {{ $index }}"
-                        @if ($index > 0) x-cloak @endif
-                        src="{{ $image->url() }}"
-                        alt="{{ $image->altText() }}"
-                        loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
-                        decoding="async"
-                        class="aspect-[3/4] w-full animate-fade-in object-cover"
-                    >
-                @empty
+                @if ($images->isEmpty())
                     <x-ui.product-media :product="$product" :thumb="false" class="aspect-[3/4] w-full" loading="eager" />
-                @endforelse
+                @else
+                    <template x-for="(img, index) in visiblePhotos" :key="img.url">
+                        <img
+                            x-show="photo === index"
+                            x-cloak
+                            :src="img.url"
+                            :alt="img.alt"
+                            :loading="index === 0 ? 'eager' : 'lazy'"
+                            decoding="async"
+                            class="aspect-[3/4] w-full animate-fade-in object-cover"
+                        >
+                    </template>
+                @endif
             </div>
 
             @if ($images->count() > 1)
                 <ul class="mt-4 grid grid-cols-5 gap-3">
-                    @foreach ($images as $index => $image)
+                    <template x-for="(img, index) in visiblePhotos" :key="'thumb-'+img.url">
                         <li>
                             <button
                                 type="button"
-                                @click="photo = {{ $index }}"
+                                @click="photo = index"
                                 class="block w-full overflow-hidden rounded-sm border-2 bg-canvas transition-all duration-200 ease-brand"
-                                :class="photo === {{ $index }} ? 'border-gold shadow-ring' : 'border-line opacity-70 hover:opacity-100 hover:border-line-strong'"
+                                :class="photo === index ? 'border-gold shadow-ring' : 'border-line opacity-70 hover:opacity-100 hover:border-line-strong'"
                             >
-                                <span class="sr-only">
-                                    {{ __('shop.product.photo_label', ['current' => $index + 1, 'total' => $images->count()]) }}
-                                </span>
+                                <span class="sr-only" x-text="@js(__('shop.product.photo_label', ['current' => ':current', 'total' => ':total'])).replace(':current', index + 1).replace(':total', visiblePhotos.length)"></span>
                                 <img
-                                    src="{{ $image->thumbUrl() }}"
+                                    :src="img.thumb"
                                     alt=""
                                     loading="lazy"
                                     decoding="async"
@@ -111,7 +143,7 @@
                                 >
                             </button>
                         </li>
-                    @endforeach
+                    </template>
                 </ul>
             @endif
         </section>
@@ -245,16 +277,7 @@
                     </div>
                 </div>
             @else
-            <div
-                x-data="{
-                    choice: {{ $selected?->id ?? 'null' }},
-                    options: @js($variants),
-                    get current() {
-                        return this.options.find((option) => option.id === this.choice) || null;
-                    },
-                }"
-                class="mt-8 border-t border-line pt-8"
-            >
+            <div class="mt-8 border-t border-line pt-8">
                 @if ($product->variants->isNotEmpty())
                     <fieldset>
                         <legend class="label-upper text-ink">{{ __('shop.product.choose_variant') }}</legend>
