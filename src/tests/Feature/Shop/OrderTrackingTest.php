@@ -2,6 +2,7 @@
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\User;
 use App\Services\OrderService;
@@ -108,6 +109,45 @@ test('the retry link opens a fresh attempt at the gateway', function () {
         ->assertRedirect('https://checkout.paystack.test/pay/retry');
 
     expect($order->refresh()->payments()->count())->toBe(1);
+});
+
+test('a taken reference is retired and a fresh attempt opens checkout', function () {
+    Http::fake([
+        '*/transaction/initialize' => Http::sequence()
+            ->push(['status' => false, 'message' => 'Duplicate Transaction Reference'], 400)
+            ->push([
+                'status' => true,
+                'data' => [
+                    'authorization_url' => 'https://checkout.paystack.test/pay/fresh',
+                    'access_code' => 'fresh123',
+                    'reference' => 'PS-FRESH-1',
+                ],
+            ]),
+    ]);
+
+    $user = User::factory()->create();
+    $order = Order::factory()->for($user)->create(['payment_method' => 'paystack']);
+    $order->forceFill(['payment_status' => OrderPaymentStatus::Pending])->save();
+
+    // The previous attempt died after Paystack had already seen its reference.
+    $order->payments()->create([
+        'provider' => 'paystack',
+        'reference' => $order->order_number.'-PAY-1',
+        'amount' => $order->total,
+        'currency' => $order->currency,
+        'status' => PaymentStatus::Initialized,
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('orders.pay', ['locale' => 'fr', 'order' => $order->order_number]))
+        ->assertRedirect('https://checkout.paystack.test/pay/fresh');
+
+    $payments = $order->payments()->orderBy('id')->get();
+
+    expect($payments)->toHaveCount(2)
+        ->and($payments[0]->status)->toBe(PaymentStatus::Failed)
+        ->and($payments[1]->status)->toBe(PaymentStatus::Pending)
+        ->and($payments[1]->provider_reference)->toBe('PS-FRESH-1');
 });
 
 test('a guest is sent to sign in before seeing an order', function () {

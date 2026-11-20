@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Exceptions\DuplicateTransactionException;
 use App\Exceptions\PaymentGatewayException;
 use App\Models\Payment;
 use Illuminate\Http\Client\ConnectionException;
@@ -161,6 +162,12 @@ class PaystackGateway
                 'status' => $response->status(),
                 'message' => $message,
             ]);
+
+            // A taken reference means an earlier attempt did reach Paystack;
+            // the caller can recover with a fresh payment attempt.
+            if (str_contains(strtolower($message), 'duplicate')) {
+                throw new DuplicateTransactionException(__('shop.checkout.gateway_unavailable'));
+            }
 
             throw new PaymentGatewayException(__('shop.checkout.gateway_unavailable'));
         }

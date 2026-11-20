@@ -8,6 +8,7 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\RefundStatus;
+use App\Exceptions\DuplicateTransactionException;
 use App\Exceptions\PaymentGatewayException;
 use App\Mail\PaymentFailed;
 use App\Mail\PaymentReceived;
@@ -50,6 +51,26 @@ class PaymentService
             ->first()
             ?? $this->orders->createPaymentAttempt($order);
 
+        try {
+            return $this->openCheckout($payment, $email, $callbackUrl);
+        } catch (DuplicateTransactionException $exception) {
+            // A previous attempt reached Paystack but we never saw the answer,
+            // so its reference is taken. Retire it and pay with a fresh one.
+            return $this->openCheckout(
+                $this->orders->createPaymentAttempt($order),
+                $email,
+                $callbackUrl,
+            );
+        }
+    }
+
+    /**
+     * @return array{payment: Payment, url: string}
+     *
+     * @throws PaymentGatewayException
+     */
+    private function openCheckout(Payment $payment, string $email, ?string $callbackUrl): array
+    {
         try {
             $result = $this->gateway->initialize($payment, $email, $callbackUrl);
 
