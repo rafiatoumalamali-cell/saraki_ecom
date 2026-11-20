@@ -20,7 +20,6 @@ class ProductImageUpdateRequest extends FormRequest
             'alt_fr' => ['nullable', 'string', 'max:255'],
             'alt_en' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
-            'color' => ['nullable', 'string', 'max:120'],
         ];
     }
 }

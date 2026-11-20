@@ -45,7 +45,7 @@ test('the language switch works when the app lives in a subdirectory', function 
 
     $this->withHeader('referer', 'http://localhost/~rafiatou.ali/fr/catalogue?sort=name')
         ->post(route('locale.update', 'en'))
-        ->assertRedirect('/~rafiatou.ali/en/catalogue?sort=name');
+        ->assertRedirect('/en/catalogue?sort=name');
 });
 
 test('switching language updates the signed-in account preference', function () {

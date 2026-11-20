@@ -22,7 +22,6 @@ class ProductImageRequest extends FormRequest
             'images.*' => ProductImage::UPLOAD_RULES,
             'alt_fr' => ['nullable', 'string', 'max:255'],
             'alt_en' => ['nullable', 'string', 'max:255'],
-            'color' => ['nullable', 'string', 'max:120'],
         ];
     }
 }

@@ -181,8 +181,6 @@ return [
         'alt_fr' => 'Alt text (French)',
         'alt_en' => 'Alt text (English)',
         'alt_hint' => 'Describes the photo for screen readers and when it fails to load.',
-        'color' => 'Colour',
-        'color_none' => 'All colours',
         'position' => 'Order',
         'primary' => 'Main photo',
         'make_primary' => 'Use as main photo',

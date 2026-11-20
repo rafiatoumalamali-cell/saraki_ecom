@@ -181,8 +181,6 @@ return [
         'alt_fr' => 'Texte alternatif (français)',
         'alt_en' => 'Texte alternatif (anglais)',
         'alt_hint' => 'Décrit la photo pour les lecteurs d’écran et si elle ne se charge pas.',
-        'color' => 'Couleur',
-        'color_none' => 'Toutes couleurs',
         'position' => 'Ordre',
         'primary' => 'Photo principale',
         'make_primary' => 'Définir comme photo principale',

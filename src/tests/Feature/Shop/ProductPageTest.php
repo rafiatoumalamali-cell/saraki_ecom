@@ -113,21 +113,6 @@ test('the product page carries product-level Open Graph data', function () {
         ->assertSee('hreflang="en"', false);
 });
 
-test('photos carry their colour tag so the gallery can follow the variant', function () {
-    $product = Product::factory()->create();
-    $product->variants()->first()->update(['size' => 'M', 'color' => 'Noir']);
-
-    ProductImage::factory()->for($product)->create([
-        'path' => 'products/noir-piece.jpg',
-        'color' => 'Noir',
-    ]);
-
-    $this->get($product->url('fr'))
-        ->assertOk()
-        ->assertSee('visiblePhotos', false)
-        ->assertSee('noir-piece.jpg');
-});
-
 test('a piece without a photo still renders', function () {
     $product = Product::factory()->create(['name_fr' => 'Boubou Sans Photo']);
 

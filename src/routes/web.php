@@ -182,7 +182,9 @@ Route::post('/locale/{locale}', function (Request $request, string $locale) {
         if ($path === '/'.$supported || str_starts_with($path, '/'.$supported.'/')) {
             $rest = substr($path, strlen($supported) + 1);
 
-            return redirect($base.'/'.$locale.$rest.($query ? '?'.$query : ''));
+            // redirect() already prepends the install base (/~user on the
+            // school host), so the target must not repeat it.
+            return redirect('/'.$locale.$rest.($query ? '?'.$query : ''));
         }
     }
 

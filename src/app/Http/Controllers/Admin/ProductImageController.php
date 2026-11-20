@@ -20,13 +20,6 @@ class ProductImageController extends Controller
         return view('admin.catalogue.products.images', [
             'product' => $product,
             'images' => $product->images()->get(),
-            'colors' => $product->variants()
-                ->where('is_active', true)
-                ->whereNotNull('color')
-                ->where('color', '!=', '')
-                ->distinct()
-                ->orderBy('color')
-                ->pluck('color'),
         ]);
     }
 
@@ -49,7 +42,6 @@ class ProductImageController extends Controller
                 'alt_en' => $request->input('alt_en') ?: $product->name_en,
                 'sort_order' => ++$sortOrder,
                 'is_primary' => ! $hasPrimary,
-                'color' => $request->input('color') ?: null,
             ]);
 
             $hasPrimary = true;
@@ -66,7 +58,6 @@ class ProductImageController extends Controller
             'alt_fr' => $request->input('alt_fr'),
             'alt_en' => $request->input('alt_en'),
             'sort_order' => $request->integer('sort_order', $image->sort_order),
-            'color' => $request->input('color') ?: null,
         ]);
 
         return back()->with('success', __('admin.images.updated'));

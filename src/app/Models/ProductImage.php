@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['product_id', 'path', 'thumb_path', 'alt_fr', 'alt_en', 'sort_order', 'is_primary', 'color'])]
+#[Fillable(['product_id', 'path', 'thumb_path', 'alt_fr', 'alt_en', 'sort_order', 'is_primary'])]
 class ProductImage extends Model
 {
     use HasFactory, HasTranslations;

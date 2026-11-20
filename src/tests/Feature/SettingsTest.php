@@ -51,7 +51,8 @@ test('an admin saves the whole shop from one screen', function () {
         // leaving an empty cell in the English storefront.
         ->and($zones[0]['name_en'])->toBe('Grand Accra')
         ->and((float) $zones[1]['fee'])->toBe(60.0)
-        ->and($settings->get('payment_methods'))->toBe(['paystack' => true, 'cod' => false, 'transfer' => false])
+        // MySQL reorders JSON object keys, so compare them sorted.
+        ->and(collect($settings->get('payment_methods'))->sortKeys()->all())->toBe(['cod' => false, 'paystack' => true, 'transfer' => false])
         ->and($settings->bool('tax_display'))->toBeFalse()
         ->and($settings->get('order_expiry_minutes'))->toBe(90)
         ->and($settings->socialLinks())->toBe(['facebook' => 'https://facebook.com/saraki']);
