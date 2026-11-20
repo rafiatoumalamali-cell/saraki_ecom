@@ -44,7 +44,7 @@ class CatalogueSeeder extends Seeder
                 ]
             );
 
-            $this->syncVariants($product, $baseSku, $data['sizes'] ?? null, $data['colors'] ?? null);
+            $this->syncVariants($product, $baseSku, $data['sizes'] ?? null, null);
         }
     }
 
@@ -59,12 +59,13 @@ class CatalogueSeeder extends Seeder
             return;
         }
 
+        // Clients pick a size, not a colour: each size gets one variant.
         foreach ($sizes as $size) {
-            foreach ($colors as $color) {
+            foreach ($colors ?? [ProductVariant::DEFAULT] as $color) {
                 ProductVariant::updateOrCreate(
                     ['product_id' => $product->id, 'size' => $size, 'color' => $color],
                     [
-                        'sku' => $baseSku.'-'.strtoupper(Str::slug($size.'-'.$color, '-')),
+                        'sku' => $baseSku.'-'.strtoupper(Str::slug($size.($color === ProductVariant::DEFAULT ? '' : '-'.$color), '-')),
                         'stock_qty' => 12,
                         'price_delta' => 0,
                         'is_active' => true,
@@ -89,35 +90,35 @@ class CatalogueSeeder extends Seeder
     private function products(): array
     {
         return [
-            $this->product('boubous', 'BOU', 'Boubou Royale', 'Royale Boubou', 1450, ['Or', 'Ivoire']),
-            $this->product('boubous', 'BOU', 'Boubou Sahara', 'Sahara Boubou', 1200, ['Terracotta', 'Sable']),
-            $this->product('boubous', 'BOU', 'Boubou Nuit d’Encre', 'Ink Night Boubou', 1650, ['Noir', 'Bleu nuit']),
-            $this->product('boubous', 'BOU', 'Boubou Héritage', 'Heritage Boubou', 1950, ['Bordeaux', 'Or']),
+            $this->product('boubous', 'BOU', 'Boubou Royale', 'Royale Boubou', 1450),
+            $this->product('boubous', 'BOU', 'Boubou Sahara', 'Sahara Boubou', 1200),
+            $this->product('boubous', 'BOU', 'Boubou Nuit d’Encre', 'Ink Night Boubou', 1650),
+            $this->product('boubous', 'BOU', 'Boubou Héritage', 'Heritage Boubou', 1950),
 
-            $this->product('caftans', 'CAF', 'Caftan Djoliba', 'Djoliba Caftan', 980, ['Émeraude', 'Ivoire']),
-            $this->product('caftans', 'CAF', 'Caftan Sable d’Or', 'Golden Sand Caftan', 1120, ['Sable', 'Or']),
-            $this->product('caftans', 'CAF', 'Caftan Médina', 'Medina Caftan', 1250, ['Blanc', 'Noir']),
+            $this->product('caftans', 'CAF', 'Caftan Djoliba', 'Djoliba Caftan', 980),
+            $this->product('caftans', 'CAF', 'Caftan Sable d’Or', 'Golden Sand Caftan', 1120),
+            $this->product('caftans', 'CAF', 'Caftan Médina', 'Medina Caftan', 1250),
 
-            $this->product('ensembles-wax', 'WAX', 'Ensemble Sunrise', 'Sunrise Set', 620, ['Orange', 'Turquoise']),
-            $this->product('ensembles-wax', 'WAX', 'Ensemble Cotonou Bloom', 'Cotonou Bloom Set', 540, ['Rose', 'Vert']),
-            $this->product('ensembles-wax', 'WAX', 'Ensemble Sahel Wave', 'Sahel Wave Set', 680, ['Indigo', 'Sable']),
-            $this->product('ensembles-wax', 'WAX', 'Ensemble Kente Dream', 'Kente Dream Set', 760, ['Or', 'Noir']),
+            $this->product('ensembles-wax', 'WAX', 'Ensemble Sunrise', 'Sunrise Set', 620),
+            $this->product('ensembles-wax', 'WAX', 'Ensemble Cotonou Bloom', 'Cotonou Bloom Set', 540),
+            $this->product('ensembles-wax', 'WAX', 'Ensemble Sahel Wave', 'Sahel Wave Set', 680),
+            $this->product('ensembles-wax', 'WAX', 'Ensemble Kente Dream', 'Kente Dream Set', 760),
 
-            $this->product('robes-de-soiree', 'SOI', 'Robe Étoile de Dakar', 'Dakar Star Gown', 1800, ['Noir', 'Or']),
-            $this->product('robes-de-soiree', 'SOI', 'Robe Velvet Nights', 'Velvet Nights Gown', 2100, ['Bordeaux', 'Vert']),
-            $this->product('robes-de-soiree', 'SOI', 'Robe Perle de l’Océan', 'Ocean Pearl Gown', 1950, ['Ivoire', 'Bleu ciel']),
+            $this->product('robes-de-soiree', 'SOI', 'Robe Étoile de Dakar', 'Dakar Star Gown', 1800),
+            $this->product('robes-de-soiree', 'SOI', 'Robe Velvet Nights', 'Velvet Nights Gown', 2100),
+            $this->product('robes-de-soiree', 'SOI', 'Robe Perle de l’Océan', 'Ocean Pearl Gown', 1950),
 
             $this->accessory('accessoires', 'ACC', 'Foulard Impérial', 'Imperial Scarf', 180),
             $this->accessory('accessoires', 'ACC', 'Bijoux de Mariée', 'Bridal Jewellery', 320),
             $this->accessory('accessoires', 'ACC', 'Sac Raffia', 'Raffia Bag', 260),
 
-            $this->product('pret-a-porter', 'PRE', 'Ensemble Tam-Tam', 'Tam-Tam Set', 480, ['Rouge', 'Noir']),
-            $this->product('pret-a-porter', 'PRE', 'Chemise Sahel', 'Sahel Shirt', 350, ['Blanc', 'Bleu']),
-            $this->product('pret-a-porter', 'PRE', 'Jupe Wax Classique', 'Classic Wax Skirt', 290, ['Multicolore', 'Noir']),
+            $this->product('pret-a-porter', 'PRE', 'Ensemble Tam-Tam', 'Tam-Tam Set', 480),
+            $this->product('pret-a-porter', 'PRE', 'Chemise Sahel', 'Sahel Shirt', 350),
+            $this->product('pret-a-porter', 'PRE', 'Jupe Wax Classique', 'Classic Wax Skirt', 290),
         ];
     }
 
-    private function product(string $category, string $code, string $nameFr, string $nameEn, float $price, array $colors): array
+    private function product(string $category, string $code, string $nameFr, string $nameEn, float $price): array
     {
         return [
             'category' => $category,
@@ -126,7 +127,6 @@ class CatalogueSeeder extends Seeder
             'name_en' => $nameEn,
             'price' => $price,
             'sizes' => self::SIZES,
-            'colors' => $colors,
         ];
     }
 
