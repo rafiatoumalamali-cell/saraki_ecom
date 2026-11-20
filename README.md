@@ -1,20 +1,24 @@
 # SARAKI Digital Platform
 
 Bilingual (French default / English) fashion e-commerce platform for a made-to-order
-tailor in Accra: catalogue with size/colour variants, Paystack card and mobile-money
-payment, studio appointments, and a CMS for products, gallery, blog and pages.
+tailor in **Niamey, Niger**: catalogue with size variants, Paystack card and
+mobile-money payment (Ghana test mode for the course deployment), studio
+appointments, a made-to-measure request flow, and a CMS for products, gallery,
+blog and pages.
 
-**Status:** Phases 1–5 are built and Phase 6 hardening is nearly complete (301 tests /
-1145 assertions green). Gates **G1–G5** await client sign-off; **Phase 6 — hardening and
-UAT** is in its final stretch (client walkthrough pending). Everything below is the
-current source of truth; [plan.md](plan.md) drives the schedule.
+**Status:** deployed and live on the school server at
+<http://169.239.251.102:442/~rafiatou.ali/> — **316 tests / 1,200 assertions green**.
+Phase 6 hardening is complete; gates **G1–G5** await client sign-off and the client
+UAT walkthrough (`docs/uat/uat-script.md`). [plan.md](plan.md) drives the schedule;
+`docs/project-documentation.md` covers implementation, challenges and the
+migration plan for the client's own domain.
 
 ```
 saraki/
 ├── plan.md            ← task table, decisions D-01…D-15, gates G0–G5, risks
-├── docs/              ← SRS, data dictionary, ERD, design system, decisions & environments
-├── design/            ← brand assets and reference screenshots (placeholders until supplied)
-├── deploy/            ← empty; hosting artefacts land here (decision D-11 is still open)
+├── docs/              ← SRS, design system, decisions, project documentation, UAT
+├── design/            ← brand assets and reference screenshots
+├── deploy/            ← server-setup, runbook and XAMPP notes for the live host
 ├── backups/           ← local dumps, never committed
 └── src/               ← the Laravel application
 ```
@@ -51,8 +55,8 @@ php artisan serve --host=127.0.0.1 --port=8123
 ```
 
 `.env` is gitignored and must stay that way; only `.env.example` is committed with empty
-placeholders. Paystack test keys, SMTP credentials and hosting are still outstanding
-client inputs (D-11, D-12, D-14).
+placeholders. The school-server `.env` was created on the host itself; SMTP credentials
+are still outstanding (D-12).
 
 ### Demo accounts
 
@@ -74,7 +78,7 @@ Entry points: `/fr`, `/en`, `/register`, `/login`, `/profile`, `/dashboard`, `/c
 ## Tests
 
 ```bash
-php artisan test           # 301 tests / 1145 assertions
+php artisan test           # 316 tests / 1200 assertions
 ./vendor/bin/pint --test   # style gate, from src/
 ```
 
@@ -107,14 +111,19 @@ php artisan test           # 301 tests / 1145 assertions
 
 ## What is left before go-live
 
-Phase 6 is nearly done; the remaining gate work is in [plan.md](plan.md). These items
-are still open:
+The platform is deployed on the school server (Apache + mod_userdir, shared MySQL
+database with `saraki_` table prefix, Paystack **test mode**). Remaining work:
 
-1. Sign-off for gates G1–G5 and the client UAT walkthrough (`docs/uat/uat-script.md`).
-   The responsive pass (360/768/1024/1440 px, Chrome/Edge/Firefox/WebKit) and Paystack
-   **test-mode** card + mobile-money payments are already verified.
-2. Hosting, domain/DNS, SMTP credentials and **live** Paystack keys (D-11, D-12, D-14);
-   Phase 7 cannot deploy without them. Handover docs are ready: `deploy/runbook.md`,
-   `docs/admin-guide.md`, `docs/maintenance-checklist.md`.
-3. French currency symbol: ICU `fr_GH` renders `1 250,00 GHS` while the design doc expects
-   `1 250,00 GH₵`; a decision from `money()` applies to `centimetres()` too.
+1. **Client sign-off** — gates G1–G5 and the UAT walkthrough
+   (`docs/uat/uat-script.md`). Responsive pass and Paystack test-mode card +
+   mobile-money payments are already verified end-to-end.
+2. **Content & credentials** — SMTP credentials (mail currently uses the `log`
+   driver), the real Niamey address / WhatsApp number / opening hours, and the real
+   product catalogue with photos and XOF pricing (all admin-configurable).
+3. **Client-domain migration** — own domain + SSL, dedicated database, off-server
+   backups, and a Niger-compatible payment provider (Paystack does not support
+   Niger). The full plan is in `docs/project-documentation.md` § Migration; deploy
+   artefacts are in `deploy/`.
+4. **Currency display** — French ICU renders `1 250,00 GHS`; if the client moves to
+   XOF the `money()` helper and `STORE_CURRENCY` cover the switch, but the symbol
+   decision should be re-checked against the design doc.
